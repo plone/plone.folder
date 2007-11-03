@@ -17,7 +17,7 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
     """
     implements(IOrderedContainer)
 
-    _order = None       # PersistentList: { index -> object }
+    _order = None       # PersistentList: { index -> id }
     _pos = None         # OLBTree: { id -> index }
 
     security = ClassSecurityInfo()
@@ -38,7 +38,7 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
         """Store the named object in the folder.
         """
         super(OrderedBTreeFolder, self)._setOb(id, object)
-        self._order.append(object)
+        self._order.append(id)
         self._pos[id] = len(self._order) - 1
 
     def _delOb(self, id):
@@ -96,10 +96,10 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
             pos = 0
             order = self._order
             for i in range(len(order)):
-                if order[i]['id'] in subset_ids:
+                if order[i] in subset_ids:
                     id = subset_ids[pos]
                     try:
-                        order[i] = self._tree[id]
+                        order[i] = id
                         self._pos[id] = i
                         pos += 1
                     except KeyError:
@@ -139,10 +139,10 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
     def orderObjects(self, key, reverse=None):
         """ Order sub-objects by key and direction.
         """
-        keyfn = lambda ob: getattr(ob, key)
+        keyfn = lambda id: getattr(self._tree[id], key)
         self._order.sort(key=keyfn, reverse=bool(reverse))
-        for n, ob in enumerate(self._order):
-            self._pos[ob['id']] = n
+        for n, id in enumerate(self._order):
+            self._pos[id] = n
         return self.objectCount()
 
     security.declareProtected(access_contents_information, 'getObjectPosition')
