@@ -1,0 +1,9 @@
+Changelog for plone.folder
+
+    (name of developer listed in brackets)
+
+plone.folder - 1.0a1 Unreleased
+
+    - Initial package structure.
+      [zopeskel]
+
