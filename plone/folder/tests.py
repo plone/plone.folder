@@ -29,13 +29,15 @@ class DummyObject(CopySource):
 
 class TestCase(unittest.TestCase):
         
-    def setUp(self):
-        self.folder = OrderedBTreeFolder("f1")
+    def create(self):
+        folder = OrderedBTreeFolder("f1")
         
-        self.folder._setOb('o1', DummyObject('o1', 'mt1'))
-        self.folder._setOb('o2', DummyObject('o2', 'mt1'))
-        self.folder._setOb('o3', DummyObject('o3', 'mt1'))
-        self.folder._setOb('o4', DummyObject('o4', 'mt1'))
+        folder._setOb('o1', DummyObject('o1', 'mt1'))
+        folder._setOb('o2', DummyObject('o2', 'mt1'))
+        folder._setOb('o3', DummyObject('o3', 'mt1'))
+        folder._setOb('o4', DummyObject('o4', 'mt1'))
+        
+        return folder
         
     # Test for ordering of basic methods
     
@@ -61,7 +63,7 @@ class TestCase(unittest.TestCase):
         
     def _doCanonTest(self, methodname, table):
         for args, order, rval in table:
-            f = self.folder
+            f = self.create()
             method = getattr(f, methodname)
             if rval == 'ValueError':
                 self.failUnlessRaises( ValueError, method, *args )
