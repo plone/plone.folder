@@ -97,17 +97,17 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
             order = self._order
             for i in range(len(order)):
                 if order[i]['id'] in subset_ids:
+                    id = subset_ids[pos]
                     try:
-                        order[i] = self._tree[ subset_ids[pos] ]
+                        order[i] = self._tree[id]
+                        self._pos[id] = i
                         pos += 1
                     except KeyError:
                         raise ValueError('The object with the id "%s" does '
-                                         'not exist.' % subset_ids[pos])
+                                         'not exist.' % id)
 
         if not suppress_events:
             notifyContainerModified(self)
-
-        # TODO: update self._pos
 
         return counter
 
@@ -141,9 +141,8 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
         """
         keyfn = lambda ob: getattr(ob, key)
         self._order.sort(key=keyfn, reverse=bool(reverse))
-        
-        # TODO: update self._pos
-        
+        for n, ob in enumerate(self._order):
+            self._pos[ob['id']] = n
         return self.objectCount()
 
     security.declareProtected(access_contents_information, 'getObjectPosition')
