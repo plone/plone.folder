@@ -1,7 +1,13 @@
 from zope.interface import implements
 from persistent.list import PersistentList
+from zope.app.container.contained import notifyContainerModified
+
+from AccessControl import ClassSecurityInfo
+from AccessControl.Permissions import access_contents_information
+from AccessControl.Permissions import manage_properties
 from BTrees.OLBTree import OLBTree
 from OFS.interfaces import IOrderedContainer
+
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 from Products.CMFCore.PortalFolder import PortalFolderBase
 
@@ -13,6 +19,8 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
 
     _order = None       # PersistentList: { index -> object }
     _pos = None         # OLBTree: { id -> index }
+
+    security = ClassSecurityInfo()
 
     def __init__(self, id, title=''):
         PortalFolderBase.__init__(self, id, title)
@@ -50,7 +58,7 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
             idxs = []
             for id in ids:
                 idxs.append((self._pos[id], id))
-            return [ x[1] for in sorted(idxs, cmp=lambda a,b: cmp(a[0], b[0])) ]
+            return [ x[1] for x in sorted(idxs, cmp=lambda a,b: cmp(a[0], b[0])) ]
         
     # IOrderSupport
         
