@@ -140,7 +140,7 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
         """ Order sub-objects by key and direction.
         """
         keyfn = lambda id: getattr(self._tree[id], key)
-        self._order.sort(key=keyfn, reverse=bool(reverse))
+        self._order.sort(None, keyfn, bool(reverse))
         for n, id in enumerate(self._order):
             self._pos[id] = n
         return self.objectCount()
