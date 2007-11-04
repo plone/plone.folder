@@ -164,3 +164,12 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         delta = position - self.getObjectPosition(id)
         return self.moveObjectsByDelta(id, delta,
                                        suppress_events=suppress_events)
+                                       
+    def manage_renameObject(self, id, new_id, REQUEST=None):
+        """ Rename a particular sub-object without changing its position.
+        """
+        old_position = self.getObjectPosition(id)
+        result = super(OrderSupport, self).manage_renameObject(id, new_id,
+                                                               REQUEST)
+        self.moveObjectToPosition(new_id, old_position, suppress_events=True)
+        return result
