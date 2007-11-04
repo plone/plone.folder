@@ -143,7 +143,7 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
         self._order.sort(None, keyfn, bool(reverse))
         for n, id in enumerate(self._order):
             self._pos[id] = n
-        return self.objectCount()
+        return -1
 
     security.declareProtected(access_contents_information, 'getObjectPosition')
     def getObjectPosition(self, id):
