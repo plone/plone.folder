@@ -4,7 +4,6 @@ from plone.folder.ordered import OrderedBTreeFolder
 
 from OFS.CopySupport import CopySource
 
-# Much of this code is borrowed from OFS.tests.testOrderSupport
 
 class DummyObject(CopySource):
     
@@ -27,7 +26,9 @@ class DummyObject(CopySource):
     def wl_isLocked(self):
         return 0
 
+
 class TestCase(unittest.TestCase):
+    """ tests borrowed from OFS.tests.testOrderSupport """
         
     def create(self):
         folder = OrderedBTreeFolder("f1")
@@ -157,8 +158,139 @@ class TestCase(unittest.TestCase):
               )
             )
 
+
+class TestOrderSupport(unittest.TestCase):
+    """ tests borrowed from Products.CMFPlone.tests.testOrderSupport """
+
+    def setUp(self):
+        self.folder = OrderedBTreeFolder("f1")
+        self.folder._setOb('foo', DummyObject('foo', 'mt1'))
+        self.folder._setOb('bar', DummyObject('bar', 'mt1'))
+        self.folder._setOb('baz', DummyObject('baz', 'mt1'))
+
+    def testGetObjectPosition(self):
+        self.assertEqual(self.folder.getObjectPosition('foo'), 0)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 1)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+    def testMoveObject(self):
+        self.folder.moveObjectToPosition('foo', 1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+    def testMoveObjectToSamePos(self):
+        self.folder.moveObjectToPosition('bar', 1)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 0)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 1)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+    def testMoveObjectToFirstPos(self):
+        self.folder.moveObjectToPosition('bar', 0)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+    def testMoveObjectToLastPos(self):
+        self.folder.moveObjectToPosition('bar', 2)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 2)
+
+    def testMoveObjectOutLowerBounds(self):
+        # Pos will be normalized to 0
+        self.folder.moveObjectToPosition('bar', -1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+    def testMoveObjectOutUpperBounds(self):
+        # Pos will be normalized to 2
+        self.folder.moveObjectToPosition('bar', 3)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 2)
+
+    def testMoveObjectsUp(self):
+        self.folder.moveObjectsUp(['bar'])
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+    def testMoveObjectsDown(self):
+        self.folder.moveObjectsDown(['bar'])
+        self.assertEqual(self.folder.getObjectPosition('foo'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 2)
+
+    def testMoveObjectsToTop(self):
+        self.folder.moveObjectsToTop(['bar'])
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+    def testMoveObjectsToBottom(self):
+        self.folder.moveObjectsToBottom(['bar'])
+        self.assertEqual(self.folder.getObjectPosition('foo'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 2)
+
+    def testMoveTwoObjectsUp(self):
+        self.folder.moveObjectsUp(['bar', 'baz'])
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 2)
+
+    def testMoveTwoObjectsDown(self):
+        self.folder.moveObjectsDown(['foo', 'bar'])
+        self.assertEqual(self.folder.getObjectPosition('baz'), 0)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 2)
+
+    def testMoveTwoObjectsToTop(self):
+        self.folder.moveObjectsToTop(['bar', 'baz'])
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 2)
+
+    def testMoveTwoObjectsToBottom(self):
+        self.folder.moveObjectsToBottom(['foo', 'bar'])
+        self.assertEqual(self.folder.getObjectPosition('baz'), 0)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 2)
+
+    def testOrderObjects(self):
+        self.folder.orderObjects('id')
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 2)
+
+    def testSubsetIds(self):
+        self.folder.moveObjectsByDelta(['baz'], -1, ['foo', 'bar', 'baz'])
+        self.assertEqual(self.folder.getObjectPosition('foo'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 2)
+
+    def testSkipObjectsNotInSubsetIds(self):
+        self.folder.moveObjectsByDelta(['baz'], -1, ['foo', 'baz'])
+        self.assertEqual(self.folder.getObjectPosition('baz'), 0)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 1) # Did not move
+        self.assertEqual(self.folder.getObjectPosition('foo'), 2)
+
+    def testIgnoreNonObjects(self):
+        #Fix for (http://dev.plone.org/plone/ticket/3959) non contentish objects
+        #cause errors, we should just ignore them
+        self.folder.moveObjectsByDelta(['bar','blah'], -1)
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+
 def test_suite():
-    return unittest.TestSuite([unittest.makeSuite(TestCase)])
+    return unittest.TestSuite([
+        unittest.makeSuite(TestCase),
+        unittest.makeSuite(TestOrderSupport)
+    ])
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')
