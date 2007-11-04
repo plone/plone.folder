@@ -80,15 +80,15 @@ class TestBenchmarkCase(ptc.PloneTestCase):
     # basic content values -- read all
     @timecall
     def testBenchmarkObjectValuesRegular(self):
-        for x in range(100):
+        for x in range(500):
             self.regular.objectValues()
     @timecall
     def testBenchmarkObjectValuesLarge(self):
-        for x in range(100):
+        for x in range(500):
             self.large.objectValues()
     @timecall
     def testBenchmarkObjectValuesOrdered(self):
-        for x in range(100):
+        for x in range(500):
             self.ordered.objectValues()
 
     # batching
@@ -108,15 +108,15 @@ class TestBenchmarkCase(ptc.PloneTestCase):
     # random access
     @timecall
     def testRandomRegular(self):
-        for x in range(200):
+        for x in range(1000):
             self.regular['doc.%d' % randint(0, SIZE-1)]
     @timecall
     def testRandomLarge(self):
-        for x in range(200):
+        for x in range(1000):
             self.large['doc.%d' % randint(0, SIZE-1)]
     @timecall
     def testRandomOrdered(self):
-        for x in range(200):
+        for x in range(1000):
             self.ordered['doc.%d' % randint(0, SIZE-1)]
 
 
