@@ -79,29 +79,29 @@ class TestBenchmarkCase(ptc.PloneTestCase):
 
     # basic content values -- read all
     @timecall
-    def testBenchmarkObjectValuesRegular(self):
+    def testObjectValuesRegular(self):
         for x in range(500):
             self.regular.objectValues()
     @timecall
-    def testBenchmarkObjectValuesLarge(self):
+    def testObjectValuesLarge(self):
         for x in range(500):
             self.large.objectValues()
     @timecall
-    def testBenchmarkObjectValuesOrdered(self):
+    def testObjectValuesOrdered(self):
         for x in range(500):
             self.ordered.objectValues()
 
     # batching
     @timecall
-    def testBenchmarkBatchRegular(self):
+    def testBatchRegular(self):
         for x in range(500):
             Batch(sequence=self.regular.objectValues(), size=SIZE / 10, start=SIZE * 4 / 5)
     @timecall
-    def testBenchmarkBatchLarge(self):
+    def testBatchLarge(self):
         for x in range(500):
             Batch(sequence=self.large.objectValues(), size=SIZE / 10, start=SIZE * 4 / 5)
     @timecall
-    def testBenchmarkBatchOrdered(self):
+    def testBatchOrdered(self):
         for x in range(500):
             Batch(sequence=self.ordered.objectValues(), size=SIZE / 10, start=SIZE * 4 / 5)
 
