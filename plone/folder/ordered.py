@@ -44,7 +44,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
     def _delOb(self, id):
         """Remove the named object from the folder.
         """
-        super(OrderedBTreeFolderBase, self)._setOb(id)
+        super(OrderedBTreeFolderBase, self)._delOb(id)
         pos = self._pos[id]
         del self._order[pos]
         del self._pos[id]
