@@ -134,7 +134,7 @@ class TestCase(unittest.TestCase):
 
     def test_orderObjects(self):
         self._doCanonTest( 'orderObjects',
-              ( ( ( 'id', 'id' ),       ['o4', 'o3', 'o2', 'o1'], 3)
+              ( ( ( 'id', 'id' ),       ['o4', 'o3', 'o2', 'o1'], 4)
               , ( ( 'meta_type', '' ),  ['o1', 'o3', 'o2', 'o4'], 1)
               , ( ( 'meta_type', 'n' ), ['o4', 'o2', 'o3', 'o1'], 3)
               , ( ( 'position', 0 ),    ['o1', 'o2', 'o3', 'o4'], 0)
