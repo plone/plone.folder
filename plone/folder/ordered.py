@@ -8,7 +8,7 @@ from AccessControl.Permissions import manage_properties
 from BTrees.OLBTree import OLBTree
 from OFS.interfaces import IOrderedContainer
 
-from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
+from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base, _marker
 from Products.CMFCore.PortalFolder import PortalFolderBase
 
 
@@ -33,6 +33,14 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         BTreeFolder2Base._checkId(self, id, allow_dup)
 
     # IObjectManager
+    
+    def _getOb(self, id, default=_marker):
+        """Return the named object from the folder.
+        """
+        try:
+            return super(OrderedBTreeFolderBase, self)._getOb(id, default)
+        except KeyError, e:
+            raise AttributeError(e)
     
     def _setOb(self, id, object):
         """Store the named object in the folder.
