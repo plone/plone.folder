@@ -47,10 +47,22 @@ class TestBenchmarkCase(ptc.PloneTestCase):
             large = _createObjectByType('Large Plone Folder', portal, 'large')
             ordered = _createObjectByType('Folder', portal, 'ordered')
 
-            for x in range(SIZE):
-                create(regular, x)
-                create(large, x)
-                create(ordered, x)
+            @timecall
+            def testCreateContentRegular():
+                for x in range(SIZE):
+                    create(regular, x)
+            @timecall
+            def testCreateContentLarge():
+                for x in range(SIZE):
+                    create(large, x)
+            @timecall
+            def testCreateContentOrdered():
+                for x in range(SIZE):
+                    create(ordered, x)
+
+            testCreateContentRegular()
+            testCreateContentLarge()
+            testCreateContentOrdered()
 
             commit()
             ztc.close(app)
