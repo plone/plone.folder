@@ -51,7 +51,7 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
                     
     def objectIds(self, spec=None):
         if spec is None:
-            return iter(self._order)
+            return list(self._order)
         else:
             # TODO: revisit this to see if it can be more efficient...
             ids = super(OrderedBTreeFolder, self).objectIds(spec)

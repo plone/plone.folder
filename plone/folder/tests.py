@@ -25,6 +25,9 @@ class DummyObject(CopySource):
     
     def wl_isLocked(self):
         return 0
+        
+    def __of__(self, obj):
+        return self
 
 
 class TestCase(unittest.TestCase):
@@ -32,33 +35,31 @@ class TestCase(unittest.TestCase):
         
     def create(self):
         folder = OrderedBTreeFolder("f1")
-        
         folder._setOb('o1', DummyObject('o1', 'mt1'))
         folder._setOb('o2', DummyObject('o2', 'mt1'))
         folder._setOb('o3', DummyObject('o3', 'mt1'))
         folder._setOb('o4', DummyObject('o4', 'mt1'))
-        
         return folder
         
     # Test for ordering of basic methods
     
     def test_objectIdsOrdered(self):
-        pass
+        folder = self.create()
+        self.assertEquals(["o1", "o2", "o3", "o4"], folder.objectIds())
+        folder.moveObjectsUp(("o2",), 1)
+        self.assertEquals(["o2", "o1", "o3", "o4"], folder.objectIds())
     
     def test_objectValuesOrdered(self):
-        pass
+        folder = self.create()
+        self.assertEquals(["o1", "o2", "o3", "o4"], [x.id for x in folder.objectValues()])
+        folder.moveObjectsUp(("o2",), 1)
+        self.assertEquals(["o2", "o1", "o3", "o4"], [x.id for x in folder.objectValues()])
         
     def test_objectItemsOrdered(self):
-        pass
-        
-    def test_contentIdsOrdered(self):
-        pass
-        
-    def test_contentValuesOrdered(self):
-        pass
-        
-    def test_contentItemsOrdered(self):
-        pass
+        folder = self.create()
+        self.assertEquals(["o1", "o2", "o3", "o4"], [x for x, y in folder.objectItems()])
+        folder.moveObjectsUp(("o2",), 1)
+        self.assertEquals(["o2", "o1", "o3", "o4"], [x for x, y in folder.objectItems()])
         
     # Tests borrowed from OFS.tests.testsOrderSupport
         
