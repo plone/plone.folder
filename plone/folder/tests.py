@@ -1,6 +1,6 @@
 import unittest
 
-from plone.folder.ordered import OrderedBTreeFolder
+from plone.folder.ordered import OrderedBTreeFolderBase
 
 from OFS.CopySupport import CopySource
 
@@ -34,7 +34,7 @@ class TestCase(unittest.TestCase):
     """ tests borrowed from OFS.tests.testOrderSupport """
         
     def create(self):
-        folder = OrderedBTreeFolder("f1")
+        folder = OrderedBTreeFolderBase("f1")
         folder._setOb('o1', DummyObject('o1', 'mt1'))
         folder._setOb('o2', DummyObject('o2', 'mt2'))
         folder._setOb('o3', DummyObject('o3', 'mt1'))
@@ -168,7 +168,7 @@ class TestOrderSupport(unittest.TestCase):
     """ tests borrowed from Products.CMFPlone.tests.testOrderSupport """
 
     def setUp(self):
-        self.folder = OrderedBTreeFolder("f1")
+        self.folder = OrderedBTreeFolderBase("f1")
         self.folder._setOb('foo', DummyObject('foo', 'mt1'))
         self.folder._setOb('bar', DummyObject('bar', 'mt1'))
         self.folder._setOb('baz', DummyObject('baz', 'mt1'))

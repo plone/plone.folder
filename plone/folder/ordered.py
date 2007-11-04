@@ -12,7 +12,7 @@ from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 from Products.CMFCore.PortalFolder import PortalFolderBase
 
 
-class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
+class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
     """BTree folder for CMF sites, with ordering support
     """
     implements(IOrderedContainer)
@@ -37,14 +37,14 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
     def _setOb(self, id, object):
         """Store the named object in the folder.
         """
-        super(OrderedBTreeFolder, self)._setOb(id, object)
+        super(OrderedBTreeFolderBase, self)._setOb(id, object)
         self._order.append(id)
         self._pos[id] = len(self._order) - 1
 
     def _delOb(self, id):
         """Remove the named object from the folder.
         """
-        super(OrderedBTreeFolder, self)._setOb(id)
+        super(OrderedBTreeFolderBase, self)._setOb(id)
         pos = self._pos[id]
         del self._order[pos]
         del self._pos[id]
@@ -54,7 +54,7 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
             return list(self._order)
         else:
             # TODO: revisit this to see if it can be more efficient...
-            ids = super(OrderedBTreeFolder, self).objectIds(spec)
+            ids = super(OrderedBTreeFolderBase, self).objectIds(spec)
             idxs = []
             for id in ids:
                 idxs.append((self._pos[id], id))
