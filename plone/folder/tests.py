@@ -71,7 +71,7 @@ class TestCase(unittest.TestCase):
                 self.failUnlessRaises( ValueError, method, *args )
             else:
                 self.failUnlessEqual( method(*args), rval )
-            self.failUnlessEqual( list(f.objectIds()), order )
+            self.failUnlessEqual( f.objectIds(), order )
 
     def test_moveObjectsUp(self):
         self._doCanonTest( 'moveObjectsUp',
