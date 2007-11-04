@@ -81,7 +81,10 @@ class OrderedBTreeFolder(BTreeFolder2Base, PortalFolderBase):
         counter = 0
 
         for id in ids:
-            old_position = subset_ids.index(id)
+            try:
+                old_position = subset_ids.index(id)
+            except ValueError:
+                continue
             new_position = max( old_position - abs(delta), min_position )
             if new_position == min_position:
                 min_position += 1
