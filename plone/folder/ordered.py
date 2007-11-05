@@ -18,6 +18,7 @@ from AccessControl import Unauthorized
 from Products.CMFCore import permissions
 from Products.CMFCore.utils import _checkPermission
 
+
 class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
     """BTree folder for CMF sites, with ordering support
     """
@@ -43,8 +44,11 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
     # helper methods
     security.declarePrivate('getCMFMetaTypes')
     def getCMFMetaTypes(self):
-        ttool = getToolByName(self, 'portal_types')
-        return [ ti.Metatype() for ti in ttool.listTypeInfo() ]
+        ttool = getToolByName(self, 'portal_types', None)
+        if ttool is not None:
+            return [ ti.Metatype() for ti in ttool.listTypeInfo() ]
+        else:
+            return None
 
     # IObjectManager
     
@@ -63,7 +67,8 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         self._order.append(id)
         self._pos[id] = len(self._order) - 1
         # plone legacy support: remember non-cmf types
-        if getattr(object, 'meta_type', None) not in self.getCMFMetaTypes():
+        mts = self.getCMFMetaTypes()
+        if mts is not None and getattr(object, 'meta_type', None) not in mts:
             self._noncmf.add(id)
 
     def _delOb(self, id):
