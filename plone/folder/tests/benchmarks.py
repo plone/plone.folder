@@ -19,10 +19,6 @@ from Products.CMFPlone.PloneBatch import Batch
 # setup plone site
 ptc.setupPloneSite()
 
-# disable deprecation warnings for benchmarking
-from warnings import filterwarnings
-filterwarnings("ignore", ".*", DeprecationWarning)
-
 # number of objects to create
 SIZE = 500
 
