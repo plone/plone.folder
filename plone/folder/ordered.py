@@ -10,6 +10,8 @@ from OFS.interfaces import IOrderedContainer
 
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base, _marker
 from Products.CMFCore.PortalFolder import PortalFolderBase
+from Products.CMFCore.permissions import ModifyPortalContent
+from Products.CMFCore.utils import getToolByName
 
 
 class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
@@ -19,6 +21,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     _order = None       # PersistentList: { index -> id }
     _pos = None         # OLBTree: { id -> index }
+    _noncmf = None      # set of ids on non-cmf objects in the folder
 
     security = ClassSecurityInfo()
 
@@ -27,10 +30,17 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         BTreeFolder2Base.__init__(self, id)
         self._order = PersistentList()
         self._pos = OLBTree()
+        self._noncmf = set()
 
     def _checkId(self, id, allow_dup=0):
         PortalFolderBase._checkId(self, id, allow_dup)
         BTreeFolder2Base._checkId(self, id, allow_dup)
+
+    # helper methods
+    security.declarePrivate('getCMFMetaTypes')
+    def getCMFMetaTypes(self):
+        ttool = getToolByName(self, 'portal_types')
+        return [ ti.Metatype() for ti in ttool.listTypeInfo() ]
 
     # IObjectManager
     
@@ -48,6 +58,9 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         super(OrderedBTreeFolderBase, self)._setOb(id, object)
         self._order.append(id)
         self._pos[id] = len(self._order) - 1
+        # plone legacy support: remember non-cmf types
+        if getattr(object, 'meta_type', None) not in self.getCMFMetaTypes():
+            self._noncmf.add(id)
 
     def _delOb(self, id):
         """Remove the named object from the folder.
@@ -56,7 +69,9 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         pos = self._pos[id]
         del self._order[pos]
         del self._pos[id]
-                    
+        if id in self._noncmf:
+            self._noncmf.remove(id)
+
     def objectIds(self, spec=None):
         if spec is None:
             return list(self._order)
@@ -69,7 +84,13 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
             return [ x[1] for x in sorted(idxs, cmp=lambda a,b: cmp(a[0], b[0])) ]
         
     # IOrderSupport
-        
+
+    security.declareProtected(ModifyPortalContent, 'moveObject')
+    def moveObject(self, id, position):
+        delta = position - self.getObjectPosition(id)
+        if delta:
+            self.moveObjectsByDelta(id, delta, subset_ids=self._order)
+
     security.declareProtected(manage_properties, 'moveObjectsByDelta')
     def moveObjectsByDelta(self, ids, delta, subset_ids=None,
                            suppress_events=False):
@@ -79,7 +100,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
             ids = (ids,)
         min_position = 0
         if subset_ids is None:
-            subset_ids = list(self.objectIds())
+            subset_ids = [ id for id in self._order if id not in self._noncmf ]
         else:
             subset_ids = list(subset_ids)
         # unify moving direction
