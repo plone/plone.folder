@@ -5,6 +5,7 @@ from zope.app.container.contained import notifyContainerModified
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import manage_properties
+from AccessControl.Permissions import delete_objects
 from BTrees.OLBTree import OLBTree
 from OFS.interfaces import IOrderedContainer
 
@@ -211,15 +212,16 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
     # This is copied from BaseFolder in Archetypes, used to enforce additional
     # security
 
-    def manage_delObjects(self, ids=[], REQUEST=None):
-        """Delete objects with the given id, but raise Unauthorized if the 
-        user does not have the "Delete objects" permission on each of them.
-        """
-        if isinstance(ids, basestring):
-            ids = [ids]
-        for id in ids:
-            item = self._getOb(id)
-            if not _checkPermission(permissions.DeleteObjects, item):
-                raise Unauthorized, (
-                    "Do not have permissions to remove this object")
-        return super(OrderedBTreeFolderBase, self).manage_delObjects(ids, REQUEST=REQUEST)
+    # security.declareProtected(delete_objects, 'moveObjectToPosition')
+    #     def manage_delObjects(self, ids=[], REQUEST=None):
+    #         """Delete objects with the given id, but raise Unauthorized if the 
+    #         user does not have the "Delete objects" permission on each of them.
+    #         """
+    #         if isinstance(ids, basestring):
+    #             ids = [ids]
+    #         for id in ids:
+    #             item = self._getOb(id)
+    #             if not _checkPermission(permissions.DeleteObjects, item):
+    #                 raise Unauthorized, (
+    #                     "Do not have permissions to remove this object")
+    #         return super(OrderedBTreeFolderBase, self).manage_delObjects(ids, REQUEST=REQUEST)
