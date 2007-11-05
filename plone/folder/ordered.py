@@ -214,19 +214,17 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
             reindex(idxs=('getObjPositionInParent',))
         return result
 
-    # This is copied from BaseFolder in Archetypes, used to enforce additional
-    # security
-
-    # security.declareProtected(delete_objects, 'moveObjectToPosition')
-    #     def manage_delObjects(self, ids=[], REQUEST=None):
-    #         """Delete objects with the given id, but raise Unauthorized if the 
-    #         user does not have the "Delete objects" permission on each of them.
-    #         """
-    #         if isinstance(ids, basestring):
-    #             ids = [ids]
-    #         for id in ids:
-    #             item = self._getOb(id)
-    #             if not _checkPermission(permissions.DeleteObjects, item):
-    #                 raise Unauthorized, (
-    #                     "Do not have permissions to remove this object")
-    #         return super(OrderedBTreeFolderBase, self).manage_delObjects(ids, REQUEST=REQUEST)
+    # This is copied from PloneFolder, used to enforce additional security
+    security.declareProtected(delete_objects, 'manage_delObjects')
+    def manage_delObjects(self, ids=[], REQUEST=None):
+        """Delete objects with the given id, but raise Unauthorized if the 
+        user does not have the "Delete objects" permission on each of them.
+        """
+        if isinstance(ids, basestring):
+            ids = [ids]
+        for id in ids:
+            item = self._getOb(id)
+            if not _checkPermission(permissions.DeleteObjects, item):
+                raise Unauthorized, (
+                    "Do not have permissions to remove this object")
+        return super(OrderedBTreeFolderBase, self).manage_delObjects(ids, REQUEST=REQUEST)
