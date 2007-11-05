@@ -6,6 +6,7 @@ from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import manage_properties
 from AccessControl.Permissions import delete_objects
+from AccessControl.Permissions import view
 from BTrees.OLBTree import OLBTree
 from OFS.interfaces import IOrderedContainer
 
@@ -213,7 +214,12 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         if reindex is not None:
             reindex(idxs=('getObjPositionInParent',))
         return result
-
+        
+    # This is copied from BaseFolder, used to enforce stricter security
+    security.declareProtected(view, 'getId')
+    def getId(self):
+        return super(OrderedBTreeFolderBase, self).getId()
+        
     # This is copied from PloneFolder, used to enforce additional security
     security.declareProtected(delete_objects, 'manage_delObjects')
     def manage_delObjects(self, ids=[], REQUEST=None):
