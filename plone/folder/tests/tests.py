@@ -1,9 +1,13 @@
 import unittest
 
-from plone.folder.ordered import OrderedBTreeFolderBase
+import zope.testing
+import zope.component
+import zope.component.testing
+
+from plone.folder.ordered import OrderedBTreeFolderBase, DefaultOrdering
+from zope.annotation.attribute import AttributeAnnotations
 
 from OFS.CopySupport import CopySource
-
 
 class DummyObject(CopySource):
     
@@ -29,9 +33,22 @@ class DummyObject(CopySource):
     def __of__(self, obj):
         return self
 
+class PloneFolderLayer:
+
+        @classmethod
+        def setUp(cls):
+            zope.component.provideAdapter(DefaultOrdering)
+            zope.component.provideAdapter(AttributeAnnotations)
+
+        @classmethod
+        def tearDown(cls):
+            zope.component.testing.tearDown
+
 
 class TestCase(unittest.TestCase):
     """ tests borrowed from OFS.tests.testOrderSupport """
+
+    layer = PloneFolderLayer
         
     def create(self):
         folder = OrderedBTreeFolderBase("f1")
@@ -166,6 +183,8 @@ class TestCase(unittest.TestCase):
 
 class TestOrderSupport(unittest.TestCase):
     """ tests borrowed from Products.CMFPlone.tests.testOrderSupport """
+
+    layer = PloneFolderLayer
 
     def setUp(self):
         self.folder = OrderedBTreeFolderBase("f1")
