@@ -78,6 +78,18 @@ class TestCase(unittest.TestCase):
         folder.moveObjectsUp(("o2",), 1)
         self.assertEquals(["o2", "o1", "o3", "o4"], [x for x, y in folder.objectItems()])
         
+    def test_iterkeys(self):
+        folder = self.create()
+        self.assertEquals(["o1", "o2", "o3", "o4"], [x for x in folder.iterkeys()])
+        folder.moveObjectsUp(("o2",), 1)
+        self.assertEquals(["o2", "o1", "o3", "o4"], [x for x in folder.iterkeys()])
+        
+    def test_iter(self):
+        folder = self.create()
+        self.assertEquals(["o1", "o2", "o3", "o4"], [x for x in folder])
+        folder.moveObjectsUp(("o2",), 1)
+        self.assertEquals(["o2", "o1", "o3", "o4"], [x for x in folder])
+    
     # Tests borrowed from OFS.tests.testsOrderSupport
         
     def _doCanonTest(self, methodname, table):
