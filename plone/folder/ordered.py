@@ -75,7 +75,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         ordering = IOrdering(self)
         
         if spec is None:
-            return ordering.idsInOrder()
+            return list(ordering.idsInOrder())
         else:
             ids = super(OrderedBTreeFolderBase, self).objectIds(spec)
             idxs = []
@@ -171,13 +171,22 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         else:
             return 0
 
-    # Overrides for Plone-ish behaviour
+    # Overrides for dict-like behaviour
 
     def iterkeys(self):
-        return iter(self.objectIds())
+        return IOrdering(self).idsInOrder()
         
     __iter__ = iterkeys
-        
+
+    def __getitem__(self, key):
+        """ we need to support both list and dict-type access """
+        if isinstance(key, basestring):     # ids can only be strings, so behave like a dict...
+            return self._tree.get(key)
+        else:                               # otherwise behave like a list...
+            return IOrdering(self).getIdAtPosition(key)
+
+    # Overrides for Plone-ish behaviour
+
     def manage_renameObject(self, id, new_id, REQUEST=None):
         """Rename a particular sub-object without changing its position.
         """
@@ -263,7 +272,7 @@ class DefaultOrdering(object):
             ids = (ids,)
         
         if subset_ids is None:
-            subset_ids = self.idsInOrder()
+            subset_ids = list(self.idsInOrder())
         elif not isinstance(subset_ids, list):
             subset_ids = list(subset_ids)
         
@@ -349,8 +358,13 @@ class DefaultOrdering(object):
     def idsInOrder(self):
         """Return all object ids, in the correct order
         """
-        return list(self._order())
+        return iter(self._order())
         
+    def getIdAtPosition(self, pos):
+        """Return the nth object id
+        """
+        return self._order()[pos]
+
     # Annotation lookup with lazy creation
         
     @memoize
