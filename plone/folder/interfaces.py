@@ -16,7 +16,7 @@ class IOrdering(Interface):
     of items. There is a default implementation, but you can provide a
     different policy.
     
-    Your adapter (should still adapt to IOrdered) can optimally provide
+    Your adapter (which should still adapt to IOrdered) can optionally provide
     IExplicitOrdering, defined below. This is used to support explicit 
     ordering, e.g. through a UI.
     """
