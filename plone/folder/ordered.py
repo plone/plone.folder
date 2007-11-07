@@ -172,7 +172,12 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
             return 0
 
     # Overrides for Plone-ish behaviour
-                                       
+
+    def iterkeys(self):
+        return iter(self.objectIds())
+        
+    __iter__ = iterkeys
+        
     def manage_renameObject(self, id, new_id, REQUEST=None):
         """Rename a particular sub-object without changing its position.
         """
