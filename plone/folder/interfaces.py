@@ -10,6 +10,15 @@ class IOrderableFolder(IFolder):
     
 class IOrdering(Interface):
     """An adapter providing ordering operations on its context folder
+    
+    The OrderedBTreeFolderBase mix-in class will adapt self (the folder)
+    to this interface when trying to get object position or find the order
+    of items. There is a default implementation, but you can provide a
+    different policy.
+    
+    Your adapter (should should still adapt to IOrdered) can optimally provide
+    IExplicitOrdering, defined below. This is used to support explicit 
+    ordering, e.g. through a UI.
     """
     
     def notifyAdded(id):
