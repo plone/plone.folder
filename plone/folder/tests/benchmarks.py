@@ -73,6 +73,20 @@ class TestBenchmarkCase(ptc.PloneTestCase):
         self.ordered = self.portal.ordered
 
 
+    # basic content ids
+    @timecall
+    def testObjectIDsRegular(self):
+        for x in range(5000):
+            self.regular.objectIds(spec='ATDocument')
+    @timecall
+    def testObjectIDsLarge(self):
+        for x in range(5000):
+            self.large.objectIds(spec='ATDocument')
+    @timecall
+    def testObjectIDsOrdered(self):
+        for x in range(5000):
+            self.ordered.objectIds(spec='ATDocument')
+
     # basic content values -- read all
     @timecall
     def testObjectValuesRegular(self):
@@ -86,6 +100,23 @@ class TestBenchmarkCase(ptc.PloneTestCase):
     def testObjectValuesOrdered(self):
         for x in range(500):
             self.ordered.objectValues()
+
+    # object positions
+    @timecall
+    def testObjectPositionRegular(self):
+        id = 'doc.%d' % (SIZE / 2)
+        for x in range(100 ** 2):
+            self.regular.getObjectPosition(id)
+    @timecall
+    def testObjectPositionLarge(self):
+        id = 'doc.%d' % (SIZE / 2)
+        for x in range(100 ** 2):
+            self.large.getObjectPosition(id)
+    @timecall
+    def testObjectPositionOrdered(self):
+        id = 'doc.%d' % (SIZE / 2)
+        for x in range(100 ** 2):
+            self.ordered.getObjectPosition(id)
 
     # batching
     @timecall
