@@ -12,7 +12,7 @@ from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import manage_properties
 from AccessControl.Permissions import delete_objects
 from AccessControl.Permissions import view
-from BTrees.OLBTree import OLBTree
+from BTrees.OIBTree import OIBTree
 from OFS.interfaces import IOrderedContainer
 
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base, _marker
@@ -365,6 +365,6 @@ class DefaultOrdering(object):
     def _pos(self, create=False):
         annotations = IAnnotations(self.context)
         if create:
-            return annotations.setdefault(self.POS_KEY, OLBTree())
+            return annotations.setdefault(self.POS_KEY, OIBTree())
         else:
             return annotations.get(self.POS_KEY, {})
