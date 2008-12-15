@@ -1,52 +1,11 @@
-from unittest import TestCase, TestSuite, makeSuite, main
+from unittest import TestCase, defaultTestLoader
 
-from zope.component import provideAdapter
-from zope.component import testing
-
-from plone.folder.ordered import OrderedBTreeFolderBase, DefaultOrdering
-from zope.annotation.attribute import AttributeAnnotations
-
-from OFS.CopySupport import CopySource
+from plone.folder.ordered import OrderedBTreeFolderBase
+from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.tests.utils import DummyObject
 
 
-class DummyObject(CopySource):
-
-    def __init__(self, id, meta_type):
-        self.id = id
-        self.meta_type = meta_type
-
-    def cb_isMoveable(self):
-        return 1
-
-    def manage_afterAdd(self, item, container):
-        return
-
-    def manage_beforeDelete(self, item, container):
-        return
-
-    manage_afterAdd.__five_method__ = True
-    manage_beforeDelete.__five_method__ = True
-
-    def wl_isLocked(self):
-        return 0
-
-    def __of__(self, obj):
-        return self
-
-
-class PloneFolderLayer:
-
-        @classmethod
-        def setUp(cls):
-            provideAdapter(DefaultOrdering)
-            provideAdapter(AttributeAnnotations)
-
-        @classmethod
-        def tearDown(cls):
-            testing.tearDown
-
-
-class PloneFolderTestCase(TestCase):
+class OFSOrderSupportTests(TestCase):
     """ tests borrowed from OFS.tests.testOrderSupport """
 
     layer = PloneFolderLayer
@@ -194,7 +153,7 @@ class PloneFolderTestCase(TestCase):
             )
 
 
-class TestOrderSupport(TestCase):
+class PloneOrderSupportTests(TestCase):
     """ tests borrowed from Products.CMFPlone.tests.testOrderSupport """
 
     layer = PloneFolderLayer
@@ -324,10 +283,5 @@ class TestOrderSupport(TestCase):
 
 
 def test_suite():
-    return TestSuite([
-        makeSuite(TestCase),
-        makeSuite(TestOrderSupport)
-    ])
+    return defaultTestLoader.loadTestsFromName(__name__)
 
-if __name__ == '__main__':
-    main(defaultTest='test_suite')

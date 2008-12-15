@@ -29,10 +29,11 @@ from plone.folder.interfaces import IExplicitOrdering
 
 from plone.memoize.instance import memoize
 
+
 class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
-    """BTree folder for CMF sites, with ordering support. The ordering is
-    done by adapter (to IOrdering), which makes the policy changeable.
-    """
+    """ BTree folder for CMF sites, with ordering support. The ordering
+        is done by adapter (to IOrdering), which makes the policy
+        changeable. """
     implements(IOrderedContainer, IOrderableFolder, IAttributeAnnotatable)
 
     security = ClassSecurityInfo()
@@ -46,34 +47,27 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         BTreeFolder2Base._checkId(self, id, allow_dup)
 
     # IObjectManager
-    
+
     def _getOb(self, id, default=_marker):
-        """Return the named object from the folder.
-        """
+        """ Return the named object from the folder. """
         try:
             return super(OrderedBTreeFolderBase, self)._getOb(id, default)
         except KeyError, e:
             raise AttributeError(e)
-    
+
     def _setOb(self, id, object):
-        """Store the named object in the folder.
-        """
+        """ Store the named object in the folder. """
         super(OrderedBTreeFolderBase, self)._setOb(id, object)
-        
-        # Notify the ordering adapter
-        IOrdering(self).notifyAdded(id)
+        IOrdering(self).notifyAdded(id)     # notify the ordering adapter
 
     def _delOb(self, id):
-        """Remove the named object from the folder.
-        """
+        """ Remove the named object from the folder. """
         super(OrderedBTreeFolderBase, self)._delOb(id)
-        
-        # Notify the ordering adapter
-        IOrdering(self).notifyRemoved(id)
+        IOrdering(self).notifyRemoved(id)   # notify the ordering adapter
 
     def objectIds(self, spec=None):
         ordering = IOrdering(self)
-        
+
         if spec is None:
             return ordering.idsInOrder()
         else:
@@ -82,19 +76,17 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
             for id in ids:
                 idxs.append((ordering.getObjectPosition(id), id))
             return [ x[1] for x in sorted(idxs, cmp=lambda a,b: cmp(a[0], b[0])) ]
-        
+
     # IOrderSupport - mostly deprecated, use the adapter directly instead
-    
+
     security.declareProtected(access_contents_information, 'getObjectPosition')
     def getObjectPosition(self, id):
-        """Get the position of an object by its id.
-        """
-        return IOrdering(self).getObjectPosition(id) 
+        """ Get the position of an object by its id. """
+        return IOrdering(self).getObjectPosition(id)
 
     security.declareProtected(manage_properties, 'moveObjectsUp')
     def moveObjectsUp(self, ids, delta=1, subset_ids=None):
-        """ Move specified sub-objects up by delta in container.
-        """
+        """ Move specified sub-objects up by delta in container. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsUp(ids, delta, subset_ids)
@@ -103,8 +95,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     security.declareProtected(manage_properties, 'moveObjectsDown')
     def moveObjectsDown(self, ids, delta=1, subset_ids=None):
-        """ Move specified sub-objects down by delta in container.
-        """
+        """ Move specified sub-objects down by delta in container. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsDown(ids, delta, subset_ids)
@@ -113,8 +104,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     security.declareProtected(manage_properties, 'moveObjectsToTop')
     def moveObjectsToTop(self, ids, subset_ids=None):
-        """ Move specified sub-objects to top of container.
-        """
+        """ Move specified sub-objects to top of container. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsToTop(ids, subset_ids)
@@ -123,8 +113,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     security.declareProtected(manage_properties, 'moveObjectsToBottom')
     def moveObjectsToBottom(self, ids, subset_ids=None):
-        """ Move specified sub-objects to bottom of container.
-        """
+        """ Move specified sub-objects to bottom of container. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsToBottom(ids, subset_ids)
@@ -133,8 +122,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     security.declareProtected(ModifyPortalContent, 'moveObject')
     def moveObject(self, id, position):
-        """ Move specified object to absolute position.
-        """
+        """ Move specified object to absolute position. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectToPosition(id, position)
@@ -143,8 +131,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     security.declareProtected(manage_properties, 'moveObjectToPosition')
     def moveObjectToPosition(self, id, position, suppress_events=False):
-        """ Move specified object to absolute position.
-        """
+        """ Move specified object to absolute position. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectToPosition(id, position, suppress_events)
@@ -153,8 +140,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     security.declareProtected(manage_properties, 'moveObjectsByDelta')
     def moveObjectsByDelta(self, ids, delta, subset_ids=None, suppress_events=False):
-        """Move specified sub-objects by delta.
-        """
+        """ Move specified sub-objects by delta. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsByDelta(ids, delta, subset_ids, suppress_events)
@@ -163,8 +149,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     security.declareProtected(manage_properties, 'orderObjects')
     def orderObjects(self, key, reverse=None):
-        """Order sub-objects by key and direction.
-        """
+        """ Order sub-objects by key and direction. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
             return ordering.orderObjects(key, reverse)
@@ -175,12 +160,11 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
 
     def iterkeys(self):
         return iter(self.objectIds())
-        
+
     __iter__ = iterkeys
-        
+
     def manage_renameObject(self, id, new_id, REQUEST=None):
-        """Rename a particular sub-object without changing its position.
-        """
+        """ Rename a particular sub-object without changing its position. """
         old_position = self.getObjectPosition(id)
         result = super(OrderedBTreeFolderBase, self).manage_renameObject(id, new_id, REQUEST)
         self.moveObjectToPosition(new_id, old_position, suppress_events=True)
@@ -188,18 +172,17 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
         if reindex is not None:
             reindex(idxs=('getObjPositionInParent',))
         return result
-        
+
     security.declareProtected(view, 'getId')
     def getId(self):
-        """Ensure that getId() is protected by the View permission
-        """
+        """ Ensure that getId() is protected by the View permission """
         return super(OrderedBTreeFolderBase, self).getId()
-        
+
     security.declareProtected(delete_objects, 'manage_delObjects')
     def manage_delObjects(self, ids=[], REQUEST=None):
-        """Delete objects with the given id, but raise Unauthorized if the 
-        user does not have the "Delete objects" permission on each of them.
-        """
+        """ Delete objects with the given id, but raise Unauthorized if
+            the user does not have the "Delete objects" permission on
+            each of them. """
         if isinstance(ids, basestring):
             ids = [ids]
         for id in ids:
@@ -209,69 +192,50 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
                     "Do not have permissions to remove this object")
         return super(OrderedBTreeFolderBase, self).manage_delObjects(ids, REQUEST=REQUEST)
 
-        
+
 
 class DefaultOrdering(object):
-    """This implementation uses annotations to store the order on the object,
-    and supports explicit ordering.
-    """
-    
+    """ This implementation uses annotations to store the order on the
+        object, and supports explicit ordering. """
+
     implements(IExplicitOrdering)
     adapts(IOrderableFolder)
-    
+
     ORDER_KEY = "plone.folder.ordered.order"
     POS_KEY = "plone.folder.ordered.pos"
-    
+
     def __init__(self, context):
         self.context = context
-    
+
     def notifyAdded(self, id):
-        """Inform the ordering implementation that an item was added
-        """
+        """ see interfaces.py """
         order = self._order(True)
         pos = self._pos(True)
-        
         order.append(id)
         pos[id] = len(order) - 1
-        
+
     def notifyRemoved(self, id):
-        """Inform the ordering implementation that an item was removed
-        """
-        
+        """ see interfaces.py """
         order = self._order()
         pos = self._pos()
-        
         idx = pos[id]
         del order[idx]
         del pos[id]
-        
+
     def moveObjectsByDelta(self, ids, delta, subset_ids=None, suppress_events=False):
-        """Move the specified ids (a sequence) by the given delta 
-        (a positive or negative number). By default, this moves the objects
-        within the whole set of sub-items in the context container, but
-        if subset_ids is specified, it gives a subset of ids to consider.
-        
-        Should return the number of objects that changed position.
-        """
-        
+        """ see interfaces.py """
         order = self._order()
         pos = self._pos()
-
         min_position = 0
-        
         if isinstance(ids, basestring):
             ids = (ids,)
-        
         if subset_ids is None:
             subset_ids = self.idsInOrder()
         elif not isinstance(subset_ids, list):
             subset_ids = list(subset_ids)
-        
-        # unify moving direction
-        if delta > 0:
+        if delta > 0:                   # unify moving direction
             ids = reversed(ids)
             subset_ids.reverse()
-
         counter = 0
         for id in ids:
             try:
@@ -285,12 +249,10 @@ class DefaultOrdering(object):
                 subset_ids.remove(id)
                 subset_ids.insert(new_position, id)
                 counter += 1
-
         if counter > 0:
             if delta > 0:
                 subset_ids.reverse()
             idx = 0
-            
             for i in range(len(order)):
                 if order[i] in subset_ids:
                     id = subset_ids[idx]
@@ -301,58 +263,56 @@ class DefaultOrdering(object):
                     except KeyError:
                         raise ValueError('The object with the id "%s" does '
                                          'not exist.' % id)
-        
         if not suppress_events:
             notifyContainerModified(self.context)
-        
         return counter
 
     def moveObjectsUp(self, ids, delta=1, subset_ids=None):
+        """ see interfaces.py """
         return self.moveObjectsByDelta(ids, -delta, subset_ids)
 
     def moveObjectsDown(self, ids, delta=1, subset_ids=None):
+        """ see interfaces.py """
         return self.moveObjectsByDelta(ids, delta, subset_ids)
 
     def moveObjectsToTop(self, ids, subset_ids=None):
+        """ see interfaces.py """
         return self.moveObjectsByDelta(ids, -len(self._order()), subset_ids )
 
     def moveObjectsToBottom(self, ids, subset_ids=None):
+        """ see interfaces.py """
         return self.moveObjectsByDelta(ids, len(self._order()), subset_ids )
 
     def moveObjectToPosition(self, id, position, suppress_events=False):
+        """ see interfaces.py """
         delta = position - self.getObjectPosition(id)
         if delta:
             return self.moveObjectsByDelta(id, delta, suppress_events=suppress_events)
-            
 
     def orderObjects(self, key, reverse=None):
-        """Order sub-objects by key and direction.
-        """
+        """ see interfaces.py """
         order = self._order()
         pos = self._pos()
-        
         keyfn = lambda id: getattr(self.context._getOb(id), key)
         order.sort(None, keyfn, bool(reverse))
         for n, id in enumerate(order):
             pos[id] = n
         return -1
-        
+
     def getObjectPosition(self, id):
-        """Get the position of the given object.
-        """
+        """ see interfaces.py """
         pos = self._pos()
         if pos.has_key(id):
             return pos[id]
         else:
             raise ValueError('The object with the id "%s" does not exist.' % id)
-    
+
     def idsInOrder(self):
-        """Return all object ids, in the correct order
-        """
+        """ see interfaces.py """
         return list(self._order())
-        
+
     # Annotation lookup with lazy creation
-        
+
     @memoize
     def _order(self, create=False):
         annotations = IAnnotations(self.context)
@@ -360,7 +320,7 @@ class DefaultOrdering(object):
             return annotations.setdefault(self.ORDER_KEY, PersistentList())
         else:
             return annotations.get(self.ORDER_KEY, [])
-        
+
     @memoize
     def _pos(self, create=False):
         annotations = IAnnotations(self.context)
@@ -368,3 +328,4 @@ class DefaultOrdering(object):
             return annotations.setdefault(self.POS_KEY, OIBTree())
         else:
             return annotations.get(self.POS_KEY, {})
+
