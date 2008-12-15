@@ -1,15 +1,55 @@
-from unittest import TestCase, defaultTestLoader
+import unittest
 
-from plone.folder.ordered import OrderedBTreeFolderBase
-from plone.folder.tests.layer import PloneFolderLayer
-from plone.folder.tests.utils import DummyObject
+import zope.testing
+import zope.component
+import zope.component.testing
+
+from plone.folder.ordered import OrderedBTreeFolderBase, DefaultOrdering
+from zope.annotation.attribute import AttributeAnnotations
+
+from OFS.CopySupport import CopySource
+
+class DummyObject(CopySource):
+    
+    def __init__(self, id, meta_type):
+        self.id = id
+        self.meta_type = meta_type
+        
+    def cb_isMoveable(self):
+        return 1
+        
+    def manage_afterAdd(self, item, container):
+        return
+        
+    def manage_beforeDelete(self, item, container):
+        return
+        
+    manage_afterAdd.__five_method__ = True
+    manage_beforeDelete.__five_method__ = True
+    
+    def wl_isLocked(self):
+        return 0
+        
+    def __of__(self, obj):
+        return self
+
+class PloneFolderLayer:
+
+        @classmethod
+        def setUp(cls):
+            zope.component.provideAdapter(DefaultOrdering)
+            zope.component.provideAdapter(AttributeAnnotations)
+
+        @classmethod
+        def tearDown(cls):
+            zope.component.testing.tearDown
 
 
-class OFSOrderSupportTests(TestCase):
+class TestCase(unittest.TestCase):
     """ tests borrowed from OFS.tests.testOrderSupport """
 
     layer = PloneFolderLayer
-
+        
     def create(self):
         folder = OrderedBTreeFolderBase("f1")
         folder._setOb('o1', DummyObject('o1', 'mt1'))
@@ -17,53 +57,53 @@ class OFSOrderSupportTests(TestCase):
         folder._setOb('o3', DummyObject('o3', 'mt1'))
         folder._setOb('o4', DummyObject('o4', 'mt2'))
         return folder
-
+        
     # Test for ordering of basic methods
-
+    
     def test_objectIdsOrdered(self):
         folder = self.create()
         self.assertEquals(["o1", "o2", "o3", "o4"], folder.objectIds())
         folder.moveObjectsUp(("o2",), 1)
         self.assertEquals(["o2", "o1", "o3", "o4"], folder.objectIds())
-
+    
     def test_objectValuesOrdered(self):
         folder = self.create()
         self.assertEquals(["o1", "o2", "o3", "o4"], [x.id for x in folder.objectValues()])
         folder.moveObjectsUp(("o2",), 1)
         self.assertEquals(["o2", "o1", "o3", "o4"], [x.id for x in folder.objectValues()])
-
+        
     def test_objectItemsOrdered(self):
         folder = self.create()
         self.assertEquals(["o1", "o2", "o3", "o4"], [x for x, y in folder.objectItems()])
         folder.moveObjectsUp(("o2",), 1)
         self.assertEquals(["o2", "o1", "o3", "o4"], [x for x, y in folder.objectItems()])
-
+        
     def test_iterkeys(self):
         folder = self.create()
         self.assertEquals(["o1", "o2", "o3", "o4"], [x for x in folder.iterkeys()])
         folder.moveObjectsUp(("o2",), 1)
         self.assertEquals(["o2", "o1", "o3", "o4"], [x for x in folder.iterkeys()])
-
+        
     def test_iter(self):
         folder = self.create()
         self.assertEquals(["o1", "o2", "o3", "o4"], [x for x in folder])
         folder.moveObjectsUp(("o2",), 1)
         self.assertEquals(["o2", "o1", "o3", "o4"], [x for x in folder])
-
+    
     # Tests borrowed from OFS.tests.testsOrderSupport
-
-    def runTableTests(self, methodname, table):
+        
+    def _doCanonTest(self, methodname, table):
         for args, order, rval in table:
             f = self.create()
             method = getattr(f, methodname)
             if rval == 'ValueError':
-                self.failUnlessRaises(ValueError, method, *args)
+                self.failUnlessRaises( ValueError, method, *args )
             else:
-                self.failUnlessEqual(method(*args), rval)
-            self.failUnlessEqual(f.objectIds(), order)
+                self.failUnlessEqual( method(*args), rval )
+            self.failUnlessEqual( f.objectIds(), order )
 
     def test_moveObjectsUp(self):
-        self.runTableTests('moveObjectsUp',
+        self._doCanonTest( 'moveObjectsUp',
               ( ( ( 'o4', 1 ),         ['o1', 'o2', 'o4', 'o3'], 1 )
               , ( ( 'o4', 2 ),         ['o1', 'o4', 'o2', 'o3'], 1 )
               , ( ( ('o1', 'o3'), 1 ), ['o1', 'o3', 'o2', 'o4'], 1 )
@@ -79,7 +119,7 @@ class OFSOrderSupportTests(TestCase):
             )
 
     def test_moveObjectsDown(self):
-        self.runTableTests('moveObjectsDown',
+        self._doCanonTest( 'moveObjectsDown',
               ( ( ( 'o1', 1 ),         ['o2', 'o1', 'o3', 'o4'], 1 )
               , ( ( 'o1', 2 ),         ['o2', 'o3', 'o1', 'o4'], 1 )
               , ( ( ('o2', 'o4'), 1 ), ['o1', 'o3', 'o2', 'o4'], 1 )
@@ -95,7 +135,7 @@ class OFSOrderSupportTests(TestCase):
             )
 
     def test_moveObjectsToTop(self):
-        self.runTableTests('moveObjectsToTop',
+        self._doCanonTest( 'moveObjectsToTop',
               ( ( ( 'o4', ),         ['o4', 'o1', 'o2', 'o3'], 1 )
               , ( ( ('o1', 'o3'), ), ['o1', 'o3', 'o2', 'o4'], 1 )
               , ( ( ('o2', 'o3'), ), ['o2', 'o3', 'o1', 'o4'], 2 )
@@ -109,7 +149,7 @@ class OFSOrderSupportTests(TestCase):
             )
 
     def test_moveObjectsToBottom(self):
-        self.runTableTests('moveObjectsToBottom',
+        self._doCanonTest( 'moveObjectsToBottom',
               ( ( ( 'o1', ),         ['o2', 'o3', 'o4', 'o1'], 1 )
               , ( ( ('o2', 'o4'), ), ['o1', 'o3', 'o2', 'o4'], 1 )
               , ( ( ('o2', 'o3'), ), ['o1', 'o4', 'o2', 'o3'], 2 )
@@ -123,7 +163,7 @@ class OFSOrderSupportTests(TestCase):
             )
 
     def test_orderObjects(self):
-        self.runTableTests('orderObjects',
+        self._doCanonTest( 'orderObjects',
               ( ( ( 'id', 'id' ),       ['o4', 'o3', 'o2', 'o1'], -1)
               , ( ( 'meta_type', '' ),  ['o1', 'o3', 'o2', 'o4'], -1)
               # for the next line the sort order is different from the
@@ -137,7 +177,7 @@ class OFSOrderSupportTests(TestCase):
             )
 
     def test_getObjectPosition(self):
-        self.runTableTests('getObjectPosition',
+        self._doCanonTest( 'getObjectPosition',
               ( ( ( 'o2', ), ['o1', 'o2', 'o3', 'o4'], 1)
               , ( ( 'o4', ), ['o1', 'o2', 'o3', 'o4'], 3)
               , ( ( 'n2', ), ['o1', 'o2', 'o3', 'o4'], 'ValueError')
@@ -145,7 +185,7 @@ class OFSOrderSupportTests(TestCase):
             )
 
     def test_moveObjectToPosition(self):
-        self.runTableTests('moveObjectToPosition',
+        self._doCanonTest( 'moveObjectToPosition',
               ( ( ( 'o2', 2 ), ['o1', 'o3', 'o2', 'o4'], 1)
               , ( ( 'o4', 2 ), ['o1', 'o2', 'o4', 'o3'], 1)
               , ( ( 'n2', 2 ), ['o1', 'o2', 'o3', 'o4'], 'ValueError')
@@ -153,7 +193,7 @@ class OFSOrderSupportTests(TestCase):
             )
 
 
-class PloneOrderSupportTests(TestCase):
+class TestOrderSupport(unittest.TestCase):
     """ tests borrowed from Products.CMFPlone.tests.testOrderSupport """
 
     layer = PloneFolderLayer
@@ -274,8 +314,8 @@ class PloneOrderSupportTests(TestCase):
         self.assertEqual(self.folder.getObjectPosition('foo'), 2)
 
     def testIgnoreNonObjects(self):
-        # Fix for (http://dev.plone.org/plone/ticket/3959) non
-        # contentish objects cause errors, we should just ignore them
+        #Fix for (http://dev.plone.org/plone/ticket/3959) non contentish objects
+        #cause errors, we should just ignore them
         self.folder.moveObjectsByDelta(['bar','blah'], -1)
         self.assertEqual(self.folder.getObjectPosition('bar'), 0)
         self.assertEqual(self.folder.getObjectPosition('foo'), 1)
@@ -283,5 +323,10 @@ class PloneOrderSupportTests(TestCase):
 
 
 def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestCase),
+        unittest.makeSuite(TestOrderSupport)
+    ])
 
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

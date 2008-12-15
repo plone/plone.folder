@@ -1,5 +1,5 @@
 plone.folder Installation
-=========================
+=======================
 
 To install plone.folder into the global Python environment (or a workingenv),
 using a traditional Zope 2 instance, you can do this:

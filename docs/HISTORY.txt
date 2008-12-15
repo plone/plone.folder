@@ -1,13 +1,9 @@
-Changelog
-=========
+Changelog for plone.folder
 
-1.0a2 - Unreleased
-------------------
+    (name of developer listed in brackets)
 
+plone.folder - 1.0a1 Unreleased
 
-1.0a1 - Released May 27, 2008
-----------------------------------
-
-* Initial release
-  [optilude, tesdal, witsch]
+    - Initial package structure.
+      [zopeskel]
 

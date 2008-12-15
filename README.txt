@@ -1,8 +1,7 @@
-plone.folder
-============
+plone.folder Package Readme
+=========================
 
 Overview
 --------
 
-An adapter implementation to support order information for folders based on BTrees, a.k.a. "large folders".
-
+Ordered BTree folder implementation
