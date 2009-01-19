@@ -4,6 +4,9 @@ Changelog
 1.0a2 - Unreleased
 ------------------
 
+* Clean up tests and their setup.
+  [witsch]
+
 
 1.0a1 - Released May 27, 2008
 ----------------------------------
