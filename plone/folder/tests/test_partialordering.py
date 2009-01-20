@@ -23,41 +23,45 @@ class PartialOrderingTests(TestCase):
 
     layer = Layer
 
-    def setUp(self):
-        self.container = DummyContainer()
-        self.container.add('o1', Orderable('o1'))
-        self.container.add('o2', Orderable('o2'))
-        self.container.add('c1', Chaoticle('c1'))
-        self.container.add('o3', Orderable('o3'))
-        self.container.add('c2', Chaoticle('c2'))
-        self.container.add('c3', Chaoticle('c3'))
-        self.container.add('o4', Orderable('o4'))
+    def create(self):
+        container = DummyContainer()
+        container.add('o1', Orderable('o1'))
+        container.add('o2', Orderable('o2'))
+        container.add('c1', Chaoticle('c1'))
+        container.add('o3', Orderable('o3'))
+        container.add('c2', Chaoticle('c2'))
+        container.add('c3', Chaoticle('c3'))
+        container.add('o4', Orderable('o4'))
+        return container
 
     def testAdapter(self):
-        ordering = IOrdering(self.container)
+        container = DummyContainer()
+        ordering = IOrdering(container)
         self.failUnless(ordering)
 
     def testNotifyAdded(self):
-        self.assertEqual(IOrdering(self.container).idsInOrder(),
+        container = self.create()
+        self.assertEqual(IOrdering(container).idsInOrder(),
             ['o1', 'o2', 'o3', 'o4'])
-        self.container.add('o5', Orderable('o5'))
-        self.assertEqual(IOrdering(self.container).idsInOrder(),
+        container.add('o5', Orderable('o5'))
+        self.assertEqual(IOrdering(container).idsInOrder(),
             ['o1', 'o2', 'o3', 'o4', 'o5'])
-        self.assertEqual(self.container.ids(),
+        self.assertEqual(container.ids(),
             set(['o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3']))
 
     def testNotifyRemoved(self):
-        self.assertEqual(IOrdering(self.container).idsInOrder(),
+        container = self.create()
+        self.assertEqual(IOrdering(container).idsInOrder(),
             ['o1', 'o2', 'o3', 'o4'])
-        self.container.remove('o3')
-        self.assertEqual(IOrdering(self.container).idsInOrder(),
+        container.remove('o3')
+        self.assertEqual(IOrdering(container).idsInOrder(),
             ['o1', 'o2', 'o4'])
-        self.assertEqual(self.container.ids(),
+        self.assertEqual(container.ids(),
             set(['o1', 'o2', 'o4', 'c1', 'c2', 'c3']))
-        self.container.remove('o1')
-        self.assertEqual(IOrdering(self.container).idsInOrder(),
+        container.remove('o1')
+        self.assertEqual(IOrdering(container).idsInOrder(),
             ['o2', 'o4'])
-        self.assertEqual(self.container.ids(),
+        self.assertEqual(container.ids(),
             set(['o2', 'o4', 'c1', 'c2', 'c3']))
 
 
