@@ -7,7 +7,7 @@ Overview
 This package provides a base class for folderish content types based
 on `B-trees`_, a.k.a. "large folders" in Plone_.  Storing content in
 such folders provides significant `performance benefits`_ over regular
-folders.  However, "large folders" do not support explicit ordering
+folders.  However, "large folders" do not support explicit ordering of
 their contents out-of-the box.  That is, you cannot manually specify the
 order of items within the folder, you can only sort things according to
 a given criteria after fetching items from the folder.
@@ -44,6 +44,6 @@ The latter allows to not having to separate such content from
 "orderable" items |---| for example everything related to navigation
 and typically only a few |---| in regular folders and the bulk of the
 content in "large" folders, most of the time solely for performance
-reasons.  This adapter will hopefully help to avoid having to make this
+reasons.  This adapter will hopefully help avoid having to make this
 distinction in the future and still provide the better performance
 characteristics of `B-tree`_ folders.
