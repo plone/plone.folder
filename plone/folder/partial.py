@@ -70,8 +70,8 @@ class PartialOrdering(object):
             if delta > 0:
                 subset_ids.reverse()
             idx = 0
-            for i in range(len(self.order)):
-                if self.order[i] in subset_ids:
+            for i, value in enumerate(self.order):
+                if value in subset_ids:
                     id = subset_ids[idx]
                     try:
                         self.order[i] = id
