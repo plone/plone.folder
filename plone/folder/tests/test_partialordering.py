@@ -64,6 +64,34 @@ class PartialOrderingTests(TestCase):
         self.assertEqual(container.ids(),
             set(['o2', 'o4', 'c1', 'c2', 'c3']))
 
+    def runTableTests(self, action, tests):
+        for args, order, rval in tests:
+            container = self.create()
+            ids = container.ids()
+            ordering = IOrdering(container)
+            method = getattr(ordering, action)
+            if isinstance(rval, Exception):
+                self.assertRaises(rval, method, *args)
+            else:
+                self.assertEqual(method(*args), rval)
+            self.assertEqual(ordering.idsInOrder(), order)
+            self.assertEqual(container.ids(), ids)
+
+    def testMoveObjectsByDelta(self):
+        self.runTableTests('moveObjectsByDelta', (
+            (('o1', 1),                                   ['o2', 'o1', 'o3', 'o4'], 1),
+            (('o1', 2),                                   ['o2', 'o3', 'o1', 'o4'], 1),
+            ((('o2', 'o4'), 1),                           ['o1', 'o3', 'o2', 'o4'], 1),
+            ((('o2', 'o4'), 9),                           ['o1', 'o3', 'o2', 'o4'], 1),
+            ((('o2', 'o3'), 1),                           ['o1', 'o4', 'o2', 'o3'], 2),
+            ((('o2', 'o3'), 1, ('o1', 'o2', 'o3', 'o4')), ['o1', 'o4', 'o2', 'o3'], 2),
+            ((('o2', 'o3'), 1, ('o1', 'o2', 'o3')),       ['o1', 'o2', 'o3', 'o4'], 0),
+            ((('c1', 'o1'), 2),                           ['o2', 'o3', 'o1', 'o4'], 1),
+            ((('c1', 'o3'), 1),                           ['o1', 'o2', 'o4', 'o3'], 1),
+            ((('n2', 'o2'), 1),                           ['o1', 'o3', 'o2', 'o4'], 1),
+            ((('o4', 'o2'), 1),                           ['o1', 'o3', 'o2', 'o4'], 1),
+        ))
+
 
 def test_suite():
     return defaultTestLoader.loadTestsFromName(__name__)
