@@ -98,4 +98,23 @@ class PartialOrdering(object):
         """ see interfaces.py """
         return self.moveObjectsByDelta(ids, len(self.order), subset_ids )
 
+    def moveObjectToPosition(self, id, position, suppress_events=False):
+        """ see interfaces.py """
+        delta = position - self.getObjectPosition(id)
+        if delta:
+            return self.moveObjectsByDelta(id, delta, suppress_events=suppress_events)
+
+    def orderObjects(self, key, reverse=None):
+        """ see interfaces.py """
+        keyfn = lambda id: getattr(self.context._getOb(id), key)
+        self.order.sort(None, keyfn, bool(reverse))
+        return -1
+
+    def getObjectPosition(self, id):
+        """ see interfaces.py """
+        try:
+            return self.order.index(id)
+        except ValueError:
+            raise ValueError('No object with id "%s" exists.' % id)
+
 

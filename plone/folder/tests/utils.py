@@ -29,6 +29,9 @@ class DummyContainer(object):
     def ids(self):
         return set(self.objs)
 
+    def _getOb(self, id, default=None):
+        return self.objs.get(id, default)
+
 
 class Orderable(DummyObject):
     """ orderable mock object """

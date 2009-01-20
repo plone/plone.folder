@@ -25,13 +25,13 @@ class PartialOrderingTests(TestCase):
 
     def create(self):
         container = DummyContainer()
-        container.add('o1', Orderable('o1'))
-        container.add('o2', Orderable('o2'))
-        container.add('c1', Chaoticle('c1'))
-        container.add('o3', Orderable('o3'))
-        container.add('c2', Chaoticle('c2'))
-        container.add('c3', Chaoticle('c3'))
-        container.add('o4', Orderable('o4'))
+        container.add('o1', Orderable('o1', 'mt1'))
+        container.add('o2', Orderable('o2', 'mt2'))
+        container.add('c1', Chaoticle('c1', 'mt3'))
+        container.add('o3', Orderable('o3', 'mt1'))
+        container.add('c2', Chaoticle('c2', 'mt2'))
+        container.add('c3', Chaoticle('c3', 'mt1'))
+        container.add('o4', Orderable('o4', 'mt2'))
         return container
 
     def testAdapter(self):
@@ -70,7 +70,7 @@ class PartialOrderingTests(TestCase):
             ids = container.ids()
             ordering = IOrdering(container)
             method = getattr(ordering, action)
-            if isinstance(rval, Exception):
+            if type(rval) == type(Exception):
                 self.assertRaises(rval, method, *args)
             else:
                 self.assertEqual(method(*args), rval)
@@ -147,6 +147,35 @@ class PartialOrderingTests(TestCase):
             ((('c1', 'o2'),),                          ['o1', 'o3', 'o4', 'o2'], 1),
             ((('n2', 'o3'),),                          ['o1', 'o2', 'o4', 'o3'], 1),
             ((('o4', 'o2'),),                          ['o1', 'o3', 'o4', 'o2'], 1),
+        ))
+
+    def testMoveObjectToPosition(self):
+        self.runTableTests('moveObjectToPosition', (
+            (('o2', 2), ['o1', 'o3', 'o2', 'o4'], 1),
+            (('o4', 2), ['o1', 'o2', 'o4', 'o3'], 1),
+            (('c1', 2), ['o1', 'o2', 'o3', 'o4'], ValueError),
+            (('n2', 2), ['o1', 'o2', 'o3', 'o4'], ValueError)
+        ))
+
+    def testOrderObjects(self):
+        self.runTableTests('orderObjects', (
+            (('id', 'id'),       ['o4', 'o3', 'o2', 'o1'], -1),
+            (('meta_type', ''),  ['o1', 'o3', 'o2', 'o4'], -1),
+            # for the next line the sort order is different from the
+            # original test in OFS, since the current implementation
+            # keeps the original order as much as possible, i.e. minimize
+            # exchange operations within the list;  this is correct as
+            # far as the test goes, since it didn't specify a secondary
+            # sort key...
+            (('meta_type', 'n'), ['o2', 'o4', 'o1', 'o3'], -1),
+        ))
+
+    def testGetObjectPosition(self):
+        self.runTableTests('getObjectPosition', (
+            (('o2',), ['o1', 'o2', 'o3', 'o4'], 1),
+            (('o4',), ['o1', 'o2', 'o3', 'o4'], 3),
+            (('n2',), ['o1', 'o2', 'o3', 'o4'], ValueError),
+            (('c2',), ['o1', 'o2', 'o3', 'o4'], ValueError),
         ))
 
 
