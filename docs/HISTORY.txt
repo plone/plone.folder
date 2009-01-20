@@ -4,6 +4,9 @@ Changelog
 1.0a2 - Unreleased
 ------------------
 
+* Add adapter providing explicit ordering only for "orderable" content.
+  [witsch]
+
 * Clean up tests and their setup.
   [witsch]
 

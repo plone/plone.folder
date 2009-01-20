@@ -113,6 +113,9 @@ class PartialOrdering(object):
     def getObjectPosition(self, id):
         """ see interfaces.py """
         try:
+            # using `index` here might not be that efficient for very large
+            # lists, but the idea behind this adapter is to use it when the
+            # site contains relatively few "orderable" items
             return self.order.index(id)
         except ValueError:
             raise ValueError('No object with id "%s" exists.' % id)
