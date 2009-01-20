@@ -1,7 +1,7 @@
 from zope.component import provideAdapter
 from zope.component import testing
 
-from plone.folder.ordered import DefaultOrdering
+from plone.folder.default import DefaultOrdering
 from zope.annotation.attribute import AttributeAnnotations
 
 

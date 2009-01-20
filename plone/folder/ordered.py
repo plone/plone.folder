@@ -1,33 +1,21 @@
 from zope.interface import implements
-from zope.component import adapts
-
-from zope.annotation.interfaces import IAnnotations
 from zope.annotation.interfaces import IAttributeAnnotatable
 
-from persistent.list import PersistentList
-from zope.app.container.contained import notifyContainerModified
-
-from AccessControl import ClassSecurityInfo
+from AccessControl import ClassSecurityInfo, Unauthorized
 from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import manage_properties
 from AccessControl.Permissions import delete_objects
 from AccessControl.Permissions import view
-from BTrees.OIBTree import OIBTree
 from OFS.interfaces import IOrderedContainer
-
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base, _marker
 from Products.CMFCore.PortalFolder import PortalFolderBase
 from Products.CMFCore.permissions import ModifyPortalContent
-
-from AccessControl import Unauthorized
 from Products.CMFCore import permissions
 from Products.CMFCore.utils import _checkPermission
 
 from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IOrdering
 from plone.folder.interfaces import IExplicitOrdering
-
-from plone.memoize.instance import memoize
 
 
 class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
@@ -191,141 +179,4 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
                 raise Unauthorized, (
                     "Do not have permissions to remove this object")
         return super(OrderedBTreeFolderBase, self).manage_delObjects(ids, REQUEST=REQUEST)
-
-
-
-class DefaultOrdering(object):
-    """ This implementation uses annotations to store the order on the
-        object, and supports explicit ordering. """
-
-    implements(IExplicitOrdering)
-    adapts(IOrderableFolder)
-
-    ORDER_KEY = "plone.folder.ordered.order"
-    POS_KEY = "plone.folder.ordered.pos"
-
-    def __init__(self, context):
-        self.context = context
-
-    def notifyAdded(self, id):
-        """ see interfaces.py """
-        order = self._order(True)
-        pos = self._pos(True)
-        order.append(id)
-        pos[id] = len(order) - 1
-
-    def notifyRemoved(self, id):
-        """ see interfaces.py """
-        order = self._order()
-        pos = self._pos()
-        idx = pos[id]
-        del order[idx]
-        del pos[id]
-
-    def moveObjectsByDelta(self, ids, delta, subset_ids=None, suppress_events=False):
-        """ see interfaces.py """
-        order = self._order()
-        pos = self._pos()
-        min_position = 0
-        if isinstance(ids, basestring):
-            ids = (ids,)
-        if subset_ids is None:
-            subset_ids = self.idsInOrder()
-        elif not isinstance(subset_ids, list):
-            subset_ids = list(subset_ids)
-        if delta > 0:                   # unify moving direction
-            ids = reversed(ids)
-            subset_ids.reverse()
-        counter = 0
-        for id in ids:
-            try:
-                old_position = subset_ids.index(id)
-            except ValueError:
-                continue
-            new_position = max( old_position - abs(delta), min_position )
-            if new_position == min_position:
-                min_position += 1
-            if not old_position == new_position:
-                subset_ids.remove(id)
-                subset_ids.insert(new_position, id)
-                counter += 1
-        if counter > 0:
-            if delta > 0:
-                subset_ids.reverse()
-            idx = 0
-            for i in range(len(order)):
-                if order[i] in subset_ids:
-                    id = subset_ids[idx]
-                    try:
-                        order[i] = id
-                        pos[id] = i
-                        idx += 1
-                    except KeyError:
-                        raise ValueError('The object with the id "%s" does '
-                                         'not exist.' % id)
-        if not suppress_events:
-            notifyContainerModified(self.context)
-        return counter
-
-    def moveObjectsUp(self, ids, delta=1, subset_ids=None):
-        """ see interfaces.py """
-        return self.moveObjectsByDelta(ids, -delta, subset_ids)
-
-    def moveObjectsDown(self, ids, delta=1, subset_ids=None):
-        """ see interfaces.py """
-        return self.moveObjectsByDelta(ids, delta, subset_ids)
-
-    def moveObjectsToTop(self, ids, subset_ids=None):
-        """ see interfaces.py """
-        return self.moveObjectsByDelta(ids, -len(self._order()), subset_ids )
-
-    def moveObjectsToBottom(self, ids, subset_ids=None):
-        """ see interfaces.py """
-        return self.moveObjectsByDelta(ids, len(self._order()), subset_ids )
-
-    def moveObjectToPosition(self, id, position, suppress_events=False):
-        """ see interfaces.py """
-        delta = position - self.getObjectPosition(id)
-        if delta:
-            return self.moveObjectsByDelta(id, delta, suppress_events=suppress_events)
-
-    def orderObjects(self, key, reverse=None):
-        """ see interfaces.py """
-        order = self._order()
-        pos = self._pos()
-        keyfn = lambda id: getattr(self.context._getOb(id), key)
-        order.sort(None, keyfn, bool(reverse))
-        for n, id in enumerate(order):
-            pos[id] = n
-        return -1
-
-    def getObjectPosition(self, id):
-        """ see interfaces.py """
-        pos = self._pos()
-        if pos.has_key(id):
-            return pos[id]
-        else:
-            raise ValueError('The object with the id "%s" does not exist.' % id)
-
-    def idsInOrder(self):
-        """ see interfaces.py """
-        return list(self._order())
-
-    # Annotation lookup with lazy creation
-
-    @memoize
-    def _order(self, create=False):
-        annotations = IAnnotations(self.context)
-        if create:
-            return annotations.setdefault(self.ORDER_KEY, PersistentList())
-        else:
-            return annotations.get(self.ORDER_KEY, [])
-
-    @memoize
-    def _pos(self, create=False):
-        annotations = IAnnotations(self.context)
-        if create:
-            return annotations.setdefault(self.POS_KEY, OIBTree())
-        else:
-            return annotations.get(self.POS_KEY, {})
 
