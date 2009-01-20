@@ -1,10 +1,10 @@
 from zope.interface import implements
-from plone.folder.interfaces import IOrderableFolder
+from plone.folder.interfaces import IOrderable, IOrderableFolder, IOrdering
 
 
 class DummyObject(object):
 
-    def __init__(self, id, meta_type):
+    def __init__(self, id, meta_type=None):
         self.id = id
         self.meta_type = meta_type
 
@@ -14,4 +14,27 @@ class DummyObject(object):
 
 class DummyContainer(object):
     implements(IOrderableFolder)
+
+    def __init__(self):
+        self.objs = {}
+
+    def add(self, id, obj):
+        self.objs[id] = obj
+        IOrdering(self).notifyAdded(id, obj)    # notify the ordering adapter
+
+    def remove(self, id):
+        del self.objs[id]
+        IOrdering(self).notifyRemoved(id)       # notify the ordering adapter
+
+    def ids(self):
+        return set(self.objs)
+
+
+class Orderable(DummyObject):
+    """ orderable mock object """
+    implements(IOrderable)
+
+
+class Chaoticle(DummyObject):
+    """ non-orderable mock object;  this does not implement `IOrderable` """
 

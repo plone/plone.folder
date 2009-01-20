@@ -1,6 +1,10 @@
 from zope.interface import Interface
 
 
+class IOrderable(Interface):
+    """ Marker interface for orderable portal content """
+
+
 class IFolder(Interface):
     """ Marker interface for Plone-like folders """
 
