@@ -90,4 +90,12 @@ class PartialOrdering(object):
         """ see interfaces.py """
         return self.moveObjectsByDelta(ids, delta, subset_ids)
 
+    def moveObjectsToTop(self, ids, subset_ids=None):
+        """ see interfaces.py """
+        return self.moveObjectsByDelta(ids, -len(self.order), subset_ids )
+
+    def moveObjectsToBottom(self, ids, subset_ids=None):
+        """ see interfaces.py """
+        return self.moveObjectsByDelta(ids, len(self.order), subset_ids )
+
 
