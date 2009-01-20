@@ -82,3 +82,12 @@ class PartialOrdering(object):
             notifyContainerModified(self.context)
         return counter
 
+    def moveObjectsUp(self, ids, delta=1, subset_ids=None):
+        """ see interfaces.py """
+        return self.moveObjectsByDelta(ids, -delta, subset_ids)
+
+    def moveObjectsDown(self, ids, delta=1, subset_ids=None):
+        """ see interfaces.py """
+        return self.moveObjectsByDelta(ids, delta, subset_ids)
+
+
