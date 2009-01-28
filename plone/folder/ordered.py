@@ -18,21 +18,13 @@ from plone.folder.interfaces import IOrdering
 from plone.folder.interfaces import IExplicitOrdering
 
 
-class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
-    """ BTree folder for CMF sites, with ordering support. The ordering
+class OrderedBTreeFolderBase(BTreeFolder2Base):
+    """ BTree folder base class with ordering support. The ordering
         is done by adapter (to IOrdering), which makes the policy
         changeable. """
     implements(IOrderedContainer, IOrderableFolder, IAttributeAnnotatable)
 
     security = ClassSecurityInfo()
-
-    def __init__(self, id, title=''):
-        PortalFolderBase.__init__(self, id, title)
-        BTreeFolder2Base.__init__(self, id)
-
-    def _checkId(self, id, allow_dup=0):
-        PortalFolderBase._checkId(self, id, allow_dup)
-        BTreeFolder2Base._checkId(self, id, allow_dup)
 
     # IObjectManager
 
@@ -179,4 +171,18 @@ class OrderedBTreeFolderBase(BTreeFolder2Base, PortalFolderBase):
                 raise Unauthorized, (
                     "Do not have permissions to remove this object")
         return super(OrderedBTreeFolderBase, self).manage_delObjects(ids, REQUEST=REQUEST)
+
+
+class CMFOrderedBTreeFolderBase(OrderedBTreeFolderBase, PortalFolderBase):
+    """ BTree folder for CMF sites, with ordering support. The ordering
+        is done by adapter (to IOrdering), which makes the policy
+        changeable. """
+
+    def __init__(self, id, title=''):
+        PortalFolderBase.__init__(self, id, title)
+        BTreeFolder2Base.__init__(self, id)
+
+    def _checkId(self, id, allow_dup=0):
+        PortalFolderBase._checkId(self, id, allow_dup)
+        BTreeFolder2Base._checkId(self, id, allow_dup)
 
