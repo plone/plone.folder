@@ -4,6 +4,10 @@ Changelog
 1.0a2 - Unreleased
 ------------------
 
+* Factor CMF out of the base classes for the new btree-based folder class
+  and simplify things a bit afterwards.
+  [witsch]
+
 * Add adapter providing explicit ordering only for "orderable" content.
   [witsch]
 
