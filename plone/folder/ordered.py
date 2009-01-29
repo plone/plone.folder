@@ -153,11 +153,6 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             reindex(idxs=('getObjPositionInParent',))
         return result
 
-    security.declareProtected(view, 'getId')
-    def getId(self):
-        """ Ensure that getId() is protected by the View permission """
-        return super(OrderedBTreeFolderBase, self).getId()
-
     security.declareProtected(delete_objects, 'manage_delObjects')
     def manage_delObjects(self, ids=[], REQUEST=None):
         """ Delete objects with the given id, but raise Unauthorized if
