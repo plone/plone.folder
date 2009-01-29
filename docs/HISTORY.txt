@@ -4,6 +4,9 @@ Changelog
 1.0a2 - Unreleased
 ------------------
 
+* Fix boolean value of the btree-based folder base class.
+  [witsch]
+
 * Factor CMF out of the base classes for the new btree-based folder class
   and simplify things a bit afterwards.
   [witsch]

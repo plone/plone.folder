@@ -26,6 +26,10 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
 
     security = ClassSecurityInfo()
 
+    def __nonzero__(self):
+        """ a folder is something, even if it's empty """
+        return True
+
     # IObjectManager
 
     def _getOb(self, id, default=_marker):
