@@ -27,9 +27,11 @@ class PartialOrdering(object):
             setattr(context, ORDER_ATTR, [])
         return getattr(context, ORDER_ATTR)
 
-    def notifyAdded(self, id, obj):
+    def notifyAdded(self, id):
         """ see interfaces.py """
         assert not id in self.order
+        context = aq_base(self.context)
+        obj = context._getOb(id)
         if IOrderable.providedBy(obj):
             self.order.append(id)
 
