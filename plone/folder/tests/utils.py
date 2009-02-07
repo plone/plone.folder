@@ -20,7 +20,7 @@ class DummyContainer(object):
 
     def add(self, id, obj):
         self.objs[id] = obj
-        IOrdering(self).notifyAdded(id, obj)    # notify the ordering adapter
+        IOrdering(self).notifyAdded(id)         # notify the ordering adapter
 
     def remove(self, id):
         del self.objs[id]
