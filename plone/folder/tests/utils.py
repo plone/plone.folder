@@ -32,6 +32,9 @@ class DummyContainer(object):
     def _getOb(self, id, default=None):
         return self.objs.get(id, default)
 
+    def hasObject(self, id):
+        return self.objs.has_key(id)
+
 
 class Orderable(DummyObject):
     """ orderable mock object """

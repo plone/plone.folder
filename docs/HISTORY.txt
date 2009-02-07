@@ -4,6 +4,10 @@ Changelog
 1.0a2 - Unreleased
 ------------------
 
+* Fix `getObjectPosition` to return a value representing "no position" for
+  non-orderable content instead of raising an error.
+  [witsch]
+
 * Fix boolean value of the btree-based folder base class.
   [witsch]
 

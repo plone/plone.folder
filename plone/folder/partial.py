@@ -102,9 +102,11 @@ class PartialOrdering(object):
 
     def moveObjectToPosition(self, id, position, suppress_events=False):
         """ see interfaces.py """
-        delta = position - self.getObjectPosition(id)
-        if delta:
-            return self.moveObjectsByDelta(id, delta, suppress_events=suppress_events)
+        old_position = self.getObjectPosition(id)
+        if old_position is not None:
+            delta = position - old_position
+            if delta:
+                return self.moveObjectsByDelta(id, delta, suppress_events=suppress_events)
 
     def orderObjects(self, key, reverse=None):
         """ see interfaces.py """
@@ -120,6 +122,9 @@ class PartialOrdering(object):
             # site contains relatively few "orderable" items
             return self.order.index(id)
         except ValueError:
+            # non-orderable objects should return "no position" instead of
+            # breaking things when partial ordering support is active...
+            if self.context.hasObject(id):
+                return None
             raise ValueError('No object with id "%s" exists.' % id)
-
 

@@ -140,7 +140,7 @@ class PartialOrderingTests(TestCase):
         self.runTableTests('moveObjectToPosition', (
             (('o2', 2), ['o1', 'o3', 'o2', 'o4'], 1),
             (('o4', 2), ['o1', 'o2', 'o4', 'o3'], 1),
-            (('c1', 2), ['o1', 'o2', 'o3', 'o4'], ValueError),
+            (('c1', 2), ['o1', 'o2', 'o3', 'o4'], None),    # existent, but non-orderable
             (('n2', 2), ['o1', 'o2', 'o3', 'o4'], ValueError)
         ))
 
@@ -162,7 +162,7 @@ class PartialOrderingTests(TestCase):
             (('o2',), ['o1', 'o2', 'o3', 'o4'], 1),
             (('o4',), ['o1', 'o2', 'o3', 'o4'], 3),
             (('n2',), ['o1', 'o2', 'o3', 'o4'], ValueError),
-            (('c2',), ['o1', 'o2', 'o3', 'o4'], ValueError),
+            (('c2',), ['o1', 'o2', 'o3', 'o4'], None),      # existent, but non-orderable
         ))
 
 
