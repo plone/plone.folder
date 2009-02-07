@@ -1,27 +1,14 @@
 from unittest import TestCase, defaultTestLoader
-from zope.component import provideAdapter
-from zope.component import testing
 from plone.folder.interfaces import IOrdering
-from plone.folder.partial import PartialOrdering
 from plone.folder.tests.utils import DummyContainer
 from plone.folder.tests.utils import Orderable, Chaoticle
-
-
-class Layer:
-
-    @classmethod
-    def setUp(cls):
-        provideAdapter(PartialOrdering)
-
-    @classmethod
-    def tearDown(cls):
-        testing.tearDown
+from plone.folder.tests.layer import PloneFolderPartialOrderingLayer
 
 
 class PartialOrderingTests(TestCase):
     """ tests regarding order-support for only items marked orderable """
 
-    layer = Layer
+    layer = PloneFolderPartialOrderingLayer
 
     def create(self):
         container = DummyContainer()
