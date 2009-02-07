@@ -22,6 +22,12 @@ class PartialOrderingTests(IntegrationTestCase):
         # a non-existant object should raise an error, though
         self.assertRaises(ValueError, self.folder.getObjectPosition, 'bar')
 
+    def testRemoveNonOrderableContent(self):
+        self.setRoles(('Manager',))
+        oid = self.folder.invokeFactory('Event', id='foo')
+        self.folder.manage_delObjects('foo')
+        self.failIf(self.folder.hasObject('foo'), 'foo?')
+
 
 def test_suite():
     return defaultTestLoader.loadTestsFromName(__name__)

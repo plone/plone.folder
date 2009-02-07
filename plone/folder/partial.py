@@ -37,7 +37,10 @@ class PartialOrdering(object):
 
     def notifyRemoved(self, id):
         """ see interfaces.py """
-        self.order.remove(id)
+        try:
+            self.order.remove(id)
+        except ValueError:          # removing non-orderable items is okay
+            pass
 
     def idsInOrder(self):
         """ see interfaces.py """

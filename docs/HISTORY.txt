@@ -4,6 +4,9 @@ Changelog
 1.0a2 - Unreleased
 ------------------
 
+* Fix issue with removing non-orderable content for partial ordering suppport.
+  [witsch]
+
 * Fix `getObjectPosition` to return a value representing "no position" for
   non-orderable content instead of raising an error.
   [witsch]
