@@ -151,6 +151,8 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         """ Rename a particular sub-object without changing its position. """
         old_position = self.getObjectPosition(id)
         result = super(OrderedBTreeFolderBase, self).manage_renameObject(id, new_id, REQUEST)
+        if old_position is None:
+            return result
         self.moveObjectToPosition(new_id, old_position, suppress_events=True)
         reindex = getattr(self._getOb(new_id), 'reindexObject', None)
         if reindex is not None:
