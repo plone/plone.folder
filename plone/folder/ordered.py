@@ -1,17 +1,13 @@
 from zope.interface import implements
 from zope.annotation.interfaces import IAttributeAnnotatable
 
-from AccessControl import ClassSecurityInfo, Unauthorized
+from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import manage_properties
-from AccessControl.Permissions import delete_objects
-from AccessControl.Permissions import view
 from OFS.interfaces import IOrderedContainer
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base, _marker
 from Products.CMFCore.PortalFolder import PortalFolderBase
 from Products.CMFCore.permissions import ModifyPortalContent
-from Products.CMFCore import permissions
-from Products.CMFCore.utils import _checkPermission
 
 from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IOrdering
@@ -30,6 +26,17 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         """ a folder is something, even if it's empty """
         return True
 
+    # Dict interface
+    
+    def __setitem__(self, key, value):
+        self._setObject(key, value)
+    
+    def __contains__(self, key):
+        return self.has_key(key)
+        
+    def __delitem__(self, key):
+        self._delObject(key)
+        
     # IObjectManager
 
     def _getOb(self, id, default=_marker):

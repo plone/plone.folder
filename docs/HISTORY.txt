@@ -4,6 +4,10 @@ Changelog
 1.0a2 - Unreleased
 ------------------
 
+* Re-added __setitem__, __contains__ and __delitem__ to support a dict-like
+  API.
+  [optilude]
+
 * Fix issue with removing non-orderable content for partial ordering suppport.
   [witsch]
 
