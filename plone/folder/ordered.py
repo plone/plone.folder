@@ -26,17 +26,6 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         """ a folder is something, even if it's empty """
         return True
 
-    # Dict interface
-    
-    def __setitem__(self, key, value):
-        self._setObject(key, value)
-    
-    def __contains__(self, key):
-        return self.has_key(key)
-        
-    def __delitem__(self, key):
-        self._delObject(key)
-        
     # IObjectManager
 
     def _getOb(self, id, default=_marker):
@@ -66,7 +55,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             idxs = []
             for id in ids:
                 idxs.append((ordering.getObjectPosition(id), id))
-            return [ x[1] for x in sorted(idxs, cmp=lambda a,b: cmp(a[0], b[0])) ]
+            return [ x[1] for x in sorted(idxs, keycmp=lambda a: a[0]) ]
 
     # IOrderSupport - mostly deprecated, use the adapter directly instead
 
@@ -152,8 +141,6 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     def iterkeys(self):
         return iter(self.objectIds())
 
-    __iter__ = iterkeys
-
     def manage_renameObject(self, id, new_id, REQUEST=None):
         """ Rename a particular sub-object without changing its position. """
         old_position = self.getObjectPosition(id)
@@ -166,6 +153,22 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             reindex(idxs=('getObjPositionInParent',))
         return result
 
+    # Dict interface
+    
+    def __setitem__(self, key, value):
+        self._setObject(key, value)
+    
+    def __contains__(self, key):
+        return self.has_key(key)
+        
+    def __delitem__(self, key):
+        self._delObject(key)
+
+    __iter__ = iterkeys
+    keys = objectIds
+    values = BTreeFolder2Base.objectValues
+    items = BTreeFolder2Base.objectItems
+        
 
 class CMFOrderedBTreeFolderBase(OrderedBTreeFolderBase, PortalFolderBase):
     """ BTree folder for CMF sites, with ordering support. The ordering
