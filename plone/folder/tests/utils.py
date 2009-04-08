@@ -11,6 +11,9 @@ class DummyObject(object):
     def __of__(self, obj):
         return self
 
+    def manage_fixupOwnershipAfterAdd(self):
+        pass
+
 
 class DummyContainer(object):
     implements(IOrderableFolder)
