@@ -55,8 +55,9 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             oldname = getattr(object, '__name__', None)
             oldparent = getattr(object, '__parent__', None)
             
-            if id is not oldname and self is not oldparent:
+            if id is not oldname:
                 object.__name__ = id
+            if self is not oldparent:
                 object.__parent__ = self
         
         super(OrderedBTreeFolderBase, self)._setOb(id, object)
