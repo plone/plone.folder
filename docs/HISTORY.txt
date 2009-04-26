@@ -4,6 +4,19 @@ Changelog
 1.0a2 - Unreleased
 ------------------
 
+* Fix a bug in the default ordering that would cause the 'pos' dict to get out
+  of sync when an item is deleted.
+  [optilude]
+
+* Declare IContainer support
+  [optilude]
+
+* Properly set __parent__ and __name__ for IContained in _setOb().
+  [optilude]
+
+* Add __getitem__, needed when not using the CMF mix-in
+  [optilude]
+
 * Re-added __setitem__, __contains__ and __delitem__ to support a dict-like
   API.
   [optilude]

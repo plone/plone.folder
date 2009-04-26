@@ -4,12 +4,13 @@ from BTrees.OIBTree import OIBTree
 from zope.interface import implements
 from zope.component import adapts
 from zope.annotation.interfaces import IAnnotations
-from zope.app.container.contained import notifyContainerModified
 
 from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IExplicitOrdering
 from plone.memoize.instance import memoize
 
+# XXX: Should move to zope.container in the future
+from zope.app.container.contained import notifyContainerModified
 
 class DefaultOrdering(object):
     """ This implementation uses annotations to store the order on the
@@ -37,7 +38,11 @@ class DefaultOrdering(object):
         pos = self._pos()
         idx = pos[id]
         del order[idx]
-        del pos[id]
+        
+        # we now need to rebuild pos since the ids have shifted
+        pos.clear()
+        for n, id in enumerate(order):
+            pos[id] = n
 
     def moveObjectsByDelta(self, ids, delta, subset_ids=None, suppress_events=False):
         """ see interfaces.py """
