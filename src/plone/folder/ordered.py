@@ -99,7 +99,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             idxs = []
             for id in ids:
                 idxs.append((ordering.getObjectPosition(id), id))
-            return [x[1] for x in sorted(idxs, keycmp=lambda a: a[0])]
+            return [x[1] for x in sorted(idxs, key=lambda a: a[0])]
 
     # IOrderSupport - mostly deprecated, use the adapter directly instead
 
