@@ -16,18 +16,20 @@ from plone.folder.interfaces import IExplicitOrdering
 from zope.location.interfaces import ILocation
 
 # XXX: Should move to zope.container in the future. However, a conditional
-# import is dangerous. If we have zope.container, but not the version of 
+# import is dangerous. If we have zope.container, but not the version of
 # zope.app.container that contains the requisite BBB aliases, we may end
 # up checking the wrong IContained interface.
 
 from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IContained
 
+
 class OrderedBTreeFolderBase(BTreeFolder2Base):
     """ BTree folder base class with ordering support. The ordering
         is done by adapter (to IOrdering), which makes the policy
         changeable. """
-    implements(IContainer, IOrderedContainer, IOrderableFolder, IAttributeAnnotatable)
+    implements(IContainer, IOrderedContainer, IOrderableFolder,
+        IAttributeAnnotatable)
 
     security = ClassSecurityInfo()
 
@@ -46,34 +48,34 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
 
     def _setOb(self, id, object):
         """ Store the named object in the folder. """
-        
+
         # Set __name__ and __parent__ if the object supports it
         if ILocation.providedBy(object):
             if not IContained.providedBy(object):
                 alsoProvides(object, IContained)
-            
+
             oldname = getattr(object, '__name__', None)
             oldparent = getattr(object, '__parent__', None)
-            
+
             if id is not oldname:
                 object.__name__ = id
             if self is not oldparent:
                 object.__parent__ = self
-        
+
         super(OrderedBTreeFolderBase, self)._setOb(id, object)
         IOrdering(self).notifyAdded(id)     # notify the ordering adapter
 
     def _delOb(self, id):
         """ Remove the named object from the folder. """
-        
+
         # Unset __parent__ and __name__ prior to removing the object.
         # Note that there is a slight discrepancy with the Zope 3 behaviour
         # here: we do this before the IObjectRemovedEvent is fired. In
         # zope.container, IObjectRemovedEvent is fired before the object is
-        # actually deleted and this information is unset. In Zope2's OFS, 
+        # actually deleted and this information is unset. In Zope2's OFS,
         # there's a different IObjectWillBeRemovedEvent that is fired first,
         # then the object is removed, and then IObjectRemovedEvent is fired.
-        
+
         try:
             obj = self._getOb(id, _marker)
             if obj is not _marker:
@@ -83,7 +85,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         except AttributeError:
             # No need to fail if we can't set these
             pass
-        
+
         super(OrderedBTreeFolderBase, self)._delOb(id)
         IOrdering(self).notifyRemoved(id)   # notify the ordering adapter
 
@@ -97,7 +99,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             idxs = []
             for id in ids:
                 idxs.append((ordering.getObjectPosition(id), id))
-            return [ x[1] for x in sorted(idxs, keycmp=lambda a: a[0]) ]
+            return [x[1] for x in sorted(idxs, keycmp=lambda a: a[0])]
 
     # IOrderSupport - mostly deprecated, use the adapter directly instead
 
@@ -161,11 +163,13 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             return 0
 
     security.declareProtected(manage_properties, 'moveObjectsByDelta')
-    def moveObjectsByDelta(self, ids, delta, subset_ids=None, suppress_events=False):
+    def moveObjectsByDelta(self, ids, delta, subset_ids=None,
+            suppress_events=False):
         """ Move specified sub-objects by delta. """
         ordering = IOrdering(self)
         if IExplicitOrdering.providedBy(ordering):
-            return ordering.moveObjectsByDelta(ids, delta, subset_ids, suppress_events)
+            return ordering.moveObjectsByDelta(ids, delta, subset_ids,
+                suppress_events)
         else:
             return 0
 
@@ -186,35 +190,36 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     def manage_renameObject(self, id, new_id, REQUEST=None):
         """ Rename a particular sub-object without changing its position. """
         old_position = self.getObjectPosition(id)
-        result = super(OrderedBTreeFolderBase, self).manage_renameObject(id, new_id, REQUEST)
+        result = super(OrderedBTreeFolderBase, self).manage_renameObject(id,
+            new_id, REQUEST)
         if old_position is None:
             return result
         self.moveObjectToPosition(new_id, old_position, suppress_events=True)
         reindex = getattr(self._getOb(new_id), 'reindexObject', None)
         if reindex is not None:
-            reindex(idxs=('getObjPositionInParent',))
+            reindex(idxs=['getObjPositionInParent'])
         return result
 
     # Dict interface
-    
+
     def __setitem__(self, key, value):
         self._setObject(key, value)
-    
+
     def __contains__(self, key):
         return self.has_key(key)
-        
+
     def __delitem__(self, key):
         self._delObject(key)
-    
+
     def __getitem__(self, key):
         # we allow KeyError here
         return super(OrderedBTreeFolderBase, self)._getOb(key)
-    
+
     __iter__ = iterkeys
     keys = objectIds
     values = BTreeFolder2Base.objectValues
     items = BTreeFolder2Base.objectItems
-        
+
 
 class CMFOrderedBTreeFolderBase(OrderedBTreeFolderBase, PortalFolderBase):
     """ BTree folder for CMF sites, with ordering support. The ordering
@@ -228,4 +233,3 @@ class CMFOrderedBTreeFolderBase(OrderedBTreeFolderBase, PortalFolderBase):
     def _checkId(self, id, allow_dup=0):
         PortalFolderBase._checkId(self, id, allow_dup)
         BTreeFolder2Base._checkId(self, id, allow_dup)
-
