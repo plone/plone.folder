@@ -32,7 +32,7 @@ class IOrdering(Interface):
         """ Inform the ordering implementation that an item was removed """
 
     def getObjectPosition(id):
-        """ Get the position of the given object """
+        """ Get the position of the given id """
 
     def idsInOrder():
         """ Return all object ids, in the correct order """
