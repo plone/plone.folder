@@ -38,7 +38,7 @@ class DefaultOrdering(object):
         pos = self._pos()
         idx = pos[id]
         del order[idx]
-        
+
         # we now need to rebuild pos since the ids have shifted
         pos.clear()
         for n, id in enumerate(order):

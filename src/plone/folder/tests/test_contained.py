@@ -11,18 +11,18 @@ from zope.app.container.contained import Contained
 
 class DummyLocatable(DummyObject):
     implements(ILocation)
-    
+
     def __init__(self, id=None, meta_type='DummyLocatable'):
         super(DummyLocatable, self).__init__(id, meta_type)
 
 class DummyContained(DummyObject, Contained):
     implements(ILocation)
-    
+
     def __init__(self, id=None, meta_type='DummyContained'):
         super(DummyContained, self).__init__(id, meta_type)
 
 class DummyNonLocatable(DummyObject):
-        
+
     def __init__(self, id=None, meta_type='DummyNonLocatable'):
         super(DummyNonLocatable, self).__init__(id, meta_type)
 
@@ -53,11 +53,11 @@ class ContainedTests(TestCase):
 
     def test_delitem(self):
         folder = OrderedBTreeFolderBase("f1")
-        
+
         folder['locatable'] = DummyLocatable()
         folder['contained'] = DummyContained()
         folder['other'] = DummyNonLocatable()
-        
+
         # Make sure these don't fail when attempting to unset __parent__
         del folder['locatable']
         del folder['contained']
