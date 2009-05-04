@@ -1,7 +1,7 @@
 # simple benchmarking tests related to plip191
 # to run individual tests using:
-# $ bin/instance test -s plone.folder --tests-pattern=benchmarks -t <testName>
-# where <testName> is something like "testBenchmarkObjectValues"
+# $ bin/instance test -s plone.folder --tests-pattern=benchmarks_plone -t <testName>
+# where <testName> is something like "testObjectValuesOrdered"
 
 from unittest import defaultTestLoader, main
 from profilehooks import timecall
