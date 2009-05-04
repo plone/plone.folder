@@ -10,16 +10,42 @@ class DictInterfaceTests(TestCase):
 
     layer = PloneFolderLayer
 
-    def create(self):
+    def test_getitem(self):
         folder = OrderedBTreeFolderBase("f1")
-        return folder
+        foo = DummyObject('foo')
+        folder._setOb('foo', foo)
+        self.assertEqual(folder['foo'], foo)
+        self.assertEqual(folder.__getitem__('foo'), foo)
+        self.assertRaises(KeyError, folder.__getitem__, 'bar')
+
+    def test_setitem(self):
+        folder = OrderedBTreeFolderBase("f1")
+        foo = DummyObject('foo')
+        folder['foo'] = foo
+        self.assertEqual(folder._getOb('foo'), foo)
+
+    def test_contains(self):
+        folder = OrderedBTreeFolderBase("f1")
+        folder._setOb('foo', DummyObject('foo'))
+        folder._setOb('bar', DummyObject('bar'))
+        self.failUnless('foo' in folder)
+        self.failUnless('bar' in folder)
+
+    def test_delitem(self):
+        folder = OrderedBTreeFolderBase("f1")
+        folder._setOb('foo', DummyObject('foo'))
+        folder._setOb('bar', DummyObject('bar'))
+        self.assertEquals(len(folder.objectIds()), 2)
+        del folder['foo']
+        del folder['bar']
+        self.assertEquals(len(folder.objectIds()), 0)
 
     def test_len_empty_folder(self):
-        folder = self.create()
+        folder = OrderedBTreeFolderBase("f1")
         self.assertEquals(len(folder), 0)
 
     def test_len_one_child(self):
-        folder = self.create()
+        folder = OrderedBTreeFolderBase("f1")
         folder['child'] = DummyObject('child')
         self.assertEquals(len(folder), 1)
 
