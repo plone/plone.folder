@@ -41,8 +41,8 @@ class RelatedToDictInterfaceTests(TestCase):
         folder = self.create()
         self.assertEquals(['o1', 'o3'], folder.objectIds(spec='mt1'))
         self.assertEquals(['o2', 'o4'], folder.objectIds(spec='mt2'))
-        folder.moveObjectsToTop(('o3',))
-        folder.moveObjectsDown(('o2',))
+        folder.moveObjectsToTop(['o3'])
+        folder.moveObjectsDown(['o2'])
         self.assertEquals(['o3', 'o1'], folder.objectIds(spec='mt1'))
         self.assertEquals(['o4', 'o2'], folder.objectIds(spec='mt2'))
 

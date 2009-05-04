@@ -66,4 +66,3 @@ class IExplicitOrdering(IOrdering):
 
     def orderObjects(key, reverse=None):
         """ Order sub-objects by key and direction. """
-

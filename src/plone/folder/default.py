@@ -12,6 +12,7 @@ from plone.memoize.instance import memoize
 # XXX: Should move to zope.container in the future
 from zope.app.container.contained import notifyContainerModified
 
+
 class DefaultOrdering(object):
     """ This implementation uses annotations to store the order on the
         object, and supports explicit ordering. """
@@ -38,19 +39,19 @@ class DefaultOrdering(object):
         pos = self._pos()
         idx = pos[id]
         del order[idx]
-
         # we now need to rebuild pos since the ids have shifted
         pos.clear()
         for n, id in enumerate(order):
             pos[id] = n
 
-    def moveObjectsByDelta(self, ids, delta, subset_ids=None, suppress_events=False):
+    def moveObjectsByDelta(self, ids, delta, subset_ids=None,
+            suppress_events=False):
         """ see interfaces.py """
         order = self._order()
         pos = self._pos()
         min_position = 0
         if isinstance(ids, basestring):
-            ids = (ids,)
+            ids = [ids]
         if subset_ids is None:
             subset_ids = self.idsInOrder()
         elif not isinstance(subset_ids, list):
@@ -64,7 +65,7 @@ class DefaultOrdering(object):
                 old_position = subset_ids.index(id)
             except ValueError:
                 continue
-            new_position = max( old_position - abs(delta), min_position )
+            new_position = max(old_position - abs(delta), min_position)
             if new_position == min_position:
                 min_position += 1
             if not old_position == new_position:
@@ -83,8 +84,7 @@ class DefaultOrdering(object):
                         pos[id] = i
                         idx += 1
                     except KeyError:
-                        raise ValueError('The object with the id "%s" does '
-                                         'not exist.' % id)
+                        raise ValueError('No object with id "%s" exists.' % id)
         if not suppress_events:
             notifyContainerModified(self.context)
         return counter
@@ -99,17 +99,18 @@ class DefaultOrdering(object):
 
     def moveObjectsToTop(self, ids, subset_ids=None):
         """ see interfaces.py """
-        return self.moveObjectsByDelta(ids, -len(self._order()), subset_ids )
+        return self.moveObjectsByDelta(ids, -len(self._order()), subset_ids)
 
     def moveObjectsToBottom(self, ids, subset_ids=None):
         """ see interfaces.py """
-        return self.moveObjectsByDelta(ids, len(self._order()), subset_ids )
+        return self.moveObjectsByDelta(ids, len(self._order()), subset_ids)
 
     def moveObjectToPosition(self, id, position, suppress_events=False):
         """ see interfaces.py """
         delta = position - self.getObjectPosition(id)
         if delta:
-            return self.moveObjectsByDelta(id, delta, suppress_events=suppress_events)
+            return self.moveObjectsByDelta(id, delta,
+                suppress_events=suppress_events)
 
     def orderObjects(self, key, reverse=None):
         """ see interfaces.py """
@@ -124,10 +125,10 @@ class DefaultOrdering(object):
     def getObjectPosition(self, id):
         """ see interfaces.py """
         pos = self._pos()
-        if pos.has_key(id):
+        if id in pos:
             return pos[id]
         else:
-            raise ValueError('The object with the id "%s" does not exist.' % id)
+            raise ValueError('No object with id "%s" exists.' % id)
 
     def idsInOrder(self):
         """ see interfaces.py """
@@ -150,4 +151,3 @@ class DefaultOrdering(object):
             return annotations.setdefault(self.POS_KEY, OIBTree())
         else:
             return annotations.get(self.POS_KEY, {})
-

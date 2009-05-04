@@ -141,7 +141,7 @@ class PartialOrderingTests(TestCase):
             (('o2', 2), ['o1', 'o3', 'o2', 'o4'], 1),
             (('o4', 2), ['o1', 'o2', 'o4', 'o3'], 1),
             (('c1', 2), ['o1', 'o2', 'o3', 'o4'], None),    # existent, but non-orderable
-            (('n2', 2), ['o1', 'o2', 'o3', 'o4'], ValueError)
+            (('n2', 2), ['o1', 'o2', 'o3', 'o4'], ValueError),
         ))
 
     def testOrderObjects(self):
@@ -168,4 +168,3 @@ class PartialOrderingTests(TestCase):
 
 def test_suite():
     return defaultTestLoader.loadTestsFromName(__name__)
-

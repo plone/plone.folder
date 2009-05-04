@@ -3,8 +3,7 @@
 # $ bin/instance test -s plone.folder --tests-pattern=benchmarks -t <testName>
 # where <testName> is something like "testBenchmarkObjectValues"
 
-
-from unittest import TestSuite, makeSuite, main
+from unittest import defaultTestLoader, main
 from profilehooks import timecall
 from random import randint
 
@@ -148,9 +147,7 @@ class TestBenchmarkCase(ptc.PloneTestCase):
 
 
 def test_suite():
-    return TestSuite([
-            makeSuite(TestBenchmarkCase)
-        ])
+    return defaultTestLoader.loadTestsFromName(__name__)
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

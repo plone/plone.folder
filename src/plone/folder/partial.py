@@ -10,6 +10,7 @@ from zope.app.container.contained import notifyContainerModified
 
 ORDER_ATTR = '_objectordering'
 
+
 class PartialOrdering(object):
     """ this implementation uses a list ot store order information on a
         regular attribute of the folderish object;  explicit ordering
@@ -46,11 +47,12 @@ class PartialOrdering(object):
         """ see interfaces.py """
         return list(self.order)
 
-    def moveObjectsByDelta(self, ids, delta, subset_ids=None, suppress_events=False):
+    def moveObjectsByDelta(self, ids, delta, subset_ids=None,
+            suppress_events=False):
         """ see interfaces.py """
         min_position = 0
         if isinstance(ids, basestring):
-            ids = (ids,)
+            ids = [ids]
         if subset_ids is None:
             subset_ids = self.idsInOrder()
         elif not isinstance(subset_ids, list):
@@ -97,11 +99,11 @@ class PartialOrdering(object):
 
     def moveObjectsToTop(self, ids, subset_ids=None):
         """ see interfaces.py """
-        return self.moveObjectsByDelta(ids, -len(self.order), subset_ids )
+        return self.moveObjectsByDelta(ids, -len(self.order), subset_ids)
 
     def moveObjectsToBottom(self, ids, subset_ids=None):
         """ see interfaces.py """
-        return self.moveObjectsByDelta(ids, len(self.order), subset_ids )
+        return self.moveObjectsByDelta(ids, len(self.order), subset_ids)
 
     def moveObjectToPosition(self, id, position, suppress_events=False):
         """ see interfaces.py """
@@ -109,7 +111,8 @@ class PartialOrdering(object):
         if old_position is not None:
             delta = position - old_position
             if delta:
-                return self.moveObjectsByDelta(id, delta, suppress_events=suppress_events)
+                return self.moveObjectsByDelta(id, delta,
+                    suppress_events=suppress_events)
 
     def orderObjects(self, key, reverse=None):
         """ see interfaces.py """
@@ -130,4 +133,3 @@ class PartialOrdering(object):
             if self.context.hasObject(id):
                 return None
             raise ValueError('No object with id "%s" exists.' % id)
-

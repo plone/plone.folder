@@ -36,7 +36,7 @@ class DummyContainer(object):
         return self.objs.get(id, default)
 
     def hasObject(self, id):
-        return self.objs.has_key(id)
+        return id in self.objs
 
 
 class Orderable(DummyObject):
@@ -46,4 +46,3 @@ class Orderable(DummyObject):
 
 class Chaoticle(DummyObject):
     """ non-orderable mock object;  this does not implement `IOrderable` """
-

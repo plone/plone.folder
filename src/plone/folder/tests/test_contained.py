@@ -1,13 +1,13 @@
 from unittest import TestCase, defaultTestLoader
 
-from plone.folder.ordered import OrderedBTreeFolderBase
-from plone.folder.tests.layer import PloneFolderLayer
-from plone.folder.tests.utils import DummyObject
-
 from zope.interface import implements
 from zope.location.interfaces import ILocation
 from zope.app.container.interfaces import IContained
 from zope.app.container.contained import Contained
+from plone.folder.ordered import OrderedBTreeFolderBase
+from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.tests.utils import DummyObject
+
 
 class DummyLocatable(DummyObject):
     implements(ILocation)
@@ -15,19 +15,22 @@ class DummyLocatable(DummyObject):
     def __init__(self, id=None, meta_type='DummyLocatable'):
         super(DummyLocatable, self).__init__(id, meta_type)
 
+
 class DummyContained(DummyObject, Contained):
     implements(ILocation)
 
     def __init__(self, id=None, meta_type='DummyContained'):
         super(DummyContained, self).__init__(id, meta_type)
 
+
 class DummyNonLocatable(DummyObject):
 
     def __init__(self, id=None, meta_type='DummyNonLocatable'):
         super(DummyNonLocatable, self).__init__(id, meta_type)
 
+
 class ContainedTests(TestCase):
-    """ tests borrowed from OFS.tests.testOrderSupport """
+    """ tests regarding support for IContainer/IContained """
 
     layer = PloneFolderLayer
 
@@ -53,11 +56,9 @@ class ContainedTests(TestCase):
 
     def test_delitem(self):
         folder = OrderedBTreeFolderBase("f1")
-
         folder['locatable'] = DummyLocatable()
         folder['contained'] = DummyContained()
         folder['other'] = DummyNonLocatable()
-
         # Make sure these don't fail when attempting to unset __parent__
         del folder['locatable']
         del folder['contained']

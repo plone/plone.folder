@@ -284,4 +284,3 @@ class PloneOrderSupportTests(TestCase):
 
 def test_suite():
     return defaultTestLoader.loadTestsFromName(__name__)
-
