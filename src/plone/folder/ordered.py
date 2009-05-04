@@ -203,6 +203,9 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
 
     def __getitem__(self, key):
         # we allow KeyError here (see `_getOb` above)
+        # XXX: this might shadow the version from OFS.Folder, which gets used
+        # when inheriting from this class on the archetypes level;  by doing
+        # so it's likely to break support for webdav...
         return super(OrderedBTreeFolderBase, self)._getOb(key)
 
     __iter__ = iterkeys
