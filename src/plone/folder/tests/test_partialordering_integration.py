@@ -2,11 +2,12 @@ from unittest import defaultTestLoader
 from zope.interface import classImplements
 from Products.ATContentTypes.content.document import ATDocument
 from plone.folder.interfaces import IOrderable
-from plone.folder.tests.base import IntegrationTestCase, PloneFolderLayer
+from plone.folder.tests.base import IntegrationTestCase
 from plone.folder.tests.layer import PloneFolderPartialOrderingLayer
+from plone.folder.tests.layer import IntegrationLayer
 
 
-class Layer(PloneFolderPartialOrderingLayer, PloneFolderLayer):
+class Layer(PloneFolderPartialOrderingLayer, IntegrationLayer):
     """ test layer for partial ordering support """
 
 
@@ -16,6 +17,8 @@ class PartialOrderingTests(IntegrationTestCase):
     layer = Layer
 
     def afterSetUp(self):
+        self.setRoles(['Manager'])
+        self.folder = self.portal[self.portal.invokeFactory('Folder', 'folder')]
         classImplements(ATDocument, IOrderable)
 
     def testGetObjectPositionForNonOrderableContent(self):
