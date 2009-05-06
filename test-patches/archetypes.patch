@@ -36,33 +36,6 @@ Index extras/Products.Archetypes/Products/Archetypes/BaseObject.py
              if value is _marker:
                  raise KeyError, key
              else:
-Index extras/Products.Archetypes/Products/Archetypes/tests/editing.txt
-===================================================================
---- extras/Products.Archetypes/Products/Archetypes/tests/editing.txt
-+++ extras/Products.Archetypes/Products/Archetypes/tests/editing.txt
-@@ -65,7 +65,7 @@ Let's verify that the buttons have the correct name:
-   
-   >>> browser.open(url+'/edit')
-   >>> browser.getControl('Save').name
--  'form.button.save'
-+  'form_submit'
-   
-   >>> browser.getControl('Cancel').name
-   'form.button.cancel'
-@@ -90,11 +90,11 @@ and change the schemata of one of its fields
-   
-   >>> browser.open(url+'/edit')
-   >>> browser.getControl('Next').name
--  'form.button.next'
-+  'form_next'
-   
-   >>> browser.getLink('someschemata').click()
-   >>> browser.getControl('Previous').name
--  'form.button.previous'
-+  'form_previous'
- 
-   >>> marker.erase(document, IMultiPageSchema)
-   >>> IMultiPageSchema.providedBy(document)
 Index extras/Products.Archetypes/Products/Archetypes/tests/reindex_sanity_plone21.txt
 ===================================================================
 --- extras/Products.Archetypes/Products/Archetypes/tests/reindex_sanity_plone21.txt

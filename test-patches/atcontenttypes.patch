@@ -16,8 +16,8 @@ Index extras/Products.ATContentTypes/Products/ATContentTypes/content/folder.py
  finalizeATCTSchema(ATBTreeFolderSchema, folderish=True, moveDiscussion=False)
  
 -
--class ATFolder(AutoOrderSupport, ATCTOrderedFolder):
-+class ObsoleteATFolder(AutoOrderSupport, ATCTOrderedFolder):
+-class ATFolder(ATCTOrderedFolder):
++class ObsoleteATFolder(ATCTOrderedFolder):
      """A folder which can contain other items."""
  
      schema         =  ATFolderSchema
@@ -40,17 +40,6 @@ Index extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_atfolder
 ===================================================================
 --- extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_atfolder.py
 +++ extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_atfolder.py
-@@ -109,10 +109,6 @@ class TestSiteATFolder(atcttestcase.ATCTTypeTestCase, FolderTestMixin):
-         new = self._ATCT
-         editATCT(new)
- 
--    def test_implements_autoorder(self):
--        self.failUnless(IAutoOrderSupport.isImplementedBy(self._ATCT))
--        self.failUnless(verifyObject(IAutoOrderSupport, self._ATCT))
--
-     def test_Z3implements_autoorder(self):
-         pass
-         #iface = Z3IAutoOrderSupport
 @@ -150,9 +146,9 @@ class TestSiteATBTreeFolder(atcttestcase.ATCTTypeTestCase, FolderTestMixin):
          self.failUnless(iface.isImplementedBy(self._ATCT))
          self.failUnless(verifyObject(iface, self._ATCT))

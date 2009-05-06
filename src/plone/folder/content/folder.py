@@ -12,7 +12,6 @@ from Products.ATContentTypes.content.schemata import finalizeATCTSchema
 from Products.ATContentTypes.lib.constraintypes import ConstrainTypesMixinSchema
 from Products.ATContentTypes.content.base import ATCTFolderMixin
 from Products.ATContentTypes.content.base import registerATCT
-from Products.ATContentTypes.lib.autosort import AutoSortSupport
 
 from plone.folder import packageName
 from plone.folder.content.base import BaseBTreeFolder
@@ -22,14 +21,13 @@ ATFolderSchema = ATContentTypeSchema.copy() + ConstrainTypesMixinSchema.copy() +
 finalizeATCTSchema(ATFolderSchema, folderish=True, moveDiscussion=False)
 
 
-class ATFolder(AutoSortSupport, ATCTFolderMixin, BaseBTreeFolder):
+class ATFolder(ATCTFolderMixin, BaseBTreeFolder):
     """ a folder suitable for holding a very large number of items """
     implements(IATFolder, IArchivable, IPhotoAlbumAble)
 
     __implements__ = (ATCTFolderMixin.__implements__,
                       BaseBTreeFolder.__implements__,
-                      Z2IATBTreeFolder, Z2IATFolder,
-                      AutoSortSupport.__implements__)
+                      Z2IATBTreeFolder, Z2IATFolder)
 
     schema =  ATFolderSchema
     security = ClassSecurityInfo()
