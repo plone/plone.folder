@@ -1,9 +1,12 @@
 from unittest import defaultTestLoader
 from plone.folder.tests.base import IntegrationTestCase
+from plone.folder.tests.layer import IntegrationLayer
 from plone.folder.content.base import BaseBTreeFolder
 
 
 class FolderReplacementTests(IntegrationTestCase):
+
+    layer = IntegrationLayer
 
     def afterSetUp(self):
         self.setRoles(['Manager'])

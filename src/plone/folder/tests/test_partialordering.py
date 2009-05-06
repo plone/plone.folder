@@ -2,13 +2,13 @@ from unittest import TestCase, defaultTestLoader
 from plone.folder.interfaces import IOrdering
 from plone.folder.tests.utils import DummyContainer
 from plone.folder.tests.utils import Orderable, Chaoticle
-from plone.folder.tests.layer import PloneFolderPartialOrderingLayer
+from plone.folder.tests.layer import PartialOrderingLayer
 
 
 class PartialOrderingTests(TestCase):
     """ tests regarding order-support for only items marked orderable """
 
-    layer = PloneFolderPartialOrderingLayer
+    layer = PartialOrderingLayer
 
     def create(self):
         container = DummyContainer()

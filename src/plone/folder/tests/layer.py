@@ -1,5 +1,4 @@
 from zope.component import provideAdapter
-from zope.component import testing
 
 from Testing.ZopeTestCase import app, close, installPackage
 from Products.Five import fiveconfigure
@@ -22,10 +21,10 @@ class PloneFolderLayer:
 
     @classmethod
     def tearDown(cls):
-        testing.tearDown
+        pass
 
 
-class PloneFolderPartialOrderingLayer:
+class PartialOrderingLayer:
 
     @classmethod
     def setUp(cls):
@@ -33,7 +32,7 @@ class PloneFolderPartialOrderingLayer:
 
     @classmethod
     def tearDown(cls):
-        testing.tearDown
+        pass
 
 
 class IntegrationLayer(PloneSite):
@@ -59,6 +58,18 @@ class IntegrationLayer(PloneSite):
         # and commit the changes
         commit()
         close(root)
+
+    @classmethod
+    def tearDown(cls):
+        pass
+
+
+class PartialOrderingIntegrationLayer(IntegrationLayer):
+    """ layer for integration tests using the partial ordering adapter """
+
+    @classmethod
+    def setUp(cls):
+        provideAdapter(PartialOrdering)
 
     @classmethod
     def tearDown(cls):
