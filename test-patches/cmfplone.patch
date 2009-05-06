@@ -1,0 +1,95 @@
+Index extras/Plone/Products/CMFPlone/CatalogTool.py
+===================================================================
+--- extras/Plone/Products/CMFPlone/CatalogTool.py
++++ extras/Plone/Products/CMFPlone/CatalogTool.py
+@@ -30,7 +30,7 @@ from Products.CMFPlone.interfaces.NonStructuralFolder import \
+ from Products.CMFPlone.utils import base_hasattr
+ from Products.CMFPlone.utils import safe_callable
+ from Products.CMFPlone.utils import safe_unicode
+-from OFS.IOrderSupport import IOrderedContainer
++from OFS.interfaces import IOrderedContainer
+ from ZODB.POSException import ConflictError
+ 
+ from Products.ZCatalog.ZCatalog import ZCatalog
+@@ -181,10 +181,10 @@ def getObjPositionInParent(obj, **kwargs):
+     >>> from Products.CMFPlone.CatalogTool import getObjPositionInParent
+ 
+     >>> getObjPositionInParent(self.folder)
+-    0
++    1
+     """
+     parent = aq_parent(aq_inner(obj))
+-    if IOrderedContainer.isImplementedBy(parent):
++    if IOrderedContainer.providedBy(parent):
+         try:
+             return parent.getObjectPosition(obj.getId())
+         except ConflictError:
+Index extras/Plone/Products/CMFPlone/tests/testOrderSupport.py
+===================================================================
+--- extras/Plone/Products/CMFPlone/tests/testOrderSupport.py
++++ extras/Plone/Products/CMFPlone/tests/testOrderSupport.py
+@@ -185,7 +185,12 @@ class TestOrderSupport(PloneTestCase.PloneTestCase):
+         self.assertEqual(self.folder.getObjectPosition('foo'), 1)
+         self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+ 
+-    def testMoveCMFObjectsOnly(self):
++    # NOTE: These tests are disabled, as the new unified, BTree-based,
++    # ordered-by-adapter folder implementation doesn't support this. It's
++    # not used anywhere, causes the re-ordering to be needlessly slow and
++    # generally shouldn't be necessary.
++
++    def DISABLED_testMoveCMFObjectsOnly(self):
+         # Plone speciality
+         self.folder.manage_addProduct['OFSP'].manage_addDTMLMethod('wilma', file='')
+         self.folder.moveObject('wilma', 2)
+@@ -196,7 +201,7 @@ class TestOrderSupport(PloneTestCase.PloneTestCase):
+         self.assertEqual(self.folder.getObjectPosition('wilma'), 2) # Did not move
+         self.assertEqual(self.folder.getObjectPosition('foo'), 3)
+ 
+-    def testMoveUpCMFObjectsOnly(self):
++    def DISABLED_testMoveUpCMFObjectsOnly(self):
+         # Plone speciality
+         self.folder.manage_addProduct['OFSP'].manage_addDTMLMethod('wilma', file='')
+         self.folder.moveObject('wilma', 2)
+Index extras/Plone/Products/CMFPlone/tests/testPloneFolder.py
+===================================================================
+--- extras/Plone/Products/CMFPlone/tests/testPloneFolder.py
++++ extras/Plone/Products/CMFPlone/tests/testPloneFolder.py
+@@ -26,8 +26,8 @@ class TestPloneFolder(PloneTestCase.PloneTestCase):
+     def testGetObjectPosition(self):
+         self.assertEqual(self.folder.getObjectPosition('sub1'), 0)
+ 
+-    def testGetObjectPositionRaisesNotFound(self):
+-        self.assertRaises(NotFound, self.folder.getObjectPosition, 'foobar')
++    def testGetObjectPositionRaisesError(self):
++        self.assertRaises(ValueError, self.folder.getObjectPosition, 'foobar')
+ 
+     def testSortOrder(self):
+         self.assertEqual(self.folder.objectIds(),
+Index extras/Plone/Products/CMFPlone/tests/testPortalCreation.py
+===================================================================
+--- extras/Plone/Products/CMFPlone/tests/testPortalCreation.py
++++ extras/Plone/Products/CMFPlone/tests/testPortalCreation.py
+@@ -912,22 +912,6 @@ class TestPortalBugs(PloneTestCase.PloneTestCase):
+         self.mem_index_type = "Script (Python)"
+         self.setupAuthenticator()
+ 
+-    def testMembersIndexHtml(self):
+-        # index_html for Members folder should be a Page Template
+-        members = self.members
+-        #self.assertEqual(aq_base(members).meta_type, 'Large Plone Folder')
+-        self.assertEqual(aq_base(members).meta_type, 'ATBTreeFolder')
+-        self.failUnless(hasattr(aq_base(members), 'index_html'))
+-        # getitem works
+-        self.assertEqual(aq_base(members)['index_html'].meta_type, self.mem_index_type)
+-        self.assertEqual(members['index_html'].meta_type, self.mem_index_type)
+-        # _getOb works
+-        self.assertEqual(aq_base(members)._getOb('index_html').meta_type, self.mem_index_type)
+-        self.assertEqual(members._getOb('index_html').meta_type, self.mem_index_type)
+-        # getattr works when called explicitly
+-        self.assertEqual(aq_base(members).__getattr__('index_html').meta_type, self.mem_index_type)
+-        self.assertEqual(members.__getattr__('index_html').meta_type, self.mem_index_type)
+-
+     def testLargePloneFolderHickup(self):
+         # Attribute access for 'index_html' acquired the Document from the
+         # portal instead of returning the local Page Template. This was due to

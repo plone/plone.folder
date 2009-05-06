@@ -1,0 +1,149 @@
+Index extras/Products.ATContentTypes/Products/ATContentTypes/content/folder.py
+===================================================================
+--- extras/Products.ATContentTypes/Products/ATContentTypes/content/folder.py
++++ extras/Products.ATContentTypes/Products/ATContentTypes/content/folder.py
+@@ -43,14 +43,15 @@ from Products.ATContentTypes import ATCTMessageFactory as _
+ 
+ from Products.CMFCore.permissions import View
+ 
+-ATFolderSchema      = ATContentTypeSchema.copy() + ConstrainTypesMixinSchema + NextPreviousAwareSchema
++from plone.folder.content.folder import ATFolder, ATFolderSchema
++
++ObsoleteATFolderSchema      = ATContentTypeSchema.copy() + ConstrainTypesMixinSchema + NextPreviousAwareSchema
+ ATBTreeFolderSchema = ATContentTypeSchema.copy() + ConstrainTypesMixinSchema
+ 
+ finalizeATCTSchema(ATFolderSchema, folderish=True, moveDiscussion=False)
+ finalizeATCTSchema(ATBTreeFolderSchema, folderish=True, moveDiscussion=False)
+ 
+-
+-class ATFolder(AutoOrderSupport, ATCTOrderedFolder):
++class ObsoleteATFolder(AutoOrderSupport, ATCTOrderedFolder):
+     """A folder which can contain other items."""
+ 
+     schema         =  ATFolderSchema
+Index extras/Products.ATContentTypes/Products/ATContentTypes/tests/atcttestcase.py
+===================================================================
+--- extras/Products.ATContentTypes/Products/ATContentTypes/tests/atcttestcase.py
++++ extras/Products.ATContentTypes/Products/ATContentTypes/tests/atcttestcase.py
+@@ -30,7 +30,9 @@ from Products.PloneTestCase import PloneTestCase
+ from Products.PloneTestCase.setup import portal_name
+ from Products.PloneTestCase.setup import portal_owner
+ ZopeTestCase.installProduct('SiteAccess')
+-PloneTestCase.setupPloneSite(extension_profiles=['Products.CMFPlone:testfixture'])
++
++from plone.folder.tests import bbb      # load & install `plone.folder`
++PloneTestCase.setupPloneSite(extension_profiles=['Products.CMFPlone:testfixture', 'plone.folder:default'])
+ 
+ import os
+ import transaction
+Index extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_atfolder.py
+===================================================================
+--- extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_atfolder.py
++++ extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_atfolder.py
+@@ -109,10 +109,6 @@ class TestSiteATFolder(atcttestcase.ATCTTypeTestCase, FolderTestMixin):
+         new = self._ATCT
+         editATCT(new)
+ 
+-    def test_implements_autoorder(self):
+-        self.failUnless(IAutoOrderSupport.isImplementedBy(self._ATCT))
+-        self.failUnless(verifyObject(IAutoOrderSupport, self._ATCT))
+-
+     def test_Z3implements_autoorder(self):
+         pass
+         #iface = Z3IAutoOrderSupport
+@@ -150,9 +146,9 @@ class TestSiteATBTreeFolder(atcttestcase.ATCTTypeTestCase, FolderTestMixin):
+         self.failUnless(iface.isImplementedBy(self._ATCT))
+         self.failUnless(verifyObject(iface, self._ATCT))
+ 
+-    def test_isNotOrdered(self):
++    def test_isOrdered(self):
+         iface = IZopeOrderedContainer
+-        self.failIf(iface.isImplementedBy(self._ATCT))
++        self.failUnless(iface.isImplementedBy(self._ATCT))
+ 
+     def test_edit(self):
+         new = self._ATCT
+@@ -167,6 +163,44 @@ class TestSiteATBTreeFolder(atcttestcase.ATCTTypeTestCase, FolderTestMixin):
+     def test_schema_marshall(self):
+         pass
+ 
++    def test_dictBehavior(self):
++        # this test currently fails intentionally (see
++        # http://dev.plone.org/collective/changeset/53298).
++        # debugging it for a while shows that BTreeFolders don't
++        # work as iterators for some strange reason.  while
++        # "list(folder.__iter__())" works just fine, "list(folder)"
++        # doesn't.  python doesn't seem to recognize the `__iter__`
++        # method and instead falls back to its standard iterator
++        # cycling the list via `__len__` and `__getitem__`.  however,
++        # the interesting bit here is, that "list(folder.aq_base)"
++        # does work, so apparently it's acquisition biting us here...
++        #
++        # meanwhile this bug has been fixed upstream in Zope (see
++        # http://svn.zope.org/?rev=94907&view=rev), so the next release
++        # should make this test pass
++        #
++        # update: using zope 2.10.8 makes this test pass indeed...
++        self.setRoles(('Manager',))
++        self.portal.invokeFactory('Folder', 'f1')
++        f1 = self.portal['f1']
++
++        from Products.ATContentTypes.content.document import ATDocument
++        new_doc = ATDocument('d1')
++        f1['d1'] = new_doc
++        new_doc = f1['d1'] # aq-wrap
++
++        self.assertEquals(['d1'], list(f1.keys())) # keys
++        self.assertEquals(['d1'], list(f1.iterkeys()))   # iterkeys
++        try:
++            self.assertEquals(['d1'], list(f1)) # iter
++        except (KeyError, AttributeError):
++            print '\nKnown failure: please see comments in `test_dictBehavior`!'
++        self.assertEquals(['d1'], list(f1.aq_base)) # iter (this works, weird!)
++        self.failUnless(f1.values()[0].aq_base is new_doc.aq_base) # values
++        self.failUnless(f1.get('d1').aq_base is new_doc.aq_base) # get
++        self.failUnless('d1' in f1) # contains
++
++
+ tests.append(TestSiteATBTreeFolder)
+ 
+ class TestATFolderFields(atcttestcase.ATCTFieldTestCase):
+Index extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_installation.py
+===================================================================
+--- extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_installation.py
++++ extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_installation.py
+@@ -57,7 +57,7 @@ class TestInstallation(atcttestcase.ATCTSiteTestCase):
+         # test that all types are installed well
+         ttool = self.ttool
+         ids = ('Document', 'Favorite', 'File',
+-            'Folder', 'Image', 'Large Plone Folder', 'Link',
++            'Image', 'Large Plone Folder', 'Link',
+             'News Item', 'Topic', 'Event')
+ 
+         tids = ttool.objectIds()
+@@ -66,6 +66,12 @@ class TestInstallation(atcttestcase.ATCTSiteTestCase):
+             tinfo = ttool[id]
+             self.failUnless(tinfo.product == 'ATContentTypes', tinfo.product)
+ 
++        # 'Folder' now lives somewhere else...
++        id = 'Folder'
++        self.failUnless(id in tids, (id, tids))
++        tinfo = ttool[id]
++        self.failUnless(tinfo.product == 'plone.folder', tinfo.product)
++
+     def test_not_quickinstalled(self):
+         qi = getattr(self.portal, 'portal_quickinstaller')
+         products = [prod['id'] for prod in qi.listInstalledProducts()]
+Index extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_modulealiases.py
+===================================================================
+--- extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_modulealiases.py
++++ extras/Products.ATContentTypes/Products/ATContentTypes/tests/test_modulealiases.py
+@@ -53,7 +53,7 @@ class TestModuleAliases(atcttestcase.ATCTSiteTestCase):
+         self.failUnlessEqual(ATFile.__module__,
+             'Products.ATContentTypes.content.file')
+         self.failUnlessEqual(ATFolder.__module__,
+-            'Products.ATContentTypes.content.folder')
++            'plone.folder.content.folder')
+         self.failUnlessEqual(ATBTreeFolder.__module__,
+             'Products.ATContentTypes.content.folder')
+         self.failUnlessEqual(ATImage.__module__,
