@@ -34,6 +34,15 @@ class ATFolder(AutoSortSupport, ATCTFolderMixin, BaseBTreeFolder):
     schema =  ATFolderSchema
     security = ClassSecurityInfo()
 
+    portal_type    = 'Folder'
+    archetype_name = 'Folder'
+    assocMimetypes = ()
+    assocFileExt   = ()
+    cmf_edit_kws   = ()
+
+    # Enable marshalling via WebDAV/FTP/ExternalEditor.
+    __dav_marshall__ = True
+
     security.declareProtected(View, 'getNextPreviousParentValue')
     def getNextPreviousParentValue(self):
         """ If the parent node is also an IATFolder and has next/previous
