@@ -29,7 +29,7 @@ class DummyContainer(object):
         del self.objs[id]
         IOrdering(self).notifyRemoved(id)       # notify the ordering adapter
 
-    def ids(self):
+    def objectIds(self):
         return set(self.objs)
 
     def _getOb(self, id, default=None):

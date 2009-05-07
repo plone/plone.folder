@@ -33,7 +33,7 @@ class PartialOrderingTests(TestCase):
         container.add('o5', Orderable('o5'))
         self.assertEqual(IOrdering(container).idsInOrder(),
             ['o1', 'o2', 'o3', 'o4', 'o5'])
-        self.assertEqual(container.ids(),
+        self.assertEqual(container.objectIds(),
             set(['o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3']))
 
     def testNotifyRemoved(self):
@@ -43,18 +43,18 @@ class PartialOrderingTests(TestCase):
         container.remove('o3')
         self.assertEqual(IOrdering(container).idsInOrder(),
             ['o1', 'o2', 'o4'])
-        self.assertEqual(container.ids(),
+        self.assertEqual(container.objectIds(),
             set(['o1', 'o2', 'o4', 'c1', 'c2', 'c3']))
         container.remove('o1')
         self.assertEqual(IOrdering(container).idsInOrder(),
             ['o2', 'o4'])
-        self.assertEqual(container.ids(),
+        self.assertEqual(container.objectIds(),
             set(['o2', 'o4', 'c1', 'c2', 'c3']))
 
     def runTableTests(self, action, tests):
         for args, order, rval in tests:
             container = self.create()
-            ids = container.ids()
+            ids = container.objectIds()
             ordering = IOrdering(container)
             method = getattr(ordering, action)
             if type(rval) == type(Exception):
@@ -62,7 +62,7 @@ class PartialOrderingTests(TestCase):
             else:
                 self.assertEqual(method(*args), rval)
             self.assertEqual(ordering.idsInOrder(), order)
-            self.assertEqual(container.ids(), ids)
+            self.assertEqual(container.objectIds(), ids)
 
     def testMoveObjectsByDelta(self):
         self.runTableTests('moveObjectsByDelta', (
