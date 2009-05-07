@@ -43,9 +43,14 @@ class PartialOrdering(object):
         except ValueError:          # removing non-orderable items is okay
             pass
 
-    def idsInOrder(self):
+    def idsInOrder(self, onlyOrderables=False):
         """ see interfaces.py """
-        return list(self.order)
+        ordered = list(self.order)
+        if not onlyOrderables:
+            ids = aq_base(self.context).objectIds(ordered=False)
+            unordered = set(ids).difference(set(ordered))
+            ordered += list(unordered)
+        return ordered
 
     def moveObjectsByDelta(self, ids, delta, subset_ids=None,
             suppress_events=False):
@@ -54,7 +59,7 @@ class PartialOrdering(object):
         if isinstance(ids, basestring):
             ids = [ids]
         if subset_ids is None:
-            subset_ids = self.idsInOrder()
+            subset_ids = self.idsInOrder(onlyOrderables=True)
         elif not isinstance(subset_ids, list):
             subset_ids = list(subset_ids)
         if delta > 0:                   # unify moving direction

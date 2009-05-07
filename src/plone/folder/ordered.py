@@ -80,7 +80,9 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         super(OrderedBTreeFolderBase, self)._delOb(id)
         IOrdering(self).notifyRemoved(id)   # notify the ordering adapter
 
-    def objectIds(self, spec=None):
+    def objectIds(self, spec=None, ordered=True):
+        if not ordered:
+            return super(OrderedBTreeFolderBase, self).objectIds(spec)
         ordering = IOrdering(self)
         if spec is None:
             return ordering.idsInOrder()

@@ -19,6 +19,7 @@ class PartialOrderingTests(TestCase):
         container.add('c2', Chaoticle('c2', 'mt2'))
         container.add('c3', Chaoticle('c3', 'mt1'))
         container.add('o4', Orderable('o4', 'mt2'))
+        self.unordered = ['c3', 'c2', 'c1']
         return container
 
     def testAdapter(self):
@@ -29,25 +30,25 @@ class PartialOrderingTests(TestCase):
     def testNotifyAdded(self):
         container = self.create()
         self.assertEqual(IOrdering(container).idsInOrder(),
-            ['o1', 'o2', 'o3', 'o4'])
+            ['o1', 'o2', 'o3', 'o4'] + self.unordered)
         container.add('o5', Orderable('o5'))
         self.assertEqual(IOrdering(container).idsInOrder(),
-            ['o1', 'o2', 'o3', 'o4', 'o5'])
+            ['o1', 'o2', 'o3', 'o4', 'o5'] + self.unordered)
         self.assertEqual(container.objectIds(),
             set(['o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3']))
 
     def testNotifyRemoved(self):
         container = self.create()
         self.assertEqual(IOrdering(container).idsInOrder(),
-            ['o1', 'o2', 'o3', 'o4'])
+            ['o1', 'o2', 'o3', 'o4'] + self.unordered)
         container.remove('o3')
         self.assertEqual(IOrdering(container).idsInOrder(),
-            ['o1', 'o2', 'o4'])
+            ['o1', 'o2', 'o4'] + self.unordered)
         self.assertEqual(container.objectIds(),
             set(['o1', 'o2', 'o4', 'c1', 'c2', 'c3']))
         container.remove('o1')
         self.assertEqual(IOrdering(container).idsInOrder(),
-            ['o2', 'o4'])
+            ['o2', 'o4'] + self.unordered)
         self.assertEqual(container.objectIds(),
             set(['o2', 'o4', 'c1', 'c2', 'c3']))
 
@@ -61,7 +62,7 @@ class PartialOrderingTests(TestCase):
                 self.assertRaises(rval, method, *args)
             else:
                 self.assertEqual(method(*args), rval)
-            self.assertEqual(ordering.idsInOrder(), order)
+            self.assertEqual(ordering.idsInOrder(), order + self.unordered)
             self.assertEqual(container.objectIds(), ids)
 
     def testMoveObjectsByDelta(self):
