@@ -1,6 +1,6 @@
 # simple benchmarking tests related to plip191
 # to run individual tests using:
-# $ bin/instance test -s plone.folder --tests-pattern=benchmarks_simple -t <testName>
+# $ bin/instance test -s plone.folder --tests-pattern=benchmarks -t <testName>
 # where <testName> is something like "testDeleteSpeed"
 
 from unittest import TestCase, defaultTestLoader
