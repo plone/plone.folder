@@ -1,34 +1,25 @@
-from Products.Archetypes import WebDAVSupport
-from Products.Archetypes.atapi import BaseFolder
-from Products.Archetypes.interfaces import IBaseFolder
-from Products.CMFCore import permissions
-from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
+from ComputedAttribute import ComputedAttribute
+from OFS.interfaces import IOrderedContainer as IOrderedContainer
+from OFS.IOrderSupport import IOrderedContainer as Z2IZopeOrderedContainer
+from OFS.ObjectManager import REPLACEABLE
+from webdav.NullResource import NullResource
 from zope.interface import implements
+from Products.CMFPlone.interfaces.OrderedContainer import IOrderedContainer as Z2IOrderedContainer
+from Products.Archetypes.atapi import BaseFolder
 from plone.folder.ordered import OrderedBTreeFolderBase
 
-from OFS.IOrderSupport import IOrderedContainer as IZopeOrderedContainer
-from OFS.interfaces import IOrderedContainer as IZ3OrderedContainer
-try:
-    from Products.CMFPlone.interfaces.OrderedContainer import IOrderedContainer
-except ImportError:
-    from Products.Archetypes.interfaces.orderedfolder import IOrderedContainer
 
 # to keep backward compatibility
 has_btree = 1
 
-from webdav.NullResource import NullResource
-from OFS.ObjectManager import REPLACEABLE
-from ComputedAttribute import ComputedAttribute
 
 class BaseBTreeFolder(OrderedBTreeFolderBase, BaseFolder):
-    """ A BaseBTreeFolder with all the bells and whistles"""
-
-    security = ClassSecurityInfo()
+    """ a base class for btree-based folders supporting ordering """
+    implements(IOrderedContainer)
 
     __implements__ = (BaseFolder.__implements__,
-                      IOrderedContainer, IZopeOrderedContainer)
-    implements(IZ3OrderedContainer)
+                      Z2IOrderedContainer, Z2IZopeOrderedContainer)
 
     def __init__(self, oid, **kwargs):
         OrderedBTreeFolderBase.__init__(self, oid)
@@ -44,7 +35,7 @@ class BaseBTreeFolder(OrderedBTreeFolderBase, BaseFolder):
             accessor = self.Schema()[key].getAccessor(self)
             if accessor is not None:
                 return accessor()
-        return super(OrderedBTreeFolderBase, self).__getitem__(key)
+        return super(BaseBTreeFolder, self).__getitem__(key)
 
     # override the version from `CMFDynamicViewFTI/browserdefault.py:72`
     __call__ = BaseFolder.__call__.im_func
@@ -56,7 +47,7 @@ class BaseBTreeFolder(OrderedBTreeFolderBase, BaseFolder):
         request = getattr(self, 'REQUEST', None)
         if request and request.has_key('REQUEST_METHOD'):
             if (request.maybe_webdav_client and
-                request['REQUEST_METHOD'] in  ['PUT']):
+                request['REQUEST_METHOD'] in ['PUT']):
                 # Very likely a WebDAV client trying to create something
                 nr = NullResource(self, 'index_html')
                 nr.__replaceable__ = REPLACEABLE
@@ -69,5 +60,3 @@ class BaseBTreeFolder(OrderedBTreeFolderBase, BaseFolder):
 InitializeClass(BaseBTreeFolder)
 
 BaseBTreeFolderSchema = BaseBTreeFolder.schema
-
-__all__ = ('BaseBTreeFolder', 'BaseBTreeFolderSchema', )
