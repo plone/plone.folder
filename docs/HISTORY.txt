@@ -1,8 +1,12 @@
 Changelog
 =========
 
-1.0a3 - Unreleased
+1.0a4 - Unreleased
 ------------------
+
+
+1.0a3 - Released May 11, 2009
+-----------------------------
 
 * Let `objectIds` always return all object ids, even with partial ordering.
   [witsch]
