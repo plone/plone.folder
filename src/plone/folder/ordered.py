@@ -14,6 +14,7 @@ from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IOrdering
 from plone.folder.interfaces import IExplicitOrdering
 
+from webdav.NullResource import NullResource
 
 # XXX: Should move to zope.container in the future. However, a conditional
 # import is dangerous. If we have zope.container, but not the version of
@@ -204,11 +205,18 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         self._delObject(key)
 
     def __getitem__(self, key):
-        # we allow KeyError here (see `_getOb` above)
-        # XXX: this might shadow the version from OFS.Folder, which gets used
-        # when inheriting from this class on the archetypes level;  by doing
-        # so it's likely to break support for webdav...
-        return super(OrderedBTreeFolderBase, self)._getOb(key)
+        value = self._getOb(key, None)
+        if value is not None:
+            return value
+        
+        # WebDAV PUT support
+        if hasattr(self, 'REQUEST'):
+            request = self.REQUEST
+            method = request.get('REQUEST_METHOD', 'GET')
+            if getattr(request, 'maybe_webdav_client', False) and not method in ('GET', 'POST'):
+                return NullResource(self, key, request).__of__(self)
+        
+        raise KeyError, key
 
     __iter__ = iterkeys
     keys = objectIds
