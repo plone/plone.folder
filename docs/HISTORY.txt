@@ -4,6 +4,9 @@ Changelog
 1.0a4 - Unreleased
 ------------------
 
+* Fix the WebDAV content creation process by properly returning a NullResource
+  when required.
+  [optilude]
 
 1.0a3 - Released May 11, 2009
 -----------------------------
