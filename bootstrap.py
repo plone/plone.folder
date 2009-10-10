@@ -17,12 +17,14 @@ Simply run this script in a directory containing a buildout.cfg.
 The script accepts buildout command-line options, so you can
 use the -c option to specify an alternate configuration file.
 
-$Id: bootstrap.py 85041 2008-03-31 15:57:30Z andreasjung $
+$Id: bootstrap.py 102545 2009-08-06 14:49:47Z chrisw $
 """
 
 import os, shutil, sys, tempfile, urllib2
 
 tmpeggs = tempfile.mkdtemp()
+
+is_jython = sys.platform.startswith('java')
 
 try:
     import pkg_resources
@@ -46,17 +48,37 @@ else:
 
 cmd = 'from setuptools.command.easy_install import main; main()'
 ws  = pkg_resources.working_set
-assert os.spawnle(
-    os.P_WAIT, sys.executable, quote (sys.executable),
-    '-c', quote (cmd), '-mqNxd', quote (tmpeggs), 'zc.buildout',
-    dict(os.environ,
-         PYTHONPATH=
-         ws.find(pkg_resources.Requirement.parse('setuptools')).location
-         ),
-    ) == 0
+
+if len(sys.argv) > 2 and sys.argv[1] == '--version':
+    VERSION = '==%s' % sys.argv[2]
+    args = sys.argv[3:] + ['bootstrap']
+else:
+    VERSION = ''
+    args = sys.argv[1:] + ['bootstrap']
+
+if is_jython:
+    import subprocess
+
+    assert subprocess.Popen([sys.executable] + ['-c', quote(cmd), '-mqNxd',
+           quote(tmpeggs), 'zc.buildout' + VERSION],
+           env=dict(os.environ,
+               PYTHONPATH=
+               ws.find(pkg_resources.Requirement.parse('setuptools')).location
+               ),
+           ).wait() == 0
+
+else:
+    assert os.spawnle(
+        os.P_WAIT, sys.executable, quote (sys.executable),
+        '-c', quote (cmd), '-mqNxd', quote (tmpeggs), 'zc.buildout' + VERSION,
+        dict(os.environ,
+            PYTHONPATH=
+            ws.find(pkg_resources.Requirement.parse('setuptools')).location
+            ),
+        ) == 0
 
 ws.add_entry(tmpeggs)
-ws.require('zc.buildout')
+ws.require('zc.buildout' + VERSION)
 import zc.buildout.buildout
-zc.buildout.buildout.main(sys.argv[1:] + ['bootstrap'])
+zc.buildout.buildout.main(args)
 shutil.rmtree(tmpeggs)
