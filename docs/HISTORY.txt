@@ -1,8 +1,12 @@
 Changelog
 =========
 
-1.0a4 - Unreleased
+1.0b2 - Unreleased
 ------------------
+
+
+1.0b1 - Released October 10, 2009
+---------------------------------
 
 * Fix the WebDAV content creation process by properly returning a NullResource
   when required.

@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 from os.path import join
 
-version = '1.0a4'
+version = '1.0b2'
 readme = open(join('README.txt')).read()
 history = open(join('docs', 'HISTORY.txt')).read()
 
@@ -10,7 +10,7 @@ setup(name = 'plone.folder',
       description = 'BTree-based folder implementation with order support',
       long_description = readme[readme.find('\n\n'):] + '\n' + history,
       classifiers = [
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
         'Framework :: Plone',
         'Intended Audience :: Developers',
