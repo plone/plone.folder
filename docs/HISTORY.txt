@@ -7,6 +7,14 @@ Changelog
 * Make the dependency on `Products.CMFCore` a soft one.
   [witsch]
 
+* Added an 'unordered' adapter which can be used when no explicit ordering
+  is needed.
+  [davisagli]
+
+* Allow the use of different named adapters to IOrdering, with the name
+  determined by the folder's _ordering attribute.
+  [davisagli]
+
 
 1.0b1 - Released October 10, 2009
 ---------------------------------

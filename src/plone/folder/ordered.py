@@ -1,3 +1,6 @@
+import logging
+
+from zope.component import getAdapter, queryAdapter
 from zope.interface import implements, alsoProvides
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.location.interfaces import ILocation
@@ -24,10 +27,11 @@ from webdav.NullResource import NullResource
 from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IContained
 
+logger = logging.getLogger('plone.folder')
 
 class OrderedBTreeFolderBase(BTreeFolder2Base):
     """ BTree folder base class with ordering support. The ordering
-        is done by adapter (to IOrdering), which makes the policy
+        is done by a named adapter (to IOrdering), which makes the policy
         changeable. """
     implements(IContainer, IOrderedContainer, IOrderableFolder,
         IAttributeAnnotatable)
@@ -37,6 +41,13 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     def __nonzero__(self):
         """ a folder is something, even if it's empty """
         return True
+
+    _ordering = u''
+    def _getOrdering(self):
+        adapter = queryAdapter(self, IOrdering, name=self._ordering)
+        if adapter is None:
+            adapter = getAdapter(self, IOrdering)
+        return adapter
 
     # IObjectManager
 
@@ -60,7 +71,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             if self is not oldparent:
                 object.__parent__ = self
         super(OrderedBTreeFolderBase, self)._setOb(id, object)
-        IOrdering(self).notifyAdded(id)     # notify the ordering adapter
+        self._getOrdering().notifyAdded(id)     # notify the ordering adapter
 
     def _delOb(self, id):
         """ Remove the named object from the folder. """
@@ -80,12 +91,12 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         except AttributeError:
             pass        # No need to fail if we can't set these
         super(OrderedBTreeFolderBase, self)._delOb(id)
-        IOrdering(self).notifyRemoved(id)   # notify the ordering adapter
+        self._getOrdering().notifyRemoved(id)   # notify the ordering adapter
 
     def objectIds(self, spec=None, ordered=True):
         if not ordered:
             return super(OrderedBTreeFolderBase, self).objectIds(spec)
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if spec is None:
             return ordering.idsInOrder()
         else:
@@ -100,12 +111,12 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     security.declareProtected(access_contents_information, 'getObjectPosition')
     def getObjectPosition(self, id):
         """ Get the position of an object by its id. """
-        return IOrdering(self).getObjectPosition(id)
+        return self._getOrdering().getObjectPosition(id)
 
     security.declareProtected(manage_properties, 'moveObjectsUp')
     def moveObjectsUp(self, ids, delta=1, subset_ids=None):
         """ Move specified sub-objects up by delta in container. """
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsUp(ids, delta, subset_ids)
         else:
@@ -114,7 +125,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     security.declareProtected(manage_properties, 'moveObjectsDown')
     def moveObjectsDown(self, ids, delta=1, subset_ids=None):
         """ Move specified sub-objects down by delta in container. """
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsDown(ids, delta, subset_ids)
         else:
@@ -123,7 +134,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     security.declareProtected(manage_properties, 'moveObjectsToTop')
     def moveObjectsToTop(self, ids, subset_ids=None):
         """ Move specified sub-objects to top of container. """
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsToTop(ids, subset_ids)
         else:
@@ -132,7 +143,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     security.declareProtected(manage_properties, 'moveObjectsToBottom')
     def moveObjectsToBottom(self, ids, subset_ids=None):
         """ Move specified sub-objects to bottom of container. """
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsToBottom(ids, subset_ids)
         else:
@@ -141,7 +152,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     security.declareProtected(ModifyPortalContent, 'moveObject')
     def moveObject(self, id, position):
         """ Move specified object to absolute position. """
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectToPosition(id, position)
         else:
@@ -150,7 +161,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     security.declareProtected(manage_properties, 'moveObjectToPosition')
     def moveObjectToPosition(self, id, position, suppress_events=False):
         """ Move specified object to absolute position. """
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectToPosition(id, position, suppress_events)
         else:
@@ -160,7 +171,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     def moveObjectsByDelta(self, ids, delta, subset_ids=None,
             suppress_events=False):
         """ Move specified sub-objects by delta. """
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if IExplicitOrdering.providedBy(ordering):
             return ordering.moveObjectsByDelta(ids, delta, subset_ids,
                 suppress_events)
@@ -170,7 +181,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     security.declareProtected(manage_properties, 'orderObjects')
     def orderObjects(self, key, reverse=None):
         """ Order sub-objects by key and direction. """
-        ordering = IOrdering(self)
+        ordering = self._getOrdering()
         if IExplicitOrdering.providedBy(ordering):
             return ordering.orderObjects(key, reverse)
         else:

@@ -3,5 +3,7 @@
     i18n_domain="plone.folder">
 
     <adapter factory=".default.DefaultOrdering" />
+    <adapter factory=".unordered.UnorderedOrdering"
+             name="unordered" />
 
 </configure>
