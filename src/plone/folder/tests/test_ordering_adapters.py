@@ -1,4 +1,5 @@
 from unittest import TestCase, defaultTestLoader
+from zope.component import ComponentLookupError
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.default import DefaultOrdering
 from plone.folder.unordered import UnorderedOrdering
@@ -30,6 +31,10 @@ class OrderingAdapterTests(TestCase):
         self.failUnless(isinstance(folder.getOrdering(), UnorderedOrdering))
         folder.setOrdering()
         self.failUnless(isinstance(folder.getOrdering(), DefaultOrdering))
+
+    def testSetUnknownOrdering(self):
+        folder = OrderedBTreeFolderBase()
+        self.assertRaises(ComponentLookupError, folder.setOrdering, 'foo')
 
 
 def test_suite():

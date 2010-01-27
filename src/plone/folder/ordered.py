@@ -50,6 +50,9 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
 
     def setOrdering(self, ordering=u''):
         """ (re)set ordering adapter to be used for this folder """
+        if ordering:
+            # make sure the adapter exists...
+            getAdapter(self, IOrdering, name=ordering)
         self._ordering = ordering
 
     # IObjectManager
