@@ -10,7 +10,13 @@ class IFolder(Interface):
 
 
 class IOrderableFolder(IFolder):
-    """ Marker interface for Plone-like folders with ordering support """
+    """ A Plone-like folder with ordering support """
+
+    def getOrdering():
+        """ return the currently active ordering adapter for this folder """
+
+    def setOrdering(ordering=u''):
+        """ (re)set ordering adapter to be used for this folder """
 
 
 class IOrdering(Interface):
