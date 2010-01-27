@@ -1,5 +1,3 @@
-import logging
-
 from zope.component import getAdapter, queryAdapter
 from zope.interface import implements, alsoProvides
 from zope.annotation.interfaces import IAttributeAnnotatable
@@ -27,7 +25,6 @@ from webdav.NullResource import NullResource
 from zope.app.container.interfaces import IContainer
 from zope.app.container.interfaces import IContained
 
-logger = logging.getLogger('plone.folder')
 
 class OrderedBTreeFolderBase(BTreeFolder2Base):
     """ BTree folder base class with ordering support. The ordering
@@ -36,14 +33,16 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     implements(IContainer, IOrderedContainer, IOrderableFolder,
         IAttributeAnnotatable)
 
+    _ordering = u''         # name of adapter defining ordering policy
+
     security = ClassSecurityInfo()
 
     def __nonzero__(self):
         """ a folder is something, even if it's empty """
         return True
 
-    _ordering = u''
     def _getOrdering(self):
+        """ return the ordering adapter for this folder """
         adapter = queryAdapter(self, IOrdering, name=self._ordering)
         if adapter is None:
             adapter = getAdapter(self, IOrdering)

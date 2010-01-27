@@ -3,6 +3,7 @@ from zope.interface import implements
 from zope.component import adapts
 from plone.folder.interfaces import IOrdering, IOrderableFolder
 
+
 class UnorderedOrdering(object):
     """ This implementation provides no ordering. """
     implements(IOrdering)

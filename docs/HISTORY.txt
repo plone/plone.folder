@@ -11,23 +11,23 @@ Changelog
   is needed.
   [davisagli]
 
-* Allow the use of different named adapters to IOrdering, with the name
-  determined by the folder's _ordering attribute.
+* Allow the use of different named adapters to ``IOrdering``, with the name
+  determined by the folder's ``_ordering`` attribute.
   [davisagli]
 
 
 1.0b1 - Released October 10, 2009
 ---------------------------------
 
-* Fix the WebDAV content creation process by properly returning a NullResource
-  when required.
+* Fix the WebDAV content creation process by properly returning a
+  ``NullResource`` when required.
   [optilude]
 
 
 1.0a3 - Released May 11, 2009
 -----------------------------
 
-* Let `objectIds` always return all object ids, even with partial ordering.
+* Let ``objectIds`` always return all object ids, even with partial ordering.
   [witsch]
 
 

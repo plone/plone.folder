@@ -6,7 +6,7 @@ from plone.folder.tests.layer import PloneFolderLayer
 
 
 class UnorderedOrderingTests(TestCase):
-    """ tests regarding order-support for only items marked orderable """
+    """ tests regarding order-support for folders with unordered ordering """
 
     layer = PloneFolderLayer
 
@@ -43,6 +43,7 @@ class UnorderedOrderingTests(TestCase):
     def testGetObjectPosition(self):
         container = self.create()
         self.assertEqual(container.getObjectPosition('o2'), None)
+
 
 def test_suite():
     return defaultTestLoader.loadTestsFromName(__name__)
