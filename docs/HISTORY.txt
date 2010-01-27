@@ -15,6 +15,7 @@ Changelog
   when required.
   [optilude]
 
+
 1.0a3 - Released May 11, 2009
 -----------------------------
 
@@ -69,4 +70,3 @@ Changelog
 
 * Initial release
   [optilude, tesdal, witsch]
-
