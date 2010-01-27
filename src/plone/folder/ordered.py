@@ -7,8 +7,9 @@ from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import manage_properties
 from OFS.interfaces import IOrderedContainer
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base, _marker
-from Products.CMFCore.PortalFolder import PortalFolderBase
-from Products.CMFCore.permissions import ModifyPortalContent
+
+from plone.folder.cmf import PortalFolderBase
+from plone.folder.cmf import ModifyPortalContent
 
 from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IOrdering

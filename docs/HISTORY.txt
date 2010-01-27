@@ -4,6 +4,9 @@ Changelog
 1.0b2 - Unreleased
 ------------------
 
+* Make the dependency on `Products.CMFCore` a soft one.
+  [witsch]
+
 
 1.0b1 - Released October 10, 2009
 ---------------------------------

@@ -35,11 +35,10 @@ setup(name = 'plone.folder',
       install_requires = [
           'setuptools',
           'plone.memoize',
-          'Products.CMFCore',
       ],
       extras_require = { 'test': [
-          'zope.testing',
           'profilehooks',
+          'Products.CMFCore',
       ]},
       entry_points = '',
 )
