@@ -41,6 +41,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         """ a folder is something, even if it's empty """
         return True
 
+    security.declareProtected(access_contents_information, 'getOrdering')
     def getOrdering(self):
         """ return the currently active ordering adapter for this folder """
         adapter = queryAdapter(self, IOrdering, name=self._ordering)
@@ -48,6 +49,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             adapter = getAdapter(self, IOrdering)
         return adapter
 
+    security.declareProtected(manage_properties, 'setOrdering')
     def setOrdering(self, ordering=u''):
         """ (re)set ordering adapter to be used for this folder """
         if ordering:
