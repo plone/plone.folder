@@ -90,6 +90,8 @@ class PartialOrdering(object):
                         idx += 1
                     except KeyError:
                         raise ValueError('No object with id "%s" exists.' % id)
+            if idx > 0:
+                self.context._p_changed = True      # the order was changed
         if not suppress_events:
             notifyContainerModified(self.context)
         return counter
