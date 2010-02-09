@@ -35,11 +35,13 @@ class PartialOrdering(object):
         obj = context._getOb(id)
         if IOrderable.providedBy(obj):
             self.order.append(id)
+            self.context._p_changed = True      # the order was changed
 
     def notifyRemoved(self, id):
         """ see interfaces.py """
         try:
             self.order.remove(id)
+            self.context._p_changed = True      # the order was changed
         except ValueError:          # removing non-orderable items is okay
             pass
 
@@ -125,6 +127,7 @@ class PartialOrdering(object):
         """ see interfaces.py """
         keyfn = lambda id: getattr(self.context._getOb(id), key)
         self.order.sort(None, keyfn, bool(reverse))
+        self.context._p_changed = True      # the order was changed
         return -1
 
     def getObjectPosition(self, id):
