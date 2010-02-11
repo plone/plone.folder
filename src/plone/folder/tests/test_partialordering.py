@@ -1,5 +1,10 @@
 from unittest import TestCase, defaultTestLoader
-from plone.folder.interfaces import IOrdering
+from transaction import savepoint
+from Acquisition import Implicit
+from Testing.ZopeTestCase import ZopeTestCase
+from zope.interface import implements
+from plone.folder.interfaces import IOrdering, IOrderable
+from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.utils import DummyContainer
 from plone.folder.tests.utils import Orderable, Chaoticle
 from plone.folder.tests.layer import PartialOrderingLayer
@@ -165,6 +170,55 @@ class PartialOrderingTests(TestCase):
             (('n2',), ['o1', 'o2', 'o3', 'o4'], ValueError),
             (('c2',), ['o1', 'o2', 'o3', 'o4'], None),      # existent, but non-orderable
         ))
+
+
+class DummyFolder(OrderedBTreeFolderBase, Implicit):
+    """ we need to mix in acquisition """
+    implements(IOrderable)
+
+    meta_type = 'DummyFolder'
+
+
+class PartialOrderingIntegrationTests(ZopeTestCase):
+
+    layer = PartialOrderingLayer
+
+    def afterSetUp(self):
+        context = self.app
+        context._setOb('foo', DummyFolder('foo'))
+        context.foo._setOb('bar1', DummyFolder('bar1'))
+        context.foo._setOb('bar2', DummyFolder('bar2'))
+        context.foo._setOb('bar3', DummyFolder('bar3'))
+        savepoint(optimistic=True)
+        self.assertEqual(self.registered, [])
+
+    @property
+    def registered(self):
+        return self.app._p_jar._registered_objects
+
+    def testAddObjectChangesOrderInfo(self):
+        foo = self.app.foo
+        foo._setOb('bar23', DummyFolder('bar23'))
+        self.assertEqual(foo.objectIds(), ['bar1', 'bar2', 'bar3', 'bar23'])
+        self.failUnless(foo in self.registered, 'not registered?')
+
+    def testRemoveObjectChangesOrderInfo(self):
+        foo = self.app.foo
+        foo._delOb('bar2',)
+        self.assertEqual(foo.objectIds(), ['bar1', 'bar3'])
+        self.failUnless(foo in self.registered, 'not registered?')
+
+    def testMoveObjectChangesOrderInfo(self):
+        foo = self.app.foo
+        foo.moveObjectsUp(('bar2',))
+        self.assertEqual(foo.objectIds(), ['bar2', 'bar1', 'bar3'])
+        self.failUnless(foo in self.registered, 'not registered?')
+
+    def testOrderObjectsChangesOrderInfo(self):
+        foo = self.app.foo
+        foo.orderObjects('id', reverse=True)
+        self.assertEqual(foo.objectIds(), ['bar3', 'bar2', 'bar1'])
+        self.failUnless(foo in self.registered, 'not registered?')
 
 
 def test_suite():
