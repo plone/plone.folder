@@ -134,6 +134,9 @@ class DefaultOrdering(object):
         """ see interfaces.py """
         return list(self._order())
 
+    def __getitem__(self, index):
+        return self._order()[index]
+
     # Annotation lookup with lazy creation
 
     @memoize

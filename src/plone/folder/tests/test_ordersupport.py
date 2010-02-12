@@ -1,5 +1,6 @@
 from unittest import TestCase, defaultTestLoader
 
+from plone.folder.interfaces import IOrdering
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.layer import PloneFolderLayer
 from plone.folder.tests.utils import DummyObject
@@ -49,6 +50,14 @@ class OFSOrderSupportTests(TestCase):
         self.assertEquals(["o1", "o2", "o3", "o4"], [x for x in folder])
         folder.moveObjectsUp(("o2",), 1)
         self.assertEquals(["o2", "o1", "o3", "o4"], [x for x in folder])
+
+    def test_getitem(self):
+        ordering = IOrdering(self.create())
+        self.assertEquals(ordering[1], 'o2')
+        self.assertEquals(ordering[-1], 'o4')
+        self.assertEquals(ordering[1:2], ['o2'])
+        self.assertEquals(ordering[1:-1], ['o2', 'o3'])
+        self.assertEquals(ordering[1:], ['o2', 'o3', 'o4'])
 
     # Tests borrowed from OFS.tests.testsOrderSupport
 

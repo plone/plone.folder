@@ -4,6 +4,10 @@ Changelog
 1.0b4 - Unreleased
 ------------------
 
+* Add `__getitem__` support to the default ordering adapter to help
+  previous/next support in `plone.app.folder`.
+  [witsch]
+
 
 1.0b3 - Released February 9, 2010
 ---------------------------------
