@@ -12,11 +12,11 @@ class OFSOrderSupportTests(TestCase):
     layer = PloneFolderLayer
 
     def create(self):
-        folder = OrderedBTreeFolderBase("f1")
-        folder._setOb('o1', DummyObject('o1', 'mt1'))
-        folder._setOb('o2', DummyObject('o2', 'mt2'))
-        folder._setOb('o3', DummyObject('o3', 'mt1'))
-        folder._setOb('o4', DummyObject('o4', 'mt2'))
+        folder = OrderedBTreeFolderBase('f1')
+        folder['o1'] = DummyObject('o1', 'mt1')
+        folder['o2'] = DummyObject('o2', 'mt2')
+        folder['o3'] = DummyObject('o3', 'mt1')
+        folder['o4'] = DummyObject('o4', 'mt2')
         return folder
 
     # Test for ordering of basic methods
@@ -169,9 +169,9 @@ class PloneOrderSupportTests(TestCase):
 
     def setUp(self):
         self.folder = OrderedBTreeFolderBase("f1")
-        self.folder._setOb('foo', DummyObject('foo', 'mt1'))
-        self.folder._setOb('bar', DummyObject('bar', 'mt1'))
-        self.folder._setOb('baz', DummyObject('baz', 'mt1'))
+        self.folder['foo'] = DummyObject('foo', 'mt1')
+        self.folder['bar'] = DummyObject('bar', 'mt1')
+        self.folder['baz'] = DummyObject('baz', 'mt1')
 
     def testGetObjectPosition(self):
         self.assertEqual(self.folder.getObjectPosition('foo'), 0)

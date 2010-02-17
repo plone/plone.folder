@@ -18,13 +18,13 @@ class PartialOrderingTests(TestCase):
     def create(self):
         container = OrderedBTreeFolderBase()
         container.setOrdering(u'partial')
-        container._setOb('o1', Orderable('o1', 'mt1'))
-        container._setOb('o2', Orderable('o2', 'mt2'))
-        container._setOb('c1', Chaoticle('c1', 'mt3'))
-        container._setOb('o3', Orderable('o3', 'mt1'))
-        container._setOb('c2', Chaoticle('c2', 'mt2'))
-        container._setOb('c3', Chaoticle('c3', 'mt1'))
-        container._setOb('o4', Orderable('o4', 'mt2'))
+        container['o1'] = Orderable('o1', 'mt1')
+        container['o2'] = Orderable('o2', 'mt2')
+        container['c1'] = Chaoticle('c1', 'mt3')
+        container['o3'] = Orderable('o3', 'mt1')
+        container['c2'] = Chaoticle('c2', 'mt2')
+        container['c3'] = Chaoticle('c3', 'mt1')
+        container['o4'] = Orderable('o4', 'mt2')
         self.unordered = ['c3', 'c2', 'c1']
         ordering = container.getOrdering()
         return container, ordering
@@ -37,7 +37,7 @@ class PartialOrderingTests(TestCase):
         container, ordering = self.create()
         self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o3', 'o4'] + self.unordered)
-        container._setOb('o5', Orderable('o5'))
+        container['o5'] = Orderable('o5')
         self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o3', 'o4', 'o5'] + self.unordered)
         self.assertEqual(set(container.objectIds()),
@@ -186,10 +186,10 @@ class PartialOrderingIntegrationTests(ZopeTestCase):
 
     def afterSetUp(self):
         context = self.app
-        context._setOb('foo', DummyFolder('foo'))
-        context.foo._setOb('bar1', DummyFolder('bar1'))
-        context.foo._setOb('bar2', DummyFolder('bar2'))
-        context.foo._setOb('bar3', DummyFolder('bar3'))
+        context['foo'] = DummyFolder('foo')
+        context.foo['bar1'] = DummyFolder('bar1')
+        context.foo['bar2'] = DummyFolder('bar2')
+        context.foo['bar3'] = DummyFolder('bar3')
         savepoint(optimistic=True)
         self.assertEqual(self.registered, [])
 
@@ -199,7 +199,7 @@ class PartialOrderingIntegrationTests(ZopeTestCase):
 
     def testAddObjectChangesOrderInfo(self):
         foo = self.app.foo
-        foo._setOb('bar23', DummyFolder('bar23'))
+        foo['bar23'] = DummyFolder('bar23')
         self.assertEqual(foo.objectIds(), ['bar1', 'bar2', 'bar3', 'bar23'])
         self.failUnless(foo in self.registered, 'not registered?')
 
