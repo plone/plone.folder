@@ -5,7 +5,7 @@ from Testing.ZopeTestCase import ZopeTestCase
 from zope.interface import implements
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
-from plone.folder.tests.utils import DummyContainer
+from plone.folder.partial import PartialOrdering
 from plone.folder.tests.utils import Orderable, Chaoticle
 from plone.folder.tests.layer import PloneFolderLayer
 
@@ -16,60 +16,59 @@ class PartialOrderingTests(TestCase):
     layer = PloneFolderLayer
 
     def create(self):
-        container = DummyContainer()
-        container._ordering = u'partial'
-        container.add('o1', Orderable('o1', 'mt1'))
-        container.add('o2', Orderable('o2', 'mt2'))
-        container.add('c1', Chaoticle('c1', 'mt3'))
-        container.add('o3', Orderable('o3', 'mt1'))
-        container.add('c2', Chaoticle('c2', 'mt2'))
-        container.add('c3', Chaoticle('c3', 'mt1'))
-        container.add('o4', Orderable('o4', 'mt2'))
+        container = OrderedBTreeFolderBase()
+        container.setOrdering(u'partial')
+        container._setOb('o1', Orderable('o1', 'mt1'))
+        container._setOb('o2', Orderable('o2', 'mt2'))
+        container._setOb('c1', Chaoticle('c1', 'mt3'))
+        container._setOb('o3', Orderable('o3', 'mt1'))
+        container._setOb('c2', Chaoticle('c2', 'mt2'))
+        container._setOb('c3', Chaoticle('c3', 'mt1'))
+        container._setOb('o4', Orderable('o4', 'mt2'))
         self.unordered = ['c3', 'c2', 'c1']
-        ordering = container.ordering
+        ordering = container.getOrdering()
         return container, ordering
 
     def testAdapter(self):
-        container = DummyContainer()
-        container._ordering = 'partial'
-        self.failUnless(container.ordering)
+        container, ordering = self.create()
+        self.failUnless(isinstance(ordering, PartialOrdering))
 
     def testNotifyAdded(self):
         container, ordering = self.create()
         self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o3', 'o4'] + self.unordered)
-        container.add('o5', Orderable('o5'))
+        container._setOb('o5', Orderable('o5'))
         self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o3', 'o4', 'o5'] + self.unordered)
-        self.assertEqual(container.objectIds(),
+        self.assertEqual(set(container.objectIds()),
             set(['o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3']))
 
     def testNotifyRemoved(self):
         container, ordering = self.create()
         self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o3', 'o4'] + self.unordered)
-        container.remove('o3')
+        container._delOb('o3')
         self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o4'] + self.unordered)
-        self.assertEqual(container.objectIds(),
+        self.assertEqual(set(container.objectIds()),
             set(['o1', 'o2', 'o4', 'c1', 'c2', 'c3']))
-        container.remove('o1')
+        container._delOb('o1')
         self.assertEqual(ordering.idsInOrder(),
             ['o2', 'o4'] + self.unordered)
-        self.assertEqual(container.objectIds(),
+        self.assertEqual(set(container.objectIds()),
             set(['o2', 'o4', 'c1', 'c2', 'c3']))
 
     def runTableTests(self, action, tests):
         for args, order, rval in tests:
             container, ordering = self.create()
-            ids = container.objectIds()
+            ids = set(container.objectIds())
             method = getattr(ordering, action)
             if type(rval) == type(Exception):
                 self.assertRaises(rval, method, *args)
             else:
                 self.assertEqual(method(*args), rval)
             self.assertEqual(ordering.idsInOrder(), order + self.unordered)
-            self.assertEqual(container.objectIds(), ids)
+            self.assertEqual(set(container.objectIds()), ids)   # all here?
 
     def testMoveObjectsByDelta(self):
         self.runTableTests('moveObjectsByDelta', (
