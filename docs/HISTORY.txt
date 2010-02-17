@@ -4,6 +4,9 @@ Changelog
 1.0b4 - Unreleased
 ------------------
 
+* Register all ordering adapter by default now that they can co-exist.
+  [witsch]
+
 * Add `__getitem__` support to the default ordering adapter to help
   previous/next support in `plone.app.folder`.
   [witsch]
