@@ -3,20 +3,21 @@ from transaction import savepoint
 from Acquisition import Implicit
 from Testing.ZopeTestCase import ZopeTestCase
 from zope.interface import implements
-from plone.folder.interfaces import IOrdering, IOrderable
+from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.utils import DummyContainer
 from plone.folder.tests.utils import Orderable, Chaoticle
-from plone.folder.tests.layer import PartialOrderingLayer
+from plone.folder.tests.layer import PloneFolderLayer
 
 
 class PartialOrderingTests(TestCase):
     """ tests regarding order-support for only items marked orderable """
 
-    layer = PartialOrderingLayer
+    layer = PloneFolderLayer
 
     def create(self):
         container = DummyContainer()
+        container._ordering = u'partial'
         container.add('o1', Orderable('o1', 'mt1'))
         container.add('o2', Orderable('o2', 'mt2'))
         container.add('c1', Chaoticle('c1', 'mt3'))
@@ -25,43 +26,43 @@ class PartialOrderingTests(TestCase):
         container.add('c3', Chaoticle('c3', 'mt1'))
         container.add('o4', Orderable('o4', 'mt2'))
         self.unordered = ['c3', 'c2', 'c1']
-        return container
+        ordering = container.ordering
+        return container, ordering
 
     def testAdapter(self):
         container = DummyContainer()
-        ordering = IOrdering(container)
-        self.failUnless(ordering)
+        container._ordering = 'partial'
+        self.failUnless(container.ordering)
 
     def testNotifyAdded(self):
-        container = self.create()
-        self.assertEqual(IOrdering(container).idsInOrder(),
+        container, ordering = self.create()
+        self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o3', 'o4'] + self.unordered)
         container.add('o5', Orderable('o5'))
-        self.assertEqual(IOrdering(container).idsInOrder(),
+        self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o3', 'o4', 'o5'] + self.unordered)
         self.assertEqual(container.objectIds(),
             set(['o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3']))
 
     def testNotifyRemoved(self):
-        container = self.create()
-        self.assertEqual(IOrdering(container).idsInOrder(),
+        container, ordering = self.create()
+        self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o3', 'o4'] + self.unordered)
         container.remove('o3')
-        self.assertEqual(IOrdering(container).idsInOrder(),
+        self.assertEqual(ordering.idsInOrder(),
             ['o1', 'o2', 'o4'] + self.unordered)
         self.assertEqual(container.objectIds(),
             set(['o1', 'o2', 'o4', 'c1', 'c2', 'c3']))
         container.remove('o1')
-        self.assertEqual(IOrdering(container).idsInOrder(),
+        self.assertEqual(ordering.idsInOrder(),
             ['o2', 'o4'] + self.unordered)
         self.assertEqual(container.objectIds(),
             set(['o2', 'o4', 'c1', 'c2', 'c3']))
 
     def runTableTests(self, action, tests):
         for args, order, rval in tests:
-            container = self.create()
+            container, ordering = self.create()
             ids = container.objectIds()
-            ordering = IOrdering(container)
             method = getattr(ordering, action)
             if type(rval) == type(Exception):
                 self.assertRaises(rval, method, *args)
@@ -177,11 +178,12 @@ class DummyFolder(OrderedBTreeFolderBase, Implicit):
     implements(IOrderable)
 
     meta_type = 'DummyFolder'
+    _ordering = u'partial'
 
 
 class PartialOrderingIntegrationTests(ZopeTestCase):
 
-    layer = PartialOrderingLayer
+    layer = PloneFolderLayer
 
     def afterSetUp(self):
         context = self.app

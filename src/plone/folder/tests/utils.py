@@ -1,4 +1,6 @@
 from zope.interface import implements
+from zope.component import getAdapter, queryAdapter
+from zope.annotation.interfaces import IAttributeAnnotatable
 from plone.folder.interfaces import IOrderable, IOrderableFolder, IOrdering
 
 
@@ -16,18 +18,27 @@ class DummyObject(object):
 
 
 class DummyContainer(object):
-    implements(IOrderableFolder)
+    implements(IOrderableFolder, IAttributeAnnotatable)
+
+    _ordering = u''         # name of adapter defining ordering policy
 
     def __init__(self):
         self.objs = {}
 
+    @property
+    def ordering(self):
+        adapter = queryAdapter(self, IOrdering, name=self._ordering)
+        if adapter is None:
+            adapter = getAdapter(self, IOrdering)
+        return adapter
+
     def add(self, id, obj):
         self.objs[id] = obj
-        IOrdering(self).notifyAdded(id)         # notify the ordering adapter
+        self.ordering.notifyAdded(id)           # notify the ordering adapter
 
     def remove(self, id):
         del self.objs[id]
-        IOrdering(self).notifyRemoved(id)       # notify the ordering adapter
+        self.ordering.notifyRemoved(id)         # notify the ordering adapter
 
     def objectIds(self, spec=None, ordered=True):
         return set(self.objs)

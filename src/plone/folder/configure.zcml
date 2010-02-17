@@ -5,5 +5,7 @@
     <adapter factory=".default.DefaultOrdering" />
     <adapter factory=".unordered.UnorderedOrdering"
              name="unordered" />
+    <adapter factory=".partial.PartialOrdering"
+             name="partial" />
 
 </configure>

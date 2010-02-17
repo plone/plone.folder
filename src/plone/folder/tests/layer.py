@@ -1,28 +1,19 @@
-from zope.component import provideAdapter
-from zope.annotation.attribute import AttributeAnnotations
-from plone.folder.default import DefaultOrdering
-from plone.folder.partial import PartialOrdering
-from plone.folder.unordered import UnorderedOrdering
+from Products.Five import fiveconfigure
+from Products.Five.zcml import load_config
 
 
 class PloneFolderLayer:
 
     @classmethod
     def setUp(cls):
-        provideAdapter(DefaultOrdering)
-        provideAdapter(UnorderedOrdering, name=u'unordered')
-        provideAdapter(AttributeAnnotations)
-
-    @classmethod
-    def tearDown(cls):
-        pass
-
-
-class PartialOrderingLayer:
-
-    @classmethod
-    def setUp(cls):
-        provideAdapter(PartialOrdering)
+        # load zcml & install the package
+        fiveconfigure.debug_mode = True
+        from zope import component, annotation
+        load_config('meta.zcml', component)
+        load_config('configure.zcml', annotation)
+        from plone import folder
+        load_config('configure.zcml', folder)
+        fiveconfigure.debug_mode = False
 
     @classmethod
     def tearDown(cls):
