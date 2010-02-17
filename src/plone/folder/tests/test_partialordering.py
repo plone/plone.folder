@@ -186,7 +186,7 @@ class PartialOrderingIntegrationTests(ZopeTestCase):
 
     def afterSetUp(self):
         context = self.app
-        context['foo'] = DummyFolder('foo')
+        context._setOb('foo', DummyFolder('foo'))   # not pythonic in 2.10 :(
         context.foo['bar1'] = DummyFolder('bar1')
         context.foo['bar2'] = DummyFolder('bar2')
         context.foo['bar3'] = DummyFolder('bar3')
