@@ -4,6 +4,11 @@ Changelog
 1.0b5 - Unreleased
 ------------------
 
+* Remove support for setting ``__parent__`` and ``__name__`` for content
+  providing ``IContained`` as it can cause severe performance issues when
+  used on Zope 2.x.
+  [witsch]
+
 
 1.0b4 - Released February 17, 2010
 ----------------------------------

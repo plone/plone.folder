@@ -1,7 +1,6 @@
 from zope.component import getAdapter, queryAdapter
-from zope.interface import implements, alsoProvides
+from zope.interface import implements
 from zope.annotation.interfaces import IAttributeAnnotatable
-from zope.location.interfaces import ILocation
 
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import access_contents_information
@@ -18,20 +17,12 @@ from plone.folder.interfaces import IExplicitOrdering
 
 from webdav.NullResource import NullResource
 
-# XXX: Should move to zope.container in the future. However, a conditional
-# import is dangerous. If we have zope.container, but not the version of
-# zope.app.container that contains the requisite BBB aliases, we may end
-# up checking the wrong IContained interface.
-from zope.app.container.interfaces import IContainer
-from zope.app.container.interfaces import IContained
-
 
 class OrderedBTreeFolderBase(BTreeFolder2Base):
     """ BTree folder base class with ordering support. The ordering
         is done by a named adapter (to IOrdering), which makes the policy
         changeable. """
-    implements(IContainer, IOrderedContainer, IOrderableFolder,
-        IAttributeAnnotatable)
+    implements(IOrderedContainer, IOrderableFolder, IAttributeAnnotatable)
 
     _ordering = u''         # name of adapter defining ordering policy
 
@@ -68,36 +59,11 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
 
     def _setOb(self, id, object):
         """ Store the named object in the folder. """
-        # Set __name__ and __parent__ if the object supports it
-        if ILocation.providedBy(object):
-            if not IContained.providedBy(object):
-                alsoProvides(object, IContained)
-            oldname = getattr(object, '__name__', None)
-            oldparent = getattr(object, '__parent__', None)
-            if id is not oldname:
-                object.__name__ = id
-            if self is not oldparent:
-                object.__parent__ = self
         super(OrderedBTreeFolderBase, self)._setOb(id, object)
         self.getOrdering().notifyAdded(id)     # notify the ordering adapter
 
     def _delOb(self, id):
         """ Remove the named object from the folder. """
-        # Unset __parent__ and __name__ prior to removing the object.
-        # Note that there is a slight discrepancy with the Zope 3 behaviour
-        # here: we do this before the IObjectRemovedEvent is fired. In
-        # zope.container, IObjectRemovedEvent is fired before the object is
-        # actually deleted and this information is unset. In Zope2's OFS,
-        # there's a different IObjectWillBeRemovedEvent that is fired first,
-        # then the object is removed, and then IObjectRemovedEvent is fired.
-        try:
-            obj = self._getOb(id, _marker)
-            if obj is not _marker:
-                if IContained.providedBy(obj):
-                    obj.__parent__ = None
-                    obj.__name__ = None
-        except AttributeError:
-            pass        # No need to fail if we can't set these
         super(OrderedBTreeFolderBase, self)._delOb(id)
         self.getOrdering().notifyRemoved(id)   # notify the ordering adapter
 
