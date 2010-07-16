@@ -1,9 +1,8 @@
 from setuptools import setup, find_packages
-from os.path import join
 
-version = '1.0b6'
-readme = open(join('README.txt')).read()
-history = open(join('docs', 'HISTORY.txt')).read()
+version = '1.0'
+readme = open('README.txt').read()
+history = open('CHANGES.txt').read()
 
 setup(name = 'plone.folder',
       version = version,

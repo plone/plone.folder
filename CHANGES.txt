@@ -1,12 +1,12 @@
 Changelog
 =========
 
-1.0b6 - Unreleased
+1.0 - Unreleased
+----------------
+
+
+1.0b5 - 2010-03-06
 ------------------
-
-
-1.0b5 - Released March 6, 2010
-------------------------------
 
 * Remove support for setting ``__parent__`` and ``__name__`` for content
   providing ``IContained`` as it can cause severe performance issues when
