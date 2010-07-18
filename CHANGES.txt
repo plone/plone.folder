@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0 - Unreleased
+1.0 - 2010-07-18
 ----------------
 
 - Avoid dangerous memoization in the DefaultOrdering adapter.
