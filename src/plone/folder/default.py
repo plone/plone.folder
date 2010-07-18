@@ -7,7 +7,6 @@ from zope.annotation.interfaces import IAnnotations
 
 from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IExplicitOrdering
-from plone.memoize.instance import memoize
 
 # XXX: Should move to zope.container in the future
 from zope.app.container.contained import notifyContainerModified
@@ -139,7 +138,6 @@ class DefaultOrdering(object):
 
     # Annotation lookup with lazy creation
 
-    @memoize
     def _order(self, create=False):
         annotations = IAnnotations(self.context)
         if create:
@@ -147,7 +145,6 @@ class DefaultOrdering(object):
         else:
             return annotations.get(self.ORDER_KEY, [])
 
-    @memoize
     def _pos(self, create=False):
         annotations = IAnnotations(self.context)
         if create:
