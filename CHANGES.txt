@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.1 - unreleased
+1.0.1 - 2010-08-08
 ------------------
 
 - Added objectValues and objectItems method to the ordered folder
