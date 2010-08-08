@@ -7,6 +7,7 @@ from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import manage_properties
 from OFS.interfaces import IOrderedContainer
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base, _marker
+from Products.ZCatalog.Lazy import LazyMap
 
 from plone.folder.cmf import PortalFolderBase
 from plone.folder.cmf import ModifyPortalContent
@@ -79,6 +80,19 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             for id in ids:
                 idxs.append((ordering.getObjectPosition(id), id))
             return [x[1] for x in sorted(idxs, key=lambda a: a[0])]
+
+    def objectValues(self, spec=None):
+        # Returns a list of actual subobjects of the current object.
+        # If 'spec' is specified, returns only objects whose meta_type
+        # match 'spec'.
+        return LazyMap(self._getOb, self.objectIds(spec))
+
+    def objectItems(self, spec=None):
+        # Returns a list of (id, subobject) tuples of the current object.
+        # If 'spec' is specified, returns only objects whose meta_type match
+        # 'spec'
+        return LazyMap(lambda id, _getOb=self._getOb: (id, _getOb(id)),
+                       self.objectIds(spec))
 
     # IOrderSupport - mostly deprecated, use the adapter directly instead
 
@@ -208,8 +222,8 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
 
     __iter__ = iterkeys
     keys = objectIds
-    values = BTreeFolder2Base.objectValues
-    items = BTreeFolder2Base.objectItems
+    values = objectValues
+    items = objectItems
 
 
 class CMFOrderedBTreeFolderBase(OrderedBTreeFolderBase, PortalFolderBase):

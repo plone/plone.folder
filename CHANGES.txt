@@ -4,6 +4,11 @@ Changelog
 1.0.1 - unreleased
 ------------------
 
+- Added objectValues and objectItems method to the ordered folder
+  implementation, which use objectIds and thus the ordering information. In
+  Zope 2.13 BTreeFolder2 was optimized to loop over the internal _tree data
+  structure avoiding the objectIds indirection.
+  [hannosch]
 
 1.0 - 2010-07-18
 ----------------
