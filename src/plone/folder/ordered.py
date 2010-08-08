@@ -185,7 +185,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         self._setObject(key, value)
 
     def __contains__(self, key):
-        return self.has_key(key)
+        return key in self._tree
 
     def __delitem__(self, key):
         self._delObject(key)
@@ -194,15 +194,17 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         value = self._getOb(key, None)
         if value is not None:
             return value
-        
+
         # WebDAV PUT support
         if hasattr(self, 'REQUEST'):
             request = self.REQUEST
             method = request.get('REQUEST_METHOD', 'GET')
-            if getattr(request, 'maybe_webdav_client', False) and not method in ('GET', 'POST'):
+            if (getattr(request, 'maybe_webdav_client', False) and
+                not method in ('GET', 'POST')):
+
                 return NullResource(self, key, request).__of__(self)
-        
-        raise KeyError, key
+
+        raise KeyError(key)
 
     __iter__ = iterkeys
     keys = objectIds
