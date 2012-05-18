@@ -5,6 +5,9 @@ Changelog
 1.0.2 - unreleased
 ------------------
 
+- Update notifyContainerModified import location.
+  [hannosch]
+
 - Add MANIFEST.in.
   [WouterVH]
 

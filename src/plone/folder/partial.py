@@ -1,12 +1,11 @@
 from Acquisition import aq_base
 from zope.interface import implements
 from zope.component import adapts
+from zope.container.contained import notifyContainerModified
+
 from plone.folder.interfaces import IOrderable
 from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IExplicitOrdering
-
-# XXX: Should move to zope.container in the future
-from zope.app.container.contained import notifyContainerModified
 
 ORDER_ATTR = '_objectordering'
 

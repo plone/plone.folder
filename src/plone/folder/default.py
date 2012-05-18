@@ -4,12 +4,10 @@ from BTrees.OIBTree import OIBTree
 from zope.interface import implements
 from zope.component import adapts
 from zope.annotation.interfaces import IAnnotations
+from zope.container.contained import notifyContainerModified
 
 from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IExplicitOrdering
-
-# XXX: Should move to zope.container in the future
-from zope.app.container.contained import notifyContainerModified
 
 
 class DefaultOrdering(object):
