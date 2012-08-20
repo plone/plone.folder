@@ -32,6 +32,10 @@ setup(name='plone.folder',
       install_requires=[
           'setuptools',
           'plone.memoize',
+          'zope.interface',
+          'zope.component',
+          'zope.annotation',
+          'zope.container',
       ],
       extras_require={'test': [
           'profilehooks',
