@@ -1,6 +1,7 @@
 include *.txt
 
 recursive-include docs *
-recursive-include plone *
+recursive-include src *
+recursive-include var *
 
 global-exclude *pyc
