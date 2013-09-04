@@ -122,15 +122,22 @@ class PartialOrdering(object):
                 return self.moveObjectsByDelta(id, delta,
                     suppress_events=suppress_events)
 
-    def orderObjects(self, key, reverse=None):
+    def orderObjects(self, key=None, reverse=None):
         """ see interfaces.py """
-        def keyfn(id):
-            attr = getattr(self.context._getOb(id), key)
-            if callable(attr):
-                return attr()
-            return attr
+        if key is None:
+            if not reverse:
+                return -1
+            else:
+                # Simply reverse the current ordering.
+                self.order.reverse()
+        else:
+            def keyfn(id):
+                attr = getattr(self.context._getOb(id), key)
+                if callable(attr):
+                    return attr()
+                return attr
 
-        self.order.sort(None, keyfn, bool(reverse))
+            self.order.sort(None, keyfn, bool(reverse))
         self.context._p_changed = True      # the order was changed
         return -1
 
