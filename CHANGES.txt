@@ -5,7 +5,12 @@ Changelog
 1.0.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Allow reversing the current order, without specifying a key for
+  sorting.
+  [maurits]
+
+- Allow ordering by a method instead of an attribute.
+  [maurits]
 
 
 1.0.4 (2012-08-30)

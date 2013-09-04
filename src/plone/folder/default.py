@@ -109,12 +109,24 @@ class DefaultOrdering(object):
             return self.moveObjectsByDelta(id, delta,
                 suppress_events=suppress_events)
 
-    def orderObjects(self, key, reverse=None):
+    def orderObjects(self, key=None, reverse=None):
         """ see interfaces.py """
+        if key is None and not reverse:
+            return -1
         order = self._order()
         pos = self._pos()
-        keyfn = lambda id: getattr(self.context._getOb(id), key)
-        order.sort(None, keyfn, bool(reverse))
+
+        if key is None and reverse:
+            # Simply reverse the current ordering.
+            order.reverse()
+        else:
+            def keyfn(id):
+                attr = getattr(self.context._getOb(id), key)
+                if callable(attr):
+                    return attr()
+                return attr
+            order.sort(None, keyfn, bool(reverse))
+
         for n, id in enumerate(order):
             pos[id] = n
         return -1

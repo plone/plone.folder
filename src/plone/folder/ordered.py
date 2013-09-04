@@ -167,7 +167,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             return 0
 
     security.declareProtected(manage_properties, 'orderObjects')
-    def orderObjects(self, key, reverse=None):
+    def orderObjects(self, key=None, reverse=None):
         """ Order sub-objects by key and direction. """
         ordering = self.getOrdering()
         if IExplicitOrdering.providedBy(ordering):
