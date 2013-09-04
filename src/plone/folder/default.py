@@ -113,7 +113,13 @@ class DefaultOrdering(object):
         """ see interfaces.py """
         order = self._order()
         pos = self._pos()
-        keyfn = lambda id: getattr(self.context._getOb(id), key)
+
+        def keyfn(id):
+            attr = getattr(self.context._getOb(id), key)
+            if callable(attr):
+                return attr()
+            return attr
+
         order.sort(None, keyfn, bool(reverse))
         for n, id in enumerate(order):
             pos[id] = n

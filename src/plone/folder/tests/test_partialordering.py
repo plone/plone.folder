@@ -179,6 +179,9 @@ class DummyFolder(OrderedBTreeFolderBase, Implicit):
     meta_type = 'DummyFolder'
     _ordering = u'partial'
 
+    def dummy_method(self):
+        return self.id
+
 
 class PartialOrderingIntegrationTests(ZopeTestCase):
 
@@ -218,6 +221,12 @@ class PartialOrderingIntegrationTests(ZopeTestCase):
     def testOrderObjectsChangesOrderInfo(self):
         foo = self.app.foo
         foo.orderObjects('id', reverse=True)
+        self.assertEqual(foo.objectIds(), ['bar3', 'bar2', 'bar1'])
+        self.failUnless(foo in self.registered, 'not registered?')
+
+    def testOrderObjectsByMethodChangesOrderInfo(self):
+        foo = self.app.foo
+        foo.orderObjects('dummy_method', reverse=True)
         self.assertEqual(foo.objectIds(), ['bar3', 'bar2', 'bar1'])
         self.failUnless(foo in self.registered, 'not registered?')
 

@@ -270,6 +270,12 @@ class PloneOrderSupportTests(TestCase):
         self.assertEqual(self.folder.getObjectPosition('baz'), 1)
         self.assertEqual(self.folder.getObjectPosition('foo'), 2)
 
+    def testOrderObjectsByMethod(self):
+        self.folder.orderObjects('dummy_method')
+        self.assertEqual(self.folder.getObjectPosition('bar'), 0)
+        self.assertEqual(self.folder.getObjectPosition('baz'), 1)
+        self.assertEqual(self.folder.getObjectPosition('foo'), 2)
+
     def testSubsetIds(self):
         self.folder.moveObjectsByDelta(['baz'], -1, ['foo', 'bar', 'baz'])
         self.assertEqual(self.folder.getObjectPosition('foo'), 0)

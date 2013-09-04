@@ -14,6 +14,9 @@ class DummyObject(object):
     def manage_fixupOwnershipAfterAdd(self):
         pass
 
+    def dummy_method(self):
+        return self.id
+
 
 class Orderable(DummyObject):
     """ orderable mock object """

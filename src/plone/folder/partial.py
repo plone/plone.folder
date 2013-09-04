@@ -124,7 +124,12 @@ class PartialOrdering(object):
 
     def orderObjects(self, key, reverse=None):
         """ see interfaces.py """
-        keyfn = lambda id: getattr(self.context._getOb(id), key)
+        def keyfn(id):
+            attr = getattr(self.context._getOb(id), key)
+            if callable(attr):
+                return attr()
+            return attr
+
         self.order.sort(None, keyfn, bool(reverse))
         self.context._p_changed = True      # the order was changed
         return -1
