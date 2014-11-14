@@ -1,0 +1,5 @@
+*.pyc
+*.pyo
+/src/plone.folder.egg-info/
+/dist/
+
