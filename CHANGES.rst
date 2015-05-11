@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-1.0.6 (unreleased)
+1.0.6 (2015-05-11)
 ------------------
 
 - Whitespace cleanup, git ignores, cleanup package info.
