@@ -5,7 +5,8 @@ Changelog
 1.0.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Whitespace cleanup, git ignores, cleanup package info.
+  [gforcada, rnixx, maurits]
 
 
 1.0.5 (2013-12-07)
