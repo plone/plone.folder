@@ -5,8 +5,8 @@ version = '1.0.6.dev0'
 setup(name='plone.folder',
       version=version,
       description='BTree-based folder implementation with order support',
-      long_description=open("README.rst").read() + "\n" +
-                       open("CHANGES.rst").read(),
+      long_description=(open("README.rst").read() + "\n" +
+                        open("CHANGES.rst").read()),
       classifiers=[
           "Environment :: Web Environment",
           "Framework :: Plone",
@@ -17,7 +17,7 @@ setup(name='plone.folder',
           "License :: OSI Approved :: GNU General Public License (GPL)",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
-        ],
+          ],
       keywords='folder btree order',
       author='Plone Foundation',
       author_email='plone-developers@lists.sourceforge.net',
@@ -41,4 +41,4 @@ setup(name='plone.folder',
           'profilehooks',
           'Products.CMFCore',
       ]},
-)
+      )
