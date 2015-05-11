@@ -5,8 +5,8 @@ version = '1.0.6.dev0'
 setup(name='plone.folder',
       version=version,
       description='BTree-based folder implementation with order support',
-      long_description=open("README.txt").read() + "\n" +
-                       open("CHANGES.txt").read(),
+      long_description=open("README.rst").read() + "\n" +
+                       open("CHANGES.rst").read(),
       classifiers=[
           "Environment :: Web Environment",
           "Framework :: Plone",
