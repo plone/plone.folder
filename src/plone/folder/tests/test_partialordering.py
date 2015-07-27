@@ -35,28 +35,44 @@ class PartialOrderingTests(TestCase):
 
     def testNotifyAdded(self):
         container, ordering = self.create()
-        self.assertEqual(ordering.idsInOrder(),
-            ['o1', 'o2', 'o3', 'o4'] + self.unordered)
+        self.assertEqual(
+            ordering.idsInOrder(),
+            ['o1', 'o2', 'o3', 'o4'] + self.unordered
+        )
         container['o5'] = Orderable('o5')
-        self.assertEqual(ordering.idsInOrder(),
-            ['o1', 'o2', 'o3', 'o4', 'o5'] + self.unordered)
-        self.assertEqual(set(container.objectIds()),
-            set(['o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3']))
+        self.assertEqual(
+            ordering.idsInOrder(),
+            ['o1', 'o2', 'o3', 'o4', 'o5'] + self.unordered
+        )
+        self.assertEqual(
+            set(container.objectIds()),
+            set(['o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3'])
+        )
 
     def testNotifyRemoved(self):
         container, ordering = self.create()
-        self.assertEqual(ordering.idsInOrder(),
-            ['o1', 'o2', 'o3', 'o4'] + self.unordered)
+        self.assertEqual(
+            ordering.idsInOrder(),
+            ['o1', 'o2', 'o3', 'o4'] + self.unordered
+        )
         container._delOb('o3')
-        self.assertEqual(ordering.idsInOrder(),
-            ['o1', 'o2', 'o4'] + self.unordered)
-        self.assertEqual(set(container.objectIds()),
-            set(['o1', 'o2', 'o4', 'c1', 'c2', 'c3']))
+        self.assertEqual(
+            ordering.idsInOrder(),
+            ['o1', 'o2', 'o4'] + self.unordered
+        )
+        self.assertEqual(
+            set(container.objectIds()),
+            set(['o1', 'o2', 'o4', 'c1', 'c2', 'c3'])
+        )
         container._delOb('o1')
-        self.assertEqual(ordering.idsInOrder(),
-            ['o2', 'o4'] + self.unordered)
-        self.assertEqual(set(container.objectIds()),
-            set(['o2', 'o4', 'c1', 'c2', 'c3']))
+        self.assertEqual(
+            ordering.idsInOrder(),
+            ['o2', 'o4'] + self.unordered
+        )
+        self.assertEqual(
+            set(container.objectIds()),
+            set(['o2', 'o4', 'c1', 'c2', 'c3'])
+        )
 
     def runTableTests(self, action, tests):
         for args, order, rval in tests:
@@ -146,7 +162,7 @@ class PartialOrderingTests(TestCase):
         self.runTableTests('moveObjectToPosition', (
             (('o2', 2), ['o1', 'o3', 'o2', 'o4'], 1),
             (('o4', 2), ['o1', 'o2', 'o4', 'o3'], 1),
-            (('c1', 2), ['o1', 'o2', 'o3', 'o4'], None),    # existent, but non-orderable
+            (('c1', 2), ['o1', 'o2', 'o3', 'o4'], None),  # existent, but non-orderable
             (('n2', 2), ['o1', 'o2', 'o3', 'o4'], ValueError),
         ))
 
@@ -168,7 +184,7 @@ class PartialOrderingTests(TestCase):
             (('o2',), ['o1', 'o2', 'o3', 'o4'], 1),
             (('o4',), ['o1', 'o2', 'o3', 'o4'], 3),
             (('n2',), ['o1', 'o2', 'o3', 'o4'], ValueError),
-            (('c2',), ['o1', 'o2', 'o3', 'o4'], None),      # existent, but non-orderable
+            (('c2',), ['o1', 'o2', 'o3', 'o4'], None),  # existent, but non-orderable
         ))
 
 

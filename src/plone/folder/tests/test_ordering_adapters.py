@@ -1,9 +1,11 @@
-from unittest import TestCase, defaultTestLoader
-from zope.component import ComponentLookupError
-from plone.folder.ordered import OrderedBTreeFolderBase
+# -*- coding: utf-8 -*-
 from plone.folder.default import DefaultOrdering
-from plone.folder.unordered import UnorderedOrdering
+from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.unordered import UnorderedOrdering
+from unittest import defaultTestLoader
+from unittest import TestCase
+from zope.component import ComponentLookupError
 
 
 class OrderingAdapterTests(TestCase):

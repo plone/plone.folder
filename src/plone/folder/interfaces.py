@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from zope.interface import Interface
 
 
@@ -31,14 +32,14 @@ class IOrdering(Interface):
         optionally provide IExplicitOrdering, defined below. This is
         used to support explicit ordering, e.g. through a UI. """
 
-    def notifyAdded(id):
+    def notifyAdded(obj_id):
         """ Inform the ordering implementation that an item was added """
 
-    def notifyRemoved(id):
+    def notifyRemoved(obj_id):
         """ Inform the ordering implementation that an item was removed """
 
-    def getObjectPosition(id):
-        """ Get the position of the given id """
+    def getObjectPosition(obj_id):
+        """ Get the position of the given object id """
 
     def idsInOrder():
         """ Return all object ids, in the correct order """
@@ -67,7 +68,7 @@ class IExplicitOrdering(IOrdering):
     def moveObjectsToBottom(ids, subset_ids=None):
         """ Move specified sub-objects to bottom of container. """
 
-    def moveObjectToPosition(id, position, suppress_events=False):
+    def moveObjectToPosition(obj_id, position, suppress_events=False):
         """ Move specified object to absolute position. """
 
     def orderObjects(key, reverse=None):

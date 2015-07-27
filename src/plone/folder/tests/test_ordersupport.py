@@ -1,9 +1,10 @@
-from unittest import TestCase, defaultTestLoader
-
+# -*- coding: utf-8 -*-
 from plone.folder.interfaces import IOrdering
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.layer import PloneFolderLayer
 from plone.folder.tests.utils import DummyObject
+from unittest import defaultTestLoader
+from unittest import TestCase
 
 
 class OFSOrderSupportTests(TestCase):
@@ -29,21 +30,39 @@ class OFSOrderSupportTests(TestCase):
 
     def test_objectValuesOrdered(self):
         folder = self.create()
-        self.assertEquals(["o1", "o2", "o3", "o4"], [x.id for x in folder.objectValues()])
+        self.assertEquals(
+            ["o1", "o2", "o3", "o4"],
+            [x.id for x in folder.objectValues()]
+        )
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEquals(["o2", "o1", "o3", "o4"], [x.id for x in folder.objectValues()])
+        self.assertEquals(
+            ["o2", "o1", "o3", "o4"],
+            [x.id for x in folder.objectValues()]
+        )
 
     def test_objectItemsOrdered(self):
         folder = self.create()
-        self.assertEquals(["o1", "o2", "o3", "o4"], [x for x, y in folder.objectItems()])
+        self.assertEquals(
+            ["o1", "o2", "o3", "o4"],
+            [x for x, y in folder.objectItems()]
+        )
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEquals(["o2", "o1", "o3", "o4"], [x for x, y in folder.objectItems()])
+        self.assertEquals(
+            ["o2", "o1", "o3", "o4"],
+            [x for x, y in folder.objectItems()]
+        )
 
     def test_iterkeys(self):
         folder = self.create()
-        self.assertEquals(["o1", "o2", "o3", "o4"], [x for x in folder.iterkeys()])
+        self.assertEquals(
+            ["o1", "o2", "o3", "o4"],
+            [x for x in folder.iterkeys()]
+        )
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEquals(["o2", "o1", "o3", "o4"], [x for x in folder.iterkeys()])
+        self.assertEquals(
+            ["o2", "o1", "o3", "o4"],
+            [x for x in folder.iterkeys()]
+        )
 
     def test_iter(self):
         folder = self.create()
@@ -297,13 +316,13 @@ class PloneOrderSupportTests(TestCase):
     def testSkipObjectsNotInSubsetIds(self):
         self.folder.moveObjectsByDelta(['baz'], -1, ['foo', 'baz'])
         self.assertEqual(self.folder.getObjectPosition('baz'), 0)
-        self.assertEqual(self.folder.getObjectPosition('bar'), 1) # Did not move
+        self.assertEqual(self.folder.getObjectPosition('bar'), 1)  # no move
         self.assertEqual(self.folder.getObjectPosition('foo'), 2)
 
     def testIgnoreNonObjects(self):
         # Fix for (http://dev.plone.org/plone/ticket/3959) non
         # contentish objects cause errors, we should just ignore them
-        self.folder.moveObjectsByDelta(['bar','blah'], -1)
+        self.folder.moveObjectsByDelta(['bar', 'blah'], -1)
         self.assertEqual(self.folder.getObjectPosition('bar'), 0)
         self.assertEqual(self.folder.getObjectPosition('foo'), 1)
         self.assertEqual(self.folder.getObjectPosition('baz'), 2)

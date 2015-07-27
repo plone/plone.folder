@@ -26,19 +26,27 @@ class UnorderedOrderingTests(TestCase):
 
     def testNotifyAdded(self):
         container = self.create()
-        self.assertEqual(set(container.objectIds()),
-            set(['o1', 'o2', 'o3', 'o4']))
+        self.assertEqual(
+            set(container.objectIds()),
+            set(['o1', 'o2', 'o3', 'o4'])
+        )
         container._setOb('o5', DummyObject('o5', 'mt1'))
-        self.assertEqual(set(container.objectIds()),
-            set(['o1', 'o2', 'o3', 'o4', 'o5']))
+        self.assertEqual(
+            set(container.objectIds()),
+            set(['o1', 'o2', 'o3', 'o4', 'o5'])
+        )
 
     def testNotifyRemoved(self):
         container = self.create()
-        self.assertEqual(set(container.objectIds()),
-            set(['o1', 'o2', 'o3', 'o4']))
+        self.assertEqual(
+            set(container.objectIds()),
+            set(['o1', 'o2', 'o3', 'o4'])
+        )
         container._delOb('o3')
-        self.assertEqual(set(container.objectIds()),
-            set(['o1', 'o2', 'o4']))
+        self.assertEqual(
+            set(container.objectIds()),
+            set(['o1', 'o2', 'o4'])
+        )
 
     def testGetObjectPosition(self):
         container = self.create()
