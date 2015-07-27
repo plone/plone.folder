@@ -1,16 +1,18 @@
-from unittest import TestCase, defaultTestLoader
-from webdav.NullResource import NullResource
-
+# -*- coding: utf-8 -*-
+from Acquisition import Explicit
 from plone.folder.ordered import CMFOrderedBTreeFolderBase
 from plone.folder.tests.layer import PloneFolderLayer
 from plone.folder.tests.utils import DummyObject
-
-from Acquisition import Explicit
+from unittest import defaultTestLoader
+from unittest import TestCase
+from webdav.NullResource import NullResource
 from zope.publisher.browser import TestRequest
+
 
 class TestRequestContainer(Explicit):
 
     REQUEST = TestRequest()
+
 
 class WebDAVTests(TestCase):
     """ tests regarding support for WebDAV NullResources """
@@ -46,6 +48,7 @@ class WebDAVTests(TestCase):
 
         self.assertEquals(folder['foo'], foo)
         self.failUnless(isinstance(folder['bar'], NullResource))
+
 
 def test_suite():
     return defaultTestLoader.loadTestsFromName(__name__)

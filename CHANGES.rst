@@ -5,7 +5,12 @@ Changelog
 1.0.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Depend on ``Products.CMFCore`` and remove fake-cmf, because this confuses
+  more than it helps to reduce complexcity.
+  [jensens]
+
+- Cleanup: PEP8 and do not use ``id`` built-in as identifier.
+  [jensens]
 
 
 1.0.6 (2015-05-11)

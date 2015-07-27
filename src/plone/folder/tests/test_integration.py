@@ -1,11 +1,12 @@
-from StringIO import StringIO
+# -*- coding: utf-8 -*-
 from Acquisition import Implicit
-from transaction import savepoint
-from Testing.ZopeTestCase import ZopeTestCase
-from zope.interface import implements
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.layer import PloneFolderLayer
+from StringIO import StringIO
+from Testing.ZopeTestCase import ZopeTestCase
+from transaction import savepoint
+from zope.interface import implements
 
 
 class DummyFolder(OrderedBTreeFolderBase, Implicit):

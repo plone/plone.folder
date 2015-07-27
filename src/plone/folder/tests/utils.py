@@ -1,5 +1,6 @@
-from zope.interface import implements
+# -*- coding: utf-8 -*-
 from plone.folder.interfaces import IOrderable
+from zope.interface import implementer
 
 
 class DummyObject(object):
@@ -18,9 +19,9 @@ class DummyObject(object):
         return self.id
 
 
+@implementer(IOrderable)
 class Orderable(DummyObject):
     """ orderable mock object """
-    implements(IOrderable)
 
 
 class Chaoticle(DummyObject):

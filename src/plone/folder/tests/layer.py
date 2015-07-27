@@ -2,7 +2,7 @@ from Products.Five import fiveconfigure
 from Products.Five.zcml import load_config
 
 
-class PloneFolderLayer:
+class PloneFolderLayer(object):
 
     @classmethod
     def setUp(cls):

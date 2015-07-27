@@ -1,9 +1,10 @@
-from unittest import TestCase, defaultTestLoader
-
+# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.layer import PloneFolderLayer
 from plone.folder.tests.utils import DummyObject
+from unittest import defaultTestLoader
+from unittest import TestCase
 
 
 class DictInterfaceTests(TestCase):
@@ -53,8 +54,8 @@ class DictInterfaceTests(TestCase):
     def test_to_verify_ticket_9120(self):
         folder = OrderedBTreeFolderBase("f1")
         folder['ob1'] = ob1 = DummyObject('ob1')
-        folder['ob2'] = ob2 = DummyObject('ob2')
-        folder['ob3'] = ob3 = DummyObject('ob3')
+        folder['ob2'] = DummyObject('ob2')
+        folder['ob3'] = DummyObject('ob3')
         folder['ob4'] = ob4 = DummyObject('ob4')
         del folder['ob2']
         del folder['ob3']
