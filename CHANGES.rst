@@ -9,7 +9,7 @@ Changelog
   more than it helps to reduce complexcity.
   [jensens]
 
-- Cleanup: PEP8 and do not use ``id`` built-int as identifier.
+- Cleanup: PEP8 and do not use ``id`` built-in as identifier.
   [jensens]
 
 
