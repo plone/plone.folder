@@ -30,8 +30,3 @@ class IntegrationTests(ZopeTestCase):
         self.app._p_jar.exportFile(foo.bar._p_oid, exp)
         self.failUnless('bar' in exp.getvalue())
         self.failIf('foo' in exp.getvalue())
-
-
-def test_suite():
-    from unittest import defaultTestLoader
-    return defaultTestLoader.loadTestsFromName(__name__)

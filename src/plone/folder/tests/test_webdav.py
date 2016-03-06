@@ -48,7 +48,3 @@ class WebDAVTests(TestCase):
 
         self.assertEquals(folder['foo'], foo)
         self.failUnless(isinstance(folder['bar'], NullResource))
-
-
-def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)

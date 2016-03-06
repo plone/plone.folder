@@ -326,7 +326,3 @@ class PloneOrderSupportTests(TestCase):
         self.assertEqual(self.folder.getObjectPosition('bar'), 0)
         self.assertEqual(self.folder.getObjectPosition('foo'), 1)
         self.assertEqual(self.folder.getObjectPosition('baz'), 2)
-
-
-def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)

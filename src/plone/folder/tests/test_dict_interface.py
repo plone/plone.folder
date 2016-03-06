@@ -85,7 +85,3 @@ class RelatedToDictInterfaceTests(TestCase):
         folder.moveObjectsDown(['o2'])
         self.assertEquals(['o3', 'o1'], folder.objectIds(spec='mt1'))
         self.assertEquals(['o4', 'o2'], folder.objectIds(spec='mt2'))
-
-
-def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)

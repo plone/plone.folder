@@ -251,7 +251,3 @@ class PartialOrderingIntegrationTests(ZopeTestCase):
         # Reverse the current ordering.
         foo.orderObjects(reverse=True)
         self.assertEqual(foo.objectIds(), ['bar1', 'bar2', 'bar3'])
-
-
-def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)

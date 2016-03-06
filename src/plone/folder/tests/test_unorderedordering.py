@@ -51,7 +51,3 @@ class UnorderedOrderingTests(TestCase):
     def testGetObjectPosition(self):
         container = self.create()
         self.assertEqual(container.getObjectPosition('o2'), None)
-
-
-def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)

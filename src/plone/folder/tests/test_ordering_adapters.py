@@ -37,7 +37,3 @@ class OrderingAdapterTests(TestCase):
     def testSetUnknownOrdering(self):
         folder = OrderedBTreeFolderBase()
         self.assertRaises(ComponentLookupError, folder.setOrdering, 'foo')
-
-
-def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)
