@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from plone.folder.default import DefaultOrdering
 from plone.folder.ordered import OrderedBTreeFolderBase
-from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.unordered import UnorderedOrdering
-from unittest import defaultTestLoader
-from unittest import TestCase
 from zope.component import ComponentLookupError
 
+import unittest
 
-class OrderingAdapterTests(TestCase):
+
+class OrderingAdapterTests(unittest.TestCase):
     """ tests regarding available ordering adapters """
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def testDefaultAdapter(self):
         folder = OrderedBTreeFolderBase()

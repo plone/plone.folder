@@ -2,11 +2,12 @@
 from Acquisition import Implicit
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
-from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
 from StringIO import StringIO
-from Testing.ZopeTestCase import ZopeTestCase
 from transaction import savepoint
 from zope.interface import implements
+
+import unittest
 
 
 class DummyFolder(OrderedBTreeFolderBase, Implicit):
@@ -16,11 +17,12 @@ class DummyFolder(OrderedBTreeFolderBase, Implicit):
     meta_type = 'DummyFolder'
 
 
-class IntegrationTests(ZopeTestCase):
+class IntegrationTests(unittest.TestCase):
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_FUNCTIONAL_TESTING
 
     def testExportDoesntIncludeParent(self):
+        self.app = self.layer['app']
         self.app._setOb('foo', DummyFolder('foo'))
         foo = self.app.foo
         foo['bar'] = DummyFolder('bar')

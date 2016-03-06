@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from plone.folder.interfaces import IOrdering
 from plone.folder.ordered import OrderedBTreeFolderBase
-from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
-from unittest import defaultTestLoader
-from unittest import TestCase
+
+import unittest
 
 
-class OFSOrderSupportTests(TestCase):
+class OFSOrderSupportTests(unittest.TestCase):
     """ tests borrowed from OFS.tests.testOrderSupport """
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def create(self):
         folder = OrderedBTreeFolderBase('f1')
@@ -181,10 +181,10 @@ class OFSOrderSupportTests(TestCase):
             )
 
 
-class PloneOrderSupportTests(TestCase):
+class PloneOrderSupportTests(unittest.TestCase):
     """ tests borrowed from Products.CMFPlone.tests.testOrderSupport """
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def setUp(self):
         self.folder = OrderedBTreeFolderBase("f1")

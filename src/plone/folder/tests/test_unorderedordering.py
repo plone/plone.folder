@@ -1,14 +1,15 @@
-from unittest import TestCase, defaultTestLoader
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.unordered import UnorderedOrdering
 from plone.folder.tests.utils import DummyObject
-from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
+
+import unittest
 
 
-class UnorderedOrderingTests(TestCase):
+class UnorderedOrderingTests(unittest.TestCase):
     """ tests regarding order-support for folders with unordered ordering """
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def create(self):
         container = OrderedBTreeFolderBase()

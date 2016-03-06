@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from Acquisition import Explicit
 from plone.folder.ordered import CMFOrderedBTreeFolderBase
-from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
-from unittest import defaultTestLoader
-from unittest import TestCase
 from webdav.NullResource import NullResource
 from zope.publisher.browser import TestRequest
+
+import unittest
 
 
 class TestRequestContainer(Explicit):
@@ -14,10 +14,10 @@ class TestRequestContainer(Explicit):
     REQUEST = TestRequest()
 
 
-class WebDAVTests(TestCase):
+class WebDAVTests(unittest.TestCase):
     """ tests regarding support for WebDAV NullResources """
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def test_getitem_not_dav_request(self):
         root = TestRequestContainer()
