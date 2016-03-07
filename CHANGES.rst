@@ -11,7 +11,9 @@ New:
 
 Fixes:
 
-- *add item here*
+- Update testing layers to use best practices and remove ZopeTestCase dependency,
+  which should fix its test isolation problems.
+  [gforcada]
 
 
 1.0.7 (2015-07-29)

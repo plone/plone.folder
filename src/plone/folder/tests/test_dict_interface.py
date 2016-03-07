@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from plone.folder.ordered import OrderedBTreeFolderBase
-from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
-from unittest import defaultTestLoader
-from unittest import TestCase
+
+import unittest
 
 
-class DictInterfaceTests(TestCase):
+class DictInterfaceTests(unittest.TestCase):
     """ tests for dict style interface """
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def test_getitem(self):
         folder = OrderedBTreeFolderBase("f1")
@@ -64,10 +64,10 @@ class DictInterfaceTests(TestCase):
         self.assertEquals([key in folder for key in folder], [True, True])
 
 
-class RelatedToDictInterfaceTests(TestCase):
+class RelatedToDictInterfaceTests(unittest.TestCase):
     """ various tests which are related to the dict-like interface """
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def create(self):
         folder = OrderedBTreeFolderBase("f1")
@@ -85,7 +85,3 @@ class RelatedToDictInterfaceTests(TestCase):
         folder.moveObjectsDown(['o2'])
         self.assertEquals(['o3', 'o1'], folder.objectIds(spec='mt1'))
         self.assertEquals(['o4', 'o2'], folder.objectIds(spec='mt2'))
-
-
-def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)

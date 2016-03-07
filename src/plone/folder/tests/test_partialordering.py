@@ -1,19 +1,20 @@
-from unittest import TestCase, defaultTestLoader
 from transaction import savepoint
 from Acquisition import Implicit
-from Testing.ZopeTestCase import ZopeTestCase
 from zope.interface import implements
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.partial import PartialOrdering
 from plone.folder.tests.utils import Orderable, Chaoticle
-from plone.folder.tests.layer import PloneFolderLayer
+from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
+from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
+
+import unittest
 
 
-class PartialOrderingTests(TestCase):
+class PartialOrderingTests(unittest.TestCase):
     """ tests regarding order-support for only items marked orderable """
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def create(self):
         container = OrderedBTreeFolderBase()
@@ -199,11 +200,12 @@ class DummyFolder(OrderedBTreeFolderBase, Implicit):
         return self.id
 
 
-class PartialOrderingIntegrationTests(ZopeTestCase):
+class PartialOrderingIntegrationTests(unittest.TestCase):
 
-    layer = PloneFolderLayer
+    layer = PLONEFOLDER_FUNCTIONAL_TESTING
 
-    def afterSetUp(self):
+    def setUp(self):
+        self.app = self.layer['app']
         context = self.app
         context._setOb('foo', DummyFolder('foo'))   # not pythonic in 2.10 :(
         context.foo['bar1'] = DummyFolder('bar1')
@@ -251,7 +253,3 @@ class PartialOrderingIntegrationTests(ZopeTestCase):
         # Reverse the current ordering.
         foo.orderObjects(reverse=True)
         self.assertEqual(foo.objectIds(), ['bar1', 'bar2', 'bar3'])
-
-
-def test_suite():
-    return defaultTestLoader.loadTestsFromName(__name__)
