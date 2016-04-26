@@ -5,10 +5,6 @@ Changelog
 1.0.8 (unreleased)
 ------------------
 
-New:
-
-- *add item here*
-
 Fixes:
 
 - Update testing layers to use best practices and remove ZopeTestCase dependency,
