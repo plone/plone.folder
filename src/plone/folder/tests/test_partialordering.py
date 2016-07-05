@@ -1,6 +1,6 @@
 from transaction import savepoint
 from Acquisition import Implicit
-from zope.interface import implements
+from zope.interface import implementer
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.partial import PartialOrdering
@@ -189,9 +189,9 @@ class PartialOrderingTests(unittest.TestCase):
         ))
 
 
+@implementer(IOrderable)
 class DummyFolder(OrderedBTreeFolderBase, Implicit):
     """ we need to mix in acquisition """
-    implements(IOrderable)
 
     meta_type = 'DummyFolder'
     _ordering = u'partial'
