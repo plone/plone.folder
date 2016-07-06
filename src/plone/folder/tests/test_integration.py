@@ -5,14 +5,14 @@ from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
 from StringIO import StringIO
 from transaction import savepoint
-from zope.interface import implements
+from zope.interface import implementer
 
 import unittest
 
 
+@implementer(IOrderable)
 class DummyFolder(OrderedBTreeFolderBase, Implicit):
     """ we need to mix in acquisition """
-    implements(IOrderable)
 
     meta_type = 'DummyFolder'
 
