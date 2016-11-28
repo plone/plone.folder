@@ -1,4 +1,6 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
+
 
 version = '1.0.10.dev0'
 
@@ -6,23 +8,23 @@ setup(
     name='plone.folder',
     version=version,
     description='BTree-based folder implementation with order support',
-    long_description=(open("README.rst").read() + "\n" +
-                      open("CHANGES.rst").read()),
+    long_description=(open('README.rst').read() + '\n' +
+                      open('CHANGES.rst').read()),
     classifiers=[
-        "Environment :: Web Environment",
-        "Framework :: Plone",
-        "Framework :: Plone :: 4.3",
-        "Framework :: Plone :: 5.0",
-        "Framework :: Plone :: 5.1",
-        "Framework :: Zope2",
-        "Intended Audience :: Developers",
-        "Intended Audience :: System Administrators",
-        "Intended Audience :: Other Audience",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
-        "Operating System :: OS Independent",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
+        'Environment :: Web Environment',
+        'Framework :: Plone',
+        'Framework :: Plone :: 4.3',
+        'Framework :: Plone :: 5.0',
+        'Framework :: Plone :: 5.1',
+        'Framework :: Zope2',
+        'Intended Audience :: Developers',
+        'Intended Audience :: System Administrators',
+        'Intended Audience :: Other Audience',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
     ],
     keywords='folder btree order',
     author='Plone Foundation',

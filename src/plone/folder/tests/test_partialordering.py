@@ -1,12 +1,13 @@
-from transaction import savepoint
 from Acquisition import Implicit
-from zope.interface import implementer
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.partial import PartialOrdering
-from plone.folder.tests.utils import Orderable, Chaoticle
-from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
+from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
+from plone.folder.tests.utils import Chaoticle
+from plone.folder.tests.utils import Orderable
+from transaction import savepoint
+from zope.interface import implementer
 
 import unittest
 

@@ -15,8 +15,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
-
+- Cleanup: isort according to Plone style.
+  [jensens]
 
 1.0.9 (2016-08-08)
 ------------------
