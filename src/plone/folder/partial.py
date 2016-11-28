@@ -29,7 +29,7 @@ class PartialOrdering(object):
 
     def notifyAdded(self, id):
         """ see interfaces.py """
-        assert not id in self.order
+        assert id not in self.order
         context = aq_base(self.context)
         obj = context._getOb(id)
         if IOrderable.providedBy(obj):
@@ -54,7 +54,7 @@ class PartialOrdering(object):
         return ordered
 
     def moveObjectsByDelta(self, ids, delta, subset_ids=None,
-            suppress_events=False):
+                           suppress_events=False):
         """ see interfaces.py """
         min_position = 0
         if isinstance(ids, basestring):
@@ -120,7 +120,7 @@ class PartialOrdering(object):
             delta = position - old_position
             if delta:
                 return self.moveObjectsByDelta(id, delta,
-                    suppress_events=suppress_events)
+                                               suppress_events=suppress_events)
 
     def orderObjects(self, key=None, reverse=None):
         """ see interfaces.py """

@@ -54,7 +54,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         """ Return the named object from the folder. """
         try:
             return super(OrderedBTreeFolderBase, self)._getOb(id, default)
-        except KeyError, e:
+        except KeyError as e:
             raise AttributeError(e)
 
     def _setOb(self, id, object):
@@ -221,7 +221,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
             request = self.REQUEST
             method = request.get('REQUEST_METHOD', 'GET')
             if (getattr(request, 'maybe_webdav_client', False) and
-               method not in ('GET', 'POST')):
+                    method not in ('GET', 'POST')):
                 return NullResource(self, key, request).__of__(self)
         raise KeyError(key)
 
