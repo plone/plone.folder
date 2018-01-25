@@ -4,6 +4,7 @@ from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
 
+import six
 import unittest
 
 
@@ -56,12 +57,12 @@ class OFSOrderSupportTests(unittest.TestCase):
         folder = self.create()
         self.assertEquals(
             ["o1", "o2", "o3", "o4"],
-            [x for x in folder.iterkeys()]
+            [x for x in six.iterkeys(folder)]
         )
         folder.moveObjectsUp(("o2",), 1)
         self.assertEquals(
             ["o2", "o1", "o3", "o4"],
-            [x for x in folder.iterkeys()]
+            [x for x in six.iterkeys(folder)]
         )
 
     def test_iter(self):

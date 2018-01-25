@@ -3,7 +3,7 @@ from Acquisition import Implicit
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
-from StringIO import StringIO
+from six import StringIO
 from transaction import savepoint
 from zope.interface import implementer
 

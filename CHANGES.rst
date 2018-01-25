@@ -15,7 +15,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Add Python 2 / 3 compatibility
+  [vincero]
 
 
 1.0.9 (2016-08-08)

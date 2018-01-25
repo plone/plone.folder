@@ -54,7 +54,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         """ Return the named object from the folder. """
         try:
             return super(OrderedBTreeFolderBase, self)._getOb(id, default)
-        except KeyError, e:
+        except KeyError as e:
             raise AttributeError(e)
 
     def _setOb(self, id, object):

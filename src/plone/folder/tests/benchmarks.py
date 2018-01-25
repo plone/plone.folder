@@ -8,6 +8,7 @@ from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.layer import PloneFolderLayer
 from plone.folder.tests.utils import DummyObject
 from profilehooks import timecall
+from six.moves import range
 from unittest import defaultTestLoader
 from unittest import TestCase
 
@@ -18,7 +19,7 @@ class BenchmarkTests(TestCase):
 
     def testDeleteSpeed(self):
         folder = OrderedBTreeFolderBase("f1")
-        for idx in xrange(100000):
+        for idx in range(100000):
             id = 'foo-%s' % idx
             folder[id] = DummyObject(id, 'bar')
         last = reversed(folder.keys()[-100:])
