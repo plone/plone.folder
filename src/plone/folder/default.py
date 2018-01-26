@@ -8,6 +8,8 @@ from zope.component import adapter
 from zope.container.contained import notifyContainerModified
 from zope.interface import implementer
 
+import six
+
 
 @implementer(IExplicitOrdering)
 @adapter(IOrderableFolder)
@@ -50,7 +52,7 @@ class DefaultOrdering(object):
         order = self._order()
         pos = self._pos()
         min_position = 0
-        if isinstance(ids, basestring):
+        if isinstance(ids, six.string_types):
             ids = [ids]
         if subset_ids is None:
             subset_ids = self.idsInOrder()

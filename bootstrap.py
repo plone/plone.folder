@@ -71,7 +71,7 @@ except ImportError:
         ez['use_setuptools'](to_dir=tmpeggs, download_delay=0)
 
     if to_reload:
-        reload(pkg_resources)
+        reload_module(pkg_resources)
     else:
         import pkg_resources
 
@@ -117,5 +117,9 @@ else:
 ws.add_entry(tmpeggs)
 ws.require('zc.buildout' + VERSION)
 import zc.buildout.buildout
+
+from six.moves import reload_module
+
+
 zc.buildout.buildout.main(args)
 shutil.rmtree(tmpeggs)

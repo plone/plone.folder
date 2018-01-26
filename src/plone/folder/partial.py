@@ -7,6 +7,9 @@ from plone.folder.interfaces import IOrderable
 from plone.folder.interfaces import IOrderableFolder
 from plone.folder.interfaces import IExplicitOrdering
 
+import six
+
+
 ORDER_ATTR = '_objectordering'
 
 
@@ -57,7 +60,7 @@ class PartialOrdering(object):
             suppress_events=False):
         """ see interfaces.py """
         min_position = 0
-        if isinstance(ids, basestring):
+        if isinstance(ids, six.string_types):
             ids = [ids]
         if subset_ids is None:
             subset_ids = self.idsInOrder(onlyOrderables=True)
