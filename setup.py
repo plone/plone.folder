@@ -18,7 +18,7 @@ setup(
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
         "Intended Audience :: Other Audience",
-        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.6",
