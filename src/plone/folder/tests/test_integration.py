@@ -31,4 +31,4 @@ class IntegrationTests(unittest.TestCase):
         exp = StringIO()
         self.app._p_jar.exportFile(foo.bar._p_oid, exp)
         self.assertTrue('bar' in exp.getvalue())
-        self.failIf('foo' in exp.getvalue())
+        self.assertFalse('foo' in exp.getvalue())

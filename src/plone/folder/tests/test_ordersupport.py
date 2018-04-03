@@ -94,10 +94,10 @@ class OFSOrderSupportTests(unittest.TestCase):
             f = self.create()
             method = getattr(f, methodname)
             if rval == 'ValueError':
-                self.failUnlessRaises(ValueError, method, *args)
+                self.assertRaises(ValueError, method, *args)
             else:
-                self.failUnlessEqual(method(*args), rval)
-            self.failUnlessEqual(f.objectIds(), order)
+                self.assertEqual(method(*args), rval)
+            self.assertEqual(f.objectIds(), order)
 
     def test_moveObjectsUp(self):
         self.runTableTests('moveObjectsUp',

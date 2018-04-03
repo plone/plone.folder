@@ -19,6 +19,9 @@ Bug fixes:
 - Remove ancient buildout config
   [tomgross]
 
+- Replace deprecated testing assertion calls
+  [tomgross]
+
 
 1.0.10 (2018-01-30)
 -------------------
