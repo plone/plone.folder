@@ -15,24 +15,24 @@ class OrderingAdapterTests(unittest.TestCase):
 
     def testDefaultAdapter(self):
         folder = OrderedBTreeFolderBase()
-        self.failUnless(isinstance(folder.getOrdering(), DefaultOrdering))
+        self.assertTrue(isinstance(folder.getOrdering(), DefaultOrdering))
 
     def testUnorderedOrdering(self):
         folder = OrderedBTreeFolderBase()
         folder._ordering = 'unordered'
-        self.failUnless(isinstance(folder.getOrdering(), UnorderedOrdering))
+        self.assertTrue(isinstance(folder.getOrdering(), UnorderedOrdering))
 
     def testUnknownOrdering(self):
         folder = OrderedBTreeFolderBase()
         folder._ordering = 'foo'
-        self.failUnless(isinstance(folder.getOrdering(), DefaultOrdering))
+        self.assertTrue(isinstance(folder.getOrdering(), DefaultOrdering))
 
     def testSetOrdering(self):
         folder = OrderedBTreeFolderBase()
         folder.setOrdering('unordered')
-        self.failUnless(isinstance(folder.getOrdering(), UnorderedOrdering))
+        self.assertTrue(isinstance(folder.getOrdering(), UnorderedOrdering))
         folder.setOrdering()
-        self.failUnless(isinstance(folder.getOrdering(), DefaultOrdering))
+        self.assertTrue(isinstance(folder.getOrdering(), DefaultOrdering))
 
     def testSetUnknownOrdering(self):
         folder = OrderedBTreeFolderBase()

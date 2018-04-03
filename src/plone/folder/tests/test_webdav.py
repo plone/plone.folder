@@ -47,4 +47,4 @@ class WebDAVTests(unittest.TestCase):
         folder['foo'] = foo
 
         self.assertEquals(folder['foo'], foo)
-        self.failUnless(isinstance(folder['bar'], NullResource))
+        self.assertTrue(isinstance(folder['bar'], NullResource))

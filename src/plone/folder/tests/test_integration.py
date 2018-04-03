@@ -30,5 +30,5 @@ class IntegrationTests(unittest.TestCase):
         # now let's export to a buffer and check the objects...
         exp = StringIO()
         self.app._p_jar.exportFile(foo.bar._p_oid, exp)
-        self.failUnless('bar' in exp.getvalue())
-        self.failIf('foo' in exp.getvalue())
+        self.assertTrue('bar' in exp.getvalue())
+        self.assertFalse('foo' in exp.getvalue())

@@ -11,11 +11,16 @@ Breaking changes:
 
 New features:
 
-- *add item here*
+- Improve logging in case ordered index is not consistent
+  [tomgross]
 
 Bug fixes:
 
-- *add item here*
+- Remove ancient buildout config
+  [tomgross]
+
+- Replace deprecated testing assertion calls
+  [tomgross]
 
 
 1.0.10 (2018-01-30)
