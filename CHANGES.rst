@@ -15,7 +15,8 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Remove ancient buildout config
+  [tomgross]
 
 
 1.0.10 (2018-01-30)
