@@ -12,6 +12,9 @@ import unittest
 class TestFolder(OrderedBTreeFolderBase, Traversable):
     """ """
 
+    def getId(self):
+        return self.id
+
 
 class OFSOrderSupportTests(unittest.TestCase):
     """ tests borrowed from OFS.tests.testOrderSupport """
@@ -193,7 +196,7 @@ class OFSOrderSupportTests(unittest.TestCase):
             self.assertFail()
         except ValueError as err:
             self.assertEqual(
-                err.message, 'No object with id "n4" exists in "f1".')
+                str(err), 'No object with id "n4" exists in "f1".')
 
 
 class PloneOrderSupportTests(unittest.TestCase):
