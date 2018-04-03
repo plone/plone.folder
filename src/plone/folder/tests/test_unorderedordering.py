@@ -23,7 +23,7 @@ class UnorderedOrderingTests(unittest.TestCase):
     def testAdapter(self):
         container = self.create()
         ordering = container.getOrdering()
-        self.failUnless(isinstance(ordering, UnorderedOrdering))
+        self.assertTrue(isinstance(ordering, UnorderedOrdering))
 
     def testNotifyAdded(self):
         container = self.create()

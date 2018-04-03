@@ -30,8 +30,8 @@ class DictInterfaceTests(unittest.TestCase):
         folder = OrderedBTreeFolderBase("f1")
         folder._setOb('foo', DummyObject('foo'))
         folder._setOb('bar', DummyObject('bar'))
-        self.failUnless('foo' in folder)
-        self.failUnless('bar' in folder)
+        self.assertTrue('foo' in folder)
+        self.assertTrue('bar' in folder)
 
     def test_delitem(self):
         folder = OrderedBTreeFolderBase("f1")

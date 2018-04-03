@@ -32,7 +32,7 @@ class PartialOrderingTests(unittest.TestCase):
 
     def testAdapter(self):
         container, ordering = self.create()
-        self.failUnless(isinstance(ordering, PartialOrdering))
+        self.assertTrue(isinstance(ordering, PartialOrdering))
 
     def testNotifyAdded(self):
         container, ordering = self.create()
@@ -222,25 +222,25 @@ class PartialOrderingIntegrationTests(unittest.TestCase):
         foo = self.app.foo
         foo['bar23'] = DummyFolder('bar23')
         self.assertEqual(foo.objectIds(), ['bar1', 'bar2', 'bar3', 'bar23'])
-        self.failUnless(foo in self.registered, 'not registered?')
+        self.assertTrue(foo in self.registered, 'not registered?')
 
     def testRemoveObjectChangesOrderInfo(self):
         foo = self.app.foo
         foo._delOb('bar2',)
         self.assertEqual(foo.objectIds(), ['bar1', 'bar3'])
-        self.failUnless(foo in self.registered, 'not registered?')
+        self.assertTrue(foo in self.registered, 'not registered?')
 
     def testMoveObjectChangesOrderInfo(self):
         foo = self.app.foo
         foo.moveObjectsUp(('bar2',))
         self.assertEqual(foo.objectIds(), ['bar2', 'bar1', 'bar3'])
-        self.failUnless(foo in self.registered, 'not registered?')
+        self.assertTrue(foo in self.registered, 'not registered?')
 
     def testOrderObjectsChangesOrderInfo(self):
         foo = self.app.foo
         foo.orderObjects('id', reverse=True)
         self.assertEqual(foo.objectIds(), ['bar3', 'bar2', 'bar1'])
-        self.failUnless(foo in self.registered, 'not registered?')
+        self.assertTrue(foo in self.registered, 'not registered?')
         # Reverse the current ordering.
         foo.orderObjects(reverse=True)
         self.assertEqual(foo.objectIds(), ['bar1', 'bar2', 'bar3'])
@@ -249,7 +249,7 @@ class PartialOrderingIntegrationTests(unittest.TestCase):
         foo = self.app.foo
         foo.orderObjects('dummy_method', reverse=True)
         self.assertEqual(foo.objectIds(), ['bar3', 'bar2', 'bar1'])
-        self.failUnless(foo in self.registered, 'not registered?')
+        self.assertTrue(foo in self.registered, 'not registered?')
         # Reverse the current ordering.
         foo.orderObjects(reverse=True)
         self.assertEqual(foo.objectIds(), ['bar1', 'bar2', 'bar3'])
