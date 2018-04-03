@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from OFS.Traversable import Traversable
 from plone.folder.interfaces import IOrdering
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
@@ -8,13 +9,17 @@ import six
 import unittest
 
 
+class TestFolder(OrderedBTreeFolderBase, Traversable):
+    """ """
+
+
 class OFSOrderSupportTests(unittest.TestCase):
     """ tests borrowed from OFS.tests.testOrderSupport """
 
     layer = PLONEFOLDER_INTEGRATION_TESTING
 
     def create(self):
-        folder = OrderedBTreeFolderBase('f1')
+        folder = TestFolder('f1')
         folder['o1'] = DummyObject('o1', 'mt1')
         folder['o2'] = DummyObject('o2', 'mt2')
         folder['o3'] = DummyObject('o3', 'mt1')
@@ -180,6 +185,15 @@ class OFSOrderSupportTests(unittest.TestCase):
               , ( ( 'n2', 2 ), ['o1', 'o2', 'o3', 'o4'], 'ValueError')
               )
             )
+
+    def test_getObjectPosition_error_message(self):
+        folder = self.create()
+        try:
+            folder.getObjectPosition('n4')
+            self.assertFail()
+        except ValueError as err:
+            self.assertEqual(
+                err.message, 'No object with id "n4" exists in "f1".')
 
 
 class PloneOrderSupportTests(unittest.TestCase):

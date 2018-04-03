@@ -11,7 +11,8 @@ Breaking changes:
 
 New features:
 
-- *add item here*
+- Improve logging in case ordered index is not consistent
+  [tomgross]
 
 Bug fixes:
 

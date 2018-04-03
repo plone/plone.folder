@@ -147,7 +147,8 @@ class DefaultOrdering(object):
         pos = self._pos()
         if obj_id in pos:
             return pos[obj_id]
-        raise ValueError('No object with id "{0:s}" exists.'.format(obj_id))
+        raise ValueError('No object with id "{0:s}" exists in "{1:s}".'.format(
+            obj_id, '/'.join(self.context.getPhysicalPath())))
 
     def idsInOrder(self):
         """ see interfaces.py """
