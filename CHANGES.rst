@@ -5,10 +5,6 @@ Changelog
 1.0.11 (unreleased)
 -------------------
 
-Breaking changes:
-
-- *add item here*
-
 New features:
 
 - Improve logging in case ordered index is not consistent
