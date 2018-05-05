@@ -2,12 +2,13 @@ Changelog
 =========
 
 
-1.0.12 (unreleased)
--------------------
+2.0.0 (unreleased)
+------------------
 
 Breaking changes:
 
-- *add item here*
+- Drop support for Python 2.6/ Plone 4.3
+  [jensens]
 
 New features:
 
