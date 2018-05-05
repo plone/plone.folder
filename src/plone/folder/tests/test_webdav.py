@@ -8,6 +8,7 @@ from zope.publisher.browser import TestRequest
 import pkg_resources
 import unittest
 
+
 HAS_ZSERVER = True
 try:
     dist = pkg_resources.get_distribution('ZServer')
@@ -45,7 +46,7 @@ class WebDAVTests(unittest.TestCase):
         except KeyError:
             pass
 
-    @unittest.skipUnless(HAS_ZSERVER)
+    @unittest.skipUnless(HAS_ZSERVER, 'ZServer is optional')
     def test_getitem_dav_request(self):
         root = TestRequestContainer()
         folder = CMFOrderedBTreeFolderBase("f1").__of__(root)
