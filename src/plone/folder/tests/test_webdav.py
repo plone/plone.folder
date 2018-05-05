@@ -3,10 +3,20 @@ from Acquisition import Explicit
 from plone.folder.ordered import CMFOrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
-from webdav.NullResource import NullResource
 from zope.publisher.browser import TestRequest
 
+import pkg_resources
 import unittest
+
+
+HAS_ZSERVER = True
+try:
+    dist = pkg_resources.get_distribution('ZServer')
+except pkg_resources.DistributionNotFound:
+    HAS_ZSERVER = False
+
+if HAS_ZSERVER:
+    from webdav.NullResource import NullResource
 
 
 class TestRequestContainer(Explicit):
@@ -36,6 +46,7 @@ class WebDAVTests(unittest.TestCase):
         except KeyError:
             pass
 
+    @unittest.skipUnless(HAS_ZSERVER, 'ZServer is optional')
     def test_getitem_dav_request(self):
         root = TestRequestContainer()
         folder = CMFOrderedBTreeFolderBase("f1").__of__(root)

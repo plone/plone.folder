@@ -11,11 +11,21 @@ from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.PortalFolder import PortalFolderBase
 from Products.ZCatalog.Lazy import LazyMap
-from webdav.NullResource import NullResource
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.component import getAdapter
 from zope.component import queryAdapter
 from zope.interface import implementer
+
+import pkg_resources
+
+HAS_ZSERVER = True
+try:
+    dist = pkg_resources.get_distribution('ZServer')
+except pkg_resources.DistributionNotFound:
+    HAS_ZSERVER = False
+
+if HAS_ZSERVER:
+    from webdav.NullResource import NullResource
 
 
 @implementer(IOrderedContainer, IOrderableFolder, IAttributeAnnotatable)
@@ -220,8 +230,8 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         if hasattr(self, 'REQUEST'):
             request = self.REQUEST
             method = request.get('REQUEST_METHOD', 'GET')
-            if (getattr(request, 'maybe_webdav_client', False) and
-               method not in ('GET', 'POST')):
+            if (HAS_ZSERVER and getattr(request, 'maybe_webdav_client', False)
+               and method not in ('GET', 'POST')):
                 return NullResource(self, key, request).__of__(self)
         raise KeyError(key)
 
