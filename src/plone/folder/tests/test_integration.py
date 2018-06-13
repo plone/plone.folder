@@ -3,7 +3,7 @@ from Acquisition import Implicit
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
-from six import StringIO
+from six import BytesIO
 from transaction import savepoint
 from zope.interface import implementer
 
@@ -28,7 +28,7 @@ class IntegrationTests(unittest.TestCase):
         foo['bar'] = DummyFolder('bar')
         savepoint(optimistic=True)      # savepoint assigns oids
         # now let's export to a buffer and check the objects...
-        exp = StringIO()
+        exp = BytesIO()
         self.app._p_jar.exportFile(foo.bar._p_oid, exp)
-        self.assertTrue('bar' in exp.getvalue())
-        self.assertFalse('foo' in exp.getvalue())
+        self.assertTrue(b'bar' in exp.getvalue())
+        self.assertFalse(b'foo' in exp.getvalue())

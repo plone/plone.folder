@@ -27,8 +27,16 @@ class PartialOrdering(object):
     def order(self):
         context = aq_base(self.context)
         if not hasattr(context, ORDER_ATTR):
-            setattr(context, ORDER_ATTR, [])
+            self.order = []
         return getattr(context, ORDER_ATTR)
+
+    @order.setter
+    def order(self, value):
+        # We added a setter because in py2 order is modified inplace
+        # with .sort() while in py3 we sort with sorted and thus need to set it
+        # explicitly
+        context = aq_base(self.context)
+        setattr(context, ORDER_ATTR, value)
 
     def notifyAdded(self, id):
         """ see interfaces.py """
@@ -139,8 +147,7 @@ class PartialOrdering(object):
                 if callable(attr):
                     return attr()
                 return attr
-
-            self.order.sort(None, keyfn, bool(reverse))
+            self.order = sorted(self.order, key=keyfn, reverse=bool(reverse))
         self.context._p_changed = True      # the order was changed
         return -1
 
