@@ -58,10 +58,12 @@ class PartialOrdering(object):
     def idsInOrder(self, onlyOrderables=False):
         """ see interfaces.py """
         ordered = list(self.order)
+        ordered_set = set(ordered)
         if not onlyOrderables:
             ids = aq_base(self.context).objectIds(ordered=False)
-            unordered = set(ids).difference(set(ordered))
-            ordered += list(unordered)
+            for id in ids:
+                if id not in ordered_set:
+                    ordered.append(id)
         return ordered
 
     def moveObjectsByDelta(self, ids, delta, subset_ids=None,

@@ -26,7 +26,7 @@ class PartialOrderingTests(unittest.TestCase):
         container['c2'] = Chaoticle('c2', 'mt2')
         container['c3'] = Chaoticle('c3', 'mt1')
         container['o4'] = Orderable('o4', 'mt2')
-        self.unordered = ['c3', 'c2', 'c1']
+        self.unordered = ['c1', 'c2', 'c3']
         ordering = container.getOrdering()
         return container, ordering
 
