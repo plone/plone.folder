@@ -31,6 +31,9 @@ Bug fixes:
 - More Python 2 / 3 compatibility
   [pbauer, ale-rt]
 
+- Fix deprecated LazyMap import
+  [jensens]
+
 
 1.0.11 (2018-04-08)
 -------------------

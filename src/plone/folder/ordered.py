@@ -10,13 +10,14 @@ from Products.BTreeFolder2.BTreeFolder2 import _marker
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
 from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.PortalFolder import PortalFolderBase
-from Products.ZCatalog.Lazy import LazyMap
 from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.component import getAdapter
 from zope.component import queryAdapter
 from zope.interface import implementer
+from ZTUtils.Lazy import LazyMap
 
 import pkg_resources
+
 
 HAS_ZSERVER = True
 try:
