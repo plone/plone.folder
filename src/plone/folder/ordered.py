@@ -39,7 +39,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
 
     security = ClassSecurityInfo()
 
-    def __nonzero__(self):
+    def __bool__(self):
         """ a folder is something, even if it's empty """
         return True
 
