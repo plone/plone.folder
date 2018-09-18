@@ -15,7 +15,14 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Stabilize order of unordered items in partial ordering.
+  [davisagli]
+
+- Fix ordering of content in folder in python 3.
+  [pbauer]
+
+- Fix tests in py3.
+  [pbauer]
 
 
 2.0.0 (2018-06-20)
