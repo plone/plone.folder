@@ -15,7 +15,14 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Stabilize order of unordered items in partial ordering.
+  [davisagli]
+
+- Fix ordering of content in folder in python 3.
+  [pbauer]
+
+- Fix tests in py3.
+  [pbauer]
 
 
 2.0.0 (2018-06-20)
@@ -30,6 +37,9 @@ Bug fixes:
 
 - More Python 2 / 3 compatibility
   [pbauer, ale-rt]
+
+- Fix deprecated LazyMap import
+  [jensens]
 
 
 1.0.11 (2018-04-08)

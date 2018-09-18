@@ -60,7 +60,7 @@ class DictInterfaceTests(unittest.TestCase):
         del folder['ob2']
         del folder['ob3']
         self.assertEquals(folder.keys(), ['ob1', 'ob4'])
-        self.assertEquals(map(aq_base, folder.values()), [ob1, ob4])
+        self.assertEquals(list(map(aq_base, folder.values())), [ob1, ob4])
         self.assertEquals([key in folder for key in folder], [True, True])
 
 
