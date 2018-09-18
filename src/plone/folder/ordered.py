@@ -14,7 +14,11 @@ from zope.annotation.interfaces import IAttributeAnnotatable
 from zope.component import getAdapter
 from zope.component import queryAdapter
 from zope.interface import implementer
-from ZTUtils.Lazy import LazyMap
+try:
+    from ZTUtils.Lazy import LazyMap
+except ImportError:
+    # bbb import for Zope2
+    from Products.ZCatalog.Lazy import LazyMap
 
 import pkg_resources
 
