@@ -10,6 +10,9 @@ Breaking changes:
 - Drop support for Python 2.6/ Plone 4.3
   [jensens]
 
+- move GopipIndex from `plone.app.folder` to `plone.folder`
+  [jmevissen, petschki]
+
 New features:
 
 - *add item here*
