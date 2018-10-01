@@ -28,7 +28,7 @@ setup(
     keywords='folder btree order',
     author='Plone Foundation',
     author_email='plone-developers@lists.sourceforge.net',
-    url='https://pypi.python.org/pypi/plone.folder',
+    url='https://pypi.org/project/plone.folder',
     license='GPL version 2',
     packages=find_packages('src'),
     package_dir={'': 'src'},
