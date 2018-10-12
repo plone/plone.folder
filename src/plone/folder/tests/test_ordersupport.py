@@ -344,3 +344,20 @@ class PloneOrderSupportTests(unittest.TestCase):
         self.assertEqual(self.folder.getObjectPosition('bar'), 0)
         self.assertEqual(self.folder.getObjectPosition('foo'), 1)
         self.assertEqual(self.folder.getObjectPosition('baz'), 2)
+
+    def testNotifyRemoved(self):
+        ordering = self.folder.getOrdering()
+        self.assertEqual(
+            ordering.idsInOrder(),
+            ['foo', 'bar', 'baz']
+        )
+
+        # make sure notifyRemoved with non-existent id does not throw error
+        ordering.notifyRemoved('foobar')
+
+        # normal
+        ordering.notifyRemoved('foo')
+        self.assertEqual(
+            ordering.idsInOrder(),
+            ['bar', 'baz']
+        )
