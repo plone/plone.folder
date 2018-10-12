@@ -34,8 +34,11 @@ class DefaultOrdering(object):
         """ see interfaces.py """
         order = self._order()
         pos = self._pos()
-        idx = pos[obj_id]
-        del order[idx]
+        try:
+            idx = pos[obj_id]
+            del order[idx]
+        except KeyError:
+            pass
         # we now need to rebuild pos since the ids have shifted
         pos.clear()
         for count, obj_id in enumerate(order):
