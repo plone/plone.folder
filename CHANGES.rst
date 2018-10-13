@@ -15,7 +15,9 @@ New features:
 
 Bug fixes:
 
-- *add item here*
+- Fix KeyError when removing object that is not referenced
+  in ordering annotation
+  [vangheem]
 
 
 1.0.11 (2018-04-08)
