@@ -5,14 +5,6 @@ Changelog
 2.0.2 (unreleased)
 ------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Fix KeyError when removing object that is not referenced
