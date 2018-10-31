@@ -7,14 +7,8 @@ Changelog
 
 Breaking changes:
 
-- *add item here*
-
 - move GopipIndex from `plone.app.folder` to `plone.folder`
   [jmevissen, petschki]
-
-New features:
-
-- *add item here*
 
 Bug fixes:
 
