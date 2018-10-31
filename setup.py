@@ -13,7 +13,6 @@ setup(
         "Framework :: Plone",
         "Framework :: Plone :: 5.0",
         "Framework :: Plone :: 5.1",
-        "Framework :: Plone :: 5.2",
         "Framework :: Zope2",
         "Intended Audience :: Developers",
         "Intended Audience :: System Administrators",
