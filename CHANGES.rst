@@ -5,14 +5,6 @@ Changelog
 1.0.12 (unreleased)
 -------------------
 
-Breaking changes:
-
-- *add item here*
-
-New features:
-
-- *add item here*
-
 Bug fixes:
 
 - Fix KeyError when removing object that is not referenced
