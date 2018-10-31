@@ -2,7 +2,7 @@ Changelog
 =========
 
 
-2.0.2 (unreleased)
+3.0.0 (unreleased)
 ------------------
 
 Breaking changes:
