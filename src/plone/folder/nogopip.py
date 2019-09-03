@@ -1,15 +1,33 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from App.special_dtml import DTMLFile
-from OFS.SimpleItem import SimpleItem
-from Products.CMFCore.interfaces import ISiteRoot
-from Products.PluginIndexes.interfaces import IPluggableIndex, ISortIndex
 from inspect import currentframe
 from logging import getLogger
+from OFS.SimpleItem import SimpleItem
+from Products.CMFCore.interfaces import ISiteRoot
+from Products.PluginIndexes.interfaces import IPluggableIndex
+from Products.PluginIndexes.interfaces import ISortIndex
 from zope.component import getUtility
 from zope.interface import implementer
 
 logger = getLogger(__name__)
+
+
+def traverse(base, path):
+    """simplified fast unrestricted traverse.
+    base: the app-root to start from
+    path: absolute path from app root as string
+    returns: content at the end or None
+    """
+    current = base
+    for cid in path.split('/'):
+        if not cid:
+            continue
+        try:
+            current = current[cid]
+        except KeyError:
+            return None
+    return current
 
 
 @implementer(IPluggableIndex)
@@ -74,13 +92,13 @@ class GopipIndex(StubIndex):
         items = []
         containers = {}
         getpath = self.catalog.paths.get
-        traverse = getUtility(ISiteRoot).unrestrictedTraverse
+        root = getUtility(ISiteRoot).getPhysicalRoot()
         for rid in rs:
             path = getpath(rid)
             parent, id = path.rsplit('/', 1)
             container = containers.get(parent)
             if container is None:
-                containers[parent] = container = traverse(parent)
+                containers[parent] = container = traverse(root, parent)
             rids[id] = rid              # remember in case of single folder
             items.append((rid, container, id))  # or else for deferred lookup
         pos = {}
@@ -97,22 +115,26 @@ class GopipIndex(StubIndex):
                 if rid:
                     pos[rid] = idx
             return pos
-        else:
-            # otherwise the entire map needs to be constructed...
-            for rid, container, id in items:
-                if getattr(aq_base(container), 'getObjectPosition', None):
-                    pos[rid] = container.getObjectPosition(id)
-                else:
-                    # fallback for unordered folders
-                    pos[rid] = 0
-            return pos
+        # otherwise the entire map needs to be constructed...
+        for rid, container, id in items:
+            if getattr(aq_base(container), 'getObjectPosition', None):
+                pos[rid] = container.getObjectPosition(id)
+            else:
+                # fallback for unordered folders
+                pos[rid] = 0
+        return pos
 
 
 manage_addGopipForm = DTMLFile('dtml/addGopipIndex', globals())
 
 
-def manage_addGopipIndex(self, identifier, REQUEST=None, RESPONSE=None,
-    URL3=None):
+def manage_addGopipIndex(
+    self,
+    identifier,
+    REQUEST=None,
+    RESPONSE=None,
+    URL3=None
+):
     """ add a fake gopip index """
     return self.manage_addIndex(
         identifier,
