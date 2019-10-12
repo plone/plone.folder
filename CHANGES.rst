@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.1 (2019-10-12)
+------------------
+
+Bug fixes:
+
+
+- - Fixes slow lookup of ``documentToKeyMap`` in GopipIndex.
+    About up to 66x speedup in some cases.
+    This may add up to seconds less on large navtree renderings.
+    [jensens] (#14)
+
+
 3.0.0 (2018-10-31)
 ------------------
 
