@@ -15,7 +15,7 @@ ORDER_ATTR = '_objectordering'
 
 @implementer(IExplicitOrdering)
 class PartialOrdering(object):
-    """ this implementation uses a list ot store order information on a
+    """ this implementation uses a list to store order information on a
         regular attribute of the folderish object;  explicit ordering
         is supported """
     adapts(IOrderableFolder)
@@ -96,8 +96,10 @@ class PartialOrdering(object):
             if delta > 0:
                 subset_ids.reverse()
             idx = 0
+            # micro-optimization: set is 1000 time faster on contains than list
+            subset_ids_as_set = set(subset_ids)
             for i, value in enumerate(self.order):
-                if value in subset_ids:
+                if value in subset_ids_as_set:
                     id = subset_ids[idx]
                     try:
                         self.order[i] = id
