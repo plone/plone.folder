@@ -81,8 +81,12 @@ class DefaultOrdering(object):
             if delta > 0:
                 subset_ids.reverse()
             idx = 0
+            # micro-optimization 1: set is 1000 time faster on contains than list
+            subset_ids_as_set = set(subset_ids)
+            # micro-optimization 2: speedup on lookup in bytecode
+            order_getitem = order.__getitem__
             for i in range(len(order)):
-                if order[i] not in subset_ids:
+                if order_getitem(i) not in subset_ids_as_set:
                     continue
                 obj_id = subset_ids[idx]
                 try:
