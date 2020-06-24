@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.3 (2020-06-24)
+------------------
+
+Bug fixes:
+
+
+- Micro-optimization of often called loop in moveObjectsByDelta.
+  ``x in y`` is up to 1000 times faster if y is a set and not a list.
+  [jensens] (#15)
+
+
 3.0.2 (2020-04-20)
 ------------------
 

@@ -1,3 +1,0 @@
-Micro-optimization of often called loop in moveObjectsByDelta.
-``x in y`` is up to 1000 times faster if y is a set and not a list.
-[jensens]
