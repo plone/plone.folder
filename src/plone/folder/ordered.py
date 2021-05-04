@@ -20,17 +20,11 @@ except ImportError:
     # bbb import for Zope2
     from Products.ZCatalog.Lazy import LazyMap
 
-import pkg_resources
-
-
-HAS_ZSERVER = True
+HAS_WEBDAV = True
 try:
-    dist = pkg_resources.get_distribution('ZServer')
-except pkg_resources.DistributionNotFound:
-    HAS_ZSERVER = False
-
-if HAS_ZSERVER:
     from webdav.NullResource import NullResource
+except ImportError:
+    HAS_WEBDAV = False
 
 
 @implementer(IOrderedContainer, IOrderableFolder, IAttributeAnnotatable)
@@ -235,7 +229,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         if hasattr(self, 'REQUEST'):
             request = self.REQUEST
             method = request.get('REQUEST_METHOD', 'GET')
-            if (HAS_ZSERVER and getattr(request, 'maybe_webdav_client', False)
+            if (HAS_WEBDAV and getattr(request, 'maybe_webdav_client', False)
                and method not in ('GET', 'POST')):
                 return NullResource(self, key, request).__of__(self)
         raise KeyError(key)
