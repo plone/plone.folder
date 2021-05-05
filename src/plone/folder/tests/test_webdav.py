@@ -9,14 +9,11 @@ import pkg_resources
 import unittest
 
 
-HAS_ZSERVER = True
+HAS_WEBDAV = True
 try:
-    dist = pkg_resources.get_distribution('ZServer')
-except pkg_resources.DistributionNotFound:
-    HAS_ZSERVER = False
-
-if HAS_ZSERVER:
     from webdav.NullResource import NullResource
+except ImportError:
+    HAS_WEBDAV = False
 
 
 class TestRequestContainer(Explicit):
@@ -46,7 +43,7 @@ class WebDAVTests(unittest.TestCase):
         except KeyError:
             pass
 
-    @unittest.skipUnless(HAS_ZSERVER, 'ZServer is optional')
+    @unittest.skipUnless(HAS_WEBDAV, 'ZServer is optional')
     def test_getitem_dav_request(self):
         root = TestRequestContainer()
         folder = CMFOrderedBTreeFolderBase("f1").__of__(root)
