@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+3.1.0 (2021-06-14)
+------------------
+
+New features:
+
+
+- Restore webdav support [frapell] (#16)
+
+
 3.0.3 (2020-06-24)
 ------------------
 
