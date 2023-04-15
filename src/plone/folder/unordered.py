@@ -8,7 +8,7 @@ from zope.interface import implementer
 @implementer(IOrdering)
 @adapter(IOrderableFolder)
 class UnorderedOrdering:
-    """ This implementation provides no ordering. """
+    """This implementation provides no ordering."""
 
     def __init__(self, context):
         self.context = context

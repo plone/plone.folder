@@ -13,8 +13,8 @@ import six
 @implementer(IExplicitOrdering)
 @adapter(IOrderableFolder)
 class DefaultOrdering:
-    """ This implementation uses annotations to store the order on the
-        object, and supports explicit ordering. """
+    """This implementation uses annotations to store the order on the
+    object, and supports explicit ordering."""
 
     ORDER_KEY = "plone.folder.ordered.order"
     POS_KEY = "plone.folder.ordered.pos"
@@ -23,14 +23,14 @@ class DefaultOrdering:
         self.context = context
 
     def notifyAdded(self, obj_id):
-        """ see interfaces.py """
+        """see interfaces.py"""
         order = self._order(True)
         pos = self._pos(True)
         order.append(obj_id)
         pos[obj_id] = len(order) - 1
 
     def notifyRemoved(self, obj_id):
-        """ see interfaces.py """
+        """see interfaces.py"""
         order = self._order()
         pos = self._pos()
         try:
@@ -43,14 +43,8 @@ class DefaultOrdering:
         for count, obj_id in enumerate(order):
             pos[obj_id] = count
 
-    def moveObjectsByDelta(
-        self,
-        ids,
-        delta,
-        subset_ids=None,
-        suppress_events=False
-    ):
-        """ see interfaces.py """
+    def moveObjectsByDelta(self, ids, delta, subset_ids=None, suppress_events=False):
+        """see interfaces.py"""
         order = self._order()
         pos = self._pos()
         min_position = 0
@@ -60,7 +54,7 @@ class DefaultOrdering:
             subset_ids = self.idsInOrder()
         elif not isinstance(subset_ids, list):
             subset_ids = list(subset_ids)
-        if delta > 0:                   # unify moving direction
+        if delta > 0:  # unify moving direction
             ids = reversed(ids)
             subset_ids.reverse()
         counter = 0
@@ -93,41 +87,37 @@ class DefaultOrdering:
                     pos[obj_id] = i
                     idx += 1
                 except KeyError:
-                    raise ValueError(
-                        f'No object with id "{obj_id:s}" exists.'
-                    )
+                    raise ValueError(f'No object with id "{obj_id:s}" exists.')
         if not suppress_events:
             notifyContainerModified(self.context)
         return counter
 
     def moveObjectsUp(self, ids, delta=1, subset_ids=None):
-        """ see interfaces.py """
+        """see interfaces.py"""
         return self.moveObjectsByDelta(ids, -delta, subset_ids)
 
     def moveObjectsDown(self, ids, delta=1, subset_ids=None):
-        """ see interfaces.py """
+        """see interfaces.py"""
         return self.moveObjectsByDelta(ids, delta, subset_ids)
 
     def moveObjectsToTop(self, ids, subset_ids=None):
-        """ see interfaces.py """
+        """see interfaces.py"""
         return self.moveObjectsByDelta(ids, -len(self._order()), subset_ids)
 
     def moveObjectsToBottom(self, ids, subset_ids=None):
-        """ see interfaces.py """
+        """see interfaces.py"""
         return self.moveObjectsByDelta(ids, len(self._order()), subset_ids)
 
     def moveObjectToPosition(self, obj_id, position, suppress_events=False):
-        """ see interfaces.py """
+        """see interfaces.py"""
         delta = position - self.getObjectPosition(obj_id)
         if delta:
             return self.moveObjectsByDelta(
-                obj_id,
-                delta,
-                suppress_events=suppress_events
+                obj_id, delta, suppress_events=suppress_events
             )
 
     def orderObjects(self, key=None, reverse=None):
-        """ see interfaces.py """
+        """see interfaces.py"""
         if key is None and not reverse:
             return -1
         order = self._order()
@@ -137,11 +127,13 @@ class DefaultOrdering:
             # Simply reverse the current ordering.
             order.reverse()
         else:
+
             def keyfn(obj_id):
                 attr = getattr(self.context._getOb(obj_id), key)
                 if callable(attr):
                     return attr()
                 return attr
+
             # order.sort(cmd=None, key=keyfn, reverse=bool(reverse))
             order = sorted(order, key=keyfn, reverse=bool(reverse))
             self._set_order(order)
@@ -150,15 +142,18 @@ class DefaultOrdering:
         return -1
 
     def getObjectPosition(self, obj_id):
-        """ see interfaces.py """
+        """see interfaces.py"""
         pos = self._pos()
         if obj_id in pos:
             return pos[obj_id]
-        raise ValueError('No object with id "{:s}" exists in "{:s}".'.format(
-            obj_id, '/'.join(self.context.getPhysicalPath())))
+        raise ValueError(
+            'No object with id "{:s}" exists in "{:s}".'.format(
+                obj_id, "/".join(self.context.getPhysicalPath())
+            )
+        )
 
     def idsInOrder(self):
-        """ see interfaces.py """
+        """see interfaces.py"""
         return list(self._order())
 
     def __getitem__(self, index):

@@ -16,12 +16,11 @@ except ImportError:
 
 
 class TestRequestContainer(Explicit):
-
     REQUEST = TestRequest()
 
 
 class WebDAVTests(unittest.TestCase):
-    """ tests regarding support for WebDAV NullResources """
+    """tests regarding support for WebDAV NullResources"""
 
     layer = PLONEFOLDER_INTEGRATION_TESTING
 
@@ -30,28 +29,28 @@ class WebDAVTests(unittest.TestCase):
         folder = CMFOrderedBTreeFolderBase("f1").__of__(root)
 
         root.REQUEST.maybe_webdav_client = False
-        root.REQUEST._environ['REQUEST_METHOD'] = 'GET'
+        root.REQUEST._environ["REQUEST_METHOD"] = "GET"
 
-        foo = DummyObject('foo')
-        folder['foo'] = foo
+        foo = DummyObject("foo")
+        folder["foo"] = foo
 
-        self.assertEqual(folder['foo'], foo)
+        self.assertEqual(folder["foo"], foo)
         try:
-            folder['bar']
+            folder["bar"]
             self.fail()
         except KeyError:
             pass
 
-    @unittest.skipUnless(HAS_WEBDAV, 'ZServer is optional')
+    @unittest.skipUnless(HAS_WEBDAV, "ZServer is optional")
     def test_getitem_dav_request(self):
         root = TestRequestContainer()
         folder = CMFOrderedBTreeFolderBase("f1").__of__(root)
 
         root.REQUEST.maybe_webdav_client = True
-        root.REQUEST._environ['REQUEST_METHOD'] = 'PUT'
+        root.REQUEST._environ["REQUEST_METHOD"] = "PUT"
 
-        foo = DummyObject('foo')
-        folder['foo'] = foo
+        foo = DummyObject("foo")
+        folder["foo"] = foo
 
-        self.assertEqual(folder['foo'], foo)
-        self.assertTrue(isinstance(folder['bar'], NullResource))
+        self.assertEqual(folder["foo"], foo)
+        self.assertTrue(isinstance(folder["bar"], NullResource))

@@ -7,7 +7,6 @@ import plone.folder
 
 
 class PloneFolderLayer(PloneSandboxLayer):
-
     defaultBases = (PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
@@ -17,11 +16,9 @@ class PloneFolderLayer(PloneSandboxLayer):
 PLONEFOLDER_FIXTURE = PloneFolderLayer()
 
 PLONEFOLDER_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONEFOLDER_FIXTURE,),
-    name='PloneFolderLayer:IntegrationTesting'
+    bases=(PLONEFOLDER_FIXTURE,), name="PloneFolderLayer:IntegrationTesting"
 )
 
 PLONEFOLDER_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONEFOLDER_FIXTURE,),
-    name='PloneFolderLayer:FunctionalTesting'
+    bases=(PLONEFOLDER_FIXTURE,), name="PloneFolderLayer:FunctionalTesting"
 )

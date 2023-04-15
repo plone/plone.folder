@@ -12,20 +12,20 @@ from unittest import TestCase
 
 
 class BenchmarkTests(TestCase):
-
     layer = PloneFolderLayer
 
     def testDeleteSpeed(self):
         folder = OrderedBTreeFolderBase("f1")
         for idx in range(100000):
-            id = 'foo-%s' % idx
-            folder[id] = DummyObject(id, 'bar')
+            id = "foo-%s" % idx
+            folder[id] = DummyObject(id, "bar")
         last = reversed(folder.keys()[-100:])
 
         @timecall
         def delete():
             for id in last:
                 del folder[id]
+
         delete()
 
 
