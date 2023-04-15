@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # simple benchmarking tests related to plip191
 # to run individual tests using:
 # $ bin/instance test -s plone.folder --tests-pattern=benchmarks -t <testName>
@@ -8,7 +7,6 @@ from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.tests.layer import PloneFolderLayer
 from plone.folder.tests.utils import DummyObject
 from profilehooks import timecall
-from six.moves import range
 from unittest import defaultTestLoader
 from unittest import TestCase
 

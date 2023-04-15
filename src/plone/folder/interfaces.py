@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from zope.interface import Interface
 
 
@@ -16,7 +15,7 @@ class IOrderableFolder(IFolder):
     def getOrdering():
         """ return the currently active ordering adapter for this folder """
 
-    def setOrdering(ordering=u''):
+    def setOrdering(ordering=''):
         """ (re)set ordering adapter to be used for this folder """
 
 

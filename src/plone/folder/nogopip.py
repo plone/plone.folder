@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from App.special_dtml import DTMLFile
 from inspect import currentframe
@@ -72,7 +71,7 @@ class GopipIndex(StubIndex):
     keyForDocument = 42
 
     def __init__(self, id, extra=None, caller=None):
-        super(GopipIndex, self).__init__(id)
+        super().__init__(id)
         self.catalog = aq_base(caller._catalog)
 
     def __len__(self):

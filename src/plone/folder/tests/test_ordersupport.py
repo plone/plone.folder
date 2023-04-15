@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from OFS.Traversable import Traversable
 from plone.folder.interfaces import IOrdering
 from plone.folder.ordered import OrderedBTreeFolderBase
@@ -33,59 +32,59 @@ class OFSOrderSupportTests(unittest.TestCase):
 
     def test_objectIdsOrdered(self):
         folder = self.create()
-        self.assertEquals(["o1", "o2", "o3", "o4"], folder.objectIds())
+        self.assertEqual(["o1", "o2", "o3", "o4"], folder.objectIds())
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEquals(["o2", "o1", "o3", "o4"], folder.objectIds())
+        self.assertEqual(["o2", "o1", "o3", "o4"], folder.objectIds())
 
     def test_objectValuesOrdered(self):
         folder = self.create()
-        self.assertEquals(
+        self.assertEqual(
             ["o1", "o2", "o3", "o4"],
             [x.id for x in folder.objectValues()]
         )
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEquals(
+        self.assertEqual(
             ["o2", "o1", "o3", "o4"],
             [x.id for x in folder.objectValues()]
         )
 
     def test_objectItemsOrdered(self):
         folder = self.create()
-        self.assertEquals(
+        self.assertEqual(
             ["o1", "o2", "o3", "o4"],
             [x for x, y in folder.objectItems()]
         )
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEquals(
+        self.assertEqual(
             ["o2", "o1", "o3", "o4"],
             [x for x, y in folder.objectItems()]
         )
 
     def test_iterkeys(self):
         folder = self.create()
-        self.assertEquals(
+        self.assertEqual(
             ["o1", "o2", "o3", "o4"],
-            [x for x in six.iterkeys(folder)]
+            [x for x in folder.keys()]
         )
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEquals(
+        self.assertEqual(
             ["o2", "o1", "o3", "o4"],
-            [x for x in six.iterkeys(folder)]
+            [x for x in folder.keys()]
         )
 
     def test_iter(self):
         folder = self.create()
-        self.assertEquals(["o1", "o2", "o3", "o4"], [x for x in folder])
+        self.assertEqual(["o1", "o2", "o3", "o4"], [x for x in folder])
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEquals(["o2", "o1", "o3", "o4"], [x for x in folder])
+        self.assertEqual(["o2", "o1", "o3", "o4"], [x for x in folder])
 
     def test_getitem(self):
         ordering = IOrdering(self.create())
-        self.assertEquals(ordering[1], 'o2')
-        self.assertEquals(ordering[-1], 'o4')
-        self.assertEquals(ordering[1:2], ['o2'])
-        self.assertEquals(ordering[1:-1], ['o2', 'o3'])
-        self.assertEquals(ordering[1:], ['o2', 'o3', 'o4'])
+        self.assertEqual(ordering[1], 'o2')
+        self.assertEqual(ordering[-1], 'o4')
+        self.assertEqual(ordering[1:2], ['o2'])
+        self.assertEqual(ordering[1:-1], ['o2', 'o3'])
+        self.assertEqual(ordering[1:], ['o2', 'o3', 'o4'])
 
     # Tests borrowed from OFS.tests.testsOrderSupport
 

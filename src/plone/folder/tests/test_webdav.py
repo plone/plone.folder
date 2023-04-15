@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import Explicit
 from plone.folder.ordered import CMFOrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
@@ -36,7 +35,7 @@ class WebDAVTests(unittest.TestCase):
         foo = DummyObject('foo')
         folder['foo'] = foo
 
-        self.assertEquals(folder['foo'], foo)
+        self.assertEqual(folder['foo'], foo)
         try:
             folder['bar']
             self.fail()
@@ -54,5 +53,5 @@ class WebDAVTests(unittest.TestCase):
         foo = DummyObject('foo')
         folder['foo'] = foo
 
-        self.assertEquals(folder['foo'], foo)
+        self.assertEqual(folder['foo'], foo)
         self.assertTrue(isinstance(folder['bar'], NullResource))

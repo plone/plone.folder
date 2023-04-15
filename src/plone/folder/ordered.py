@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import access_contents_information
 from AccessControl.Permissions import manage_properties
@@ -33,7 +32,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         is done by a named adapter (to IOrdering), which makes the policy
         changeable. """
 
-    _ordering = u''         # name of adapter defining ordering policy
+    _ordering = ''         # name of adapter defining ordering policy
 
     security = ClassSecurityInfo()
 
@@ -50,7 +49,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
         return adapter
 
     @security.protected(manage_properties)
-    def setOrdering(self, ordering=u''):
+    def setOrdering(self, ordering=''):
         """ (re)set ordering adapter to be used for this folder """
         if ordering:
             # make sure the adapter exists...
@@ -62,28 +61,28 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     def _getOb(self, id, default=_marker):
         """ Return the named object from the folder. """
         try:
-            return super(OrderedBTreeFolderBase, self)._getOb(id, default)
+            return super()._getOb(id, default)
         except KeyError as e:
             raise AttributeError(e)
 
     def _setOb(self, id, object):
         """ Store the named object in the folder. """
-        super(OrderedBTreeFolderBase, self)._setOb(id, object)
+        super()._setOb(id, object)
         self.getOrdering().notifyAdded(id)     # notify the ordering adapter
 
     def _delOb(self, id):
         """ Remove the named object from the folder. """
-        super(OrderedBTreeFolderBase, self)._delOb(id)
+        super()._delOb(id)
         self.getOrdering().notifyRemoved(id)   # notify the ordering adapter
 
     def objectIds(self, spec=None, ordered=True):
         if not ordered:
-            return super(OrderedBTreeFolderBase, self).objectIds(spec)
+            return super().objectIds(spec)
         ordering = self.getOrdering()
         if spec is None:
             return ordering.idsInOrder()
         else:
-            ids = super(OrderedBTreeFolderBase, self).objectIds(spec)
+            ids = super().objectIds(spec)
             idxs = []
             for id in ids:
                 idxs.append((ordering.getObjectPosition(id), id))
@@ -196,7 +195,7 @@ class OrderedBTreeFolderBase(BTreeFolder2Base):
     def manage_renameObject(self, id, new_id, REQUEST=None):
         """ Rename a particular sub-object without changing its position. """
         old_position = self.getObjectPosition(id)
-        result = super(OrderedBTreeFolderBase, self).manage_renameObject(
+        result = super().manage_renameObject(
             id,
             new_id,
             REQUEST

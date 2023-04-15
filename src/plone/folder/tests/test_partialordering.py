@@ -18,7 +18,7 @@ class PartialOrderingTests(unittest.TestCase):
 
     def create(self):
         container = OrderedBTreeFolderBase()
-        container.setOrdering(u'partial')
+        container.setOrdering('partial')
         container['o1'] = Orderable('o1', 'mt1')
         container['o2'] = Orderable('o2', 'mt2')
         container['c1'] = Chaoticle('c1', 'mt3')
@@ -47,7 +47,7 @@ class PartialOrderingTests(unittest.TestCase):
         )
         self.assertEqual(
             set(container.objectIds()),
-            set(['o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3'])
+            {'o1', 'o2', 'o3', 'o4', 'o5', 'c1', 'c2', 'c3'}
         )
 
     def testNotifyRemoved(self):
@@ -63,7 +63,7 @@ class PartialOrderingTests(unittest.TestCase):
         )
         self.assertEqual(
             set(container.objectIds()),
-            set(['o1', 'o2', 'o4', 'c1', 'c2', 'c3'])
+            {'o1', 'o2', 'o4', 'c1', 'c2', 'c3'}
         )
         container._delOb('o1')
         self.assertEqual(
@@ -72,7 +72,7 @@ class PartialOrderingTests(unittest.TestCase):
         )
         self.assertEqual(
             set(container.objectIds()),
-            set(['o2', 'o4', 'c1', 'c2', 'c3'])
+            {'o2', 'o4', 'c1', 'c2', 'c3'}
         )
 
     def runTableTests(self, action, tests):
@@ -194,7 +194,7 @@ class DummyFolder(OrderedBTreeFolderBase, Implicit):
     """ we need to mix in acquisition """
 
     meta_type = 'DummyFolder'
-    _ordering = u'partial'
+    _ordering = 'partial'
 
     def dummy_method(self):
         return self.id

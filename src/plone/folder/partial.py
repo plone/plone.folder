@@ -14,7 +14,7 @@ ORDER_ATTR = '_objectordering'
 
 
 @implementer(IExplicitOrdering)
-class PartialOrdering(object):
+class PartialOrdering:
     """ this implementation uses a list to store order information on a
         regular attribute of the folderish object;  explicit ordering
         is supported """
@@ -70,7 +70,7 @@ class PartialOrdering(object):
             suppress_events=False):
         """ see interfaces.py """
         min_position = 0
-        if isinstance(ids, six.string_types):
+        if isinstance(ids, str):
             ids = [ids]
         if subset_ids is None:
             subset_ids = self.idsInOrder(onlyOrderables=True)

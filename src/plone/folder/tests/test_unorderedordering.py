@@ -13,7 +13,7 @@ class UnorderedOrderingTests(unittest.TestCase):
 
     def create(self):
         container = OrderedBTreeFolderBase()
-        container._ordering = u'unordered'
+        container._ordering = 'unordered'
         container._setOb('o1', DummyObject('o1', 'mt1'))
         container._setOb('o2', DummyObject('o2', 'mt2'))
         container._setOb('o3', DummyObject('o3', 'mt1'))
@@ -29,24 +29,24 @@ class UnorderedOrderingTests(unittest.TestCase):
         container = self.create()
         self.assertEqual(
             set(container.objectIds()),
-            set(['o1', 'o2', 'o3', 'o4'])
+            {'o1', 'o2', 'o3', 'o4'}
         )
         container._setOb('o5', DummyObject('o5', 'mt1'))
         self.assertEqual(
             set(container.objectIds()),
-            set(['o1', 'o2', 'o3', 'o4', 'o5'])
+            {'o1', 'o2', 'o3', 'o4', 'o5'}
         )
 
     def testNotifyRemoved(self):
         container = self.create()
         self.assertEqual(
             set(container.objectIds()),
-            set(['o1', 'o2', 'o3', 'o4'])
+            {'o1', 'o2', 'o3', 'o4'}
         )
         container._delOb('o3')
         self.assertEqual(
             set(container.objectIds()),
-            set(['o1', 'o2', 'o4'])
+            {'o1', 'o2', 'o4'}
         )
 
     def testGetObjectPosition(self):

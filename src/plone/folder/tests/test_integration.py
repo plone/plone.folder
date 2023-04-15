@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 from Acquisition import Implicit
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
-from six import BytesIO
+from io import BytesIO
 from transaction import savepoint
 from zope.interface import implementer
 

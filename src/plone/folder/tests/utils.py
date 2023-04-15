@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 from plone.folder.interfaces import IOrderable
 from zope.interface import implementer
 
 
-class DummyObject(object):
+class DummyObject:
 
     def __init__(self, id, meta_type=None):
         self.id = id

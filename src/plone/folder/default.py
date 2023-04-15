@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from BTrees.OIBTree import OIBTree
 from persistent.list import PersistentList
 from plone.folder.interfaces import IExplicitOrdering
@@ -13,7 +12,7 @@ import six
 
 @implementer(IExplicitOrdering)
 @adapter(IOrderableFolder)
-class DefaultOrdering(object):
+class DefaultOrdering:
     """ This implementation uses annotations to store the order on the
         object, and supports explicit ordering. """
 
@@ -55,7 +54,7 @@ class DefaultOrdering(object):
         order = self._order()
         pos = self._pos()
         min_position = 0
-        if isinstance(ids, six.string_types):
+        if isinstance(ids, str):
             ids = [ids]
         if subset_ids is None:
             subset_ids = self.idsInOrder()
@@ -95,7 +94,7 @@ class DefaultOrdering(object):
                     idx += 1
                 except KeyError:
                     raise ValueError(
-                        'No object with id "{0:s}" exists.'.format(obj_id)
+                        f'No object with id "{obj_id:s}" exists.'
                     )
         if not suppress_events:
             notifyContainerModified(self.context)
@@ -155,7 +154,7 @@ class DefaultOrdering(object):
         pos = self._pos()
         if obj_id in pos:
             return pos[obj_id]
-        raise ValueError('No object with id "{0:s}" exists in "{1:s}".'.format(
+        raise ValueError('No object with id "{:s}" exists in "{:s}".'.format(
             obj_id, '/'.join(self.context.getPhysicalPath())))
 
     def idsInOrder(self):
