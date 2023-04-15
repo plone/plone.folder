@@ -46,7 +46,6 @@ setup(
         "Products.CMFCore",
         "Products.ZCatalog",
         "setuptools",
-        "six",
         "zope.annotation",
         "zope.component",
         "zope.container",

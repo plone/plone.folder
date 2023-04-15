@@ -4,7 +4,6 @@ from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
 
-import six
 import unittest
 
 

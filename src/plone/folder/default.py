@@ -7,8 +7,6 @@ from zope.component import adapter
 from zope.container.contained import notifyContainerModified
 from zope.interface import implementer
 
-import six
-
 
 @implementer(IExplicitOrdering)
 @adapter(IOrderableFolder)
