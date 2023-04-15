@@ -9,6 +9,7 @@ from Products.PluginIndexes.interfaces import ISortIndex
 from zope.component import getUtility
 from zope.interface import implementer
 
+
 logger = getLogger(__name__)
 
 

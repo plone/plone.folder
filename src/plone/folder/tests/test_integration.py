@@ -1,8 +1,8 @@
 from Acquisition import Implicit
+from io import BytesIO
 from plone.folder.interfaces import IOrderable
 from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
-from io import BytesIO
 from transaction import savepoint
 from zope.interface import implementer
 

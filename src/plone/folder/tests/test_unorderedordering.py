@@ -1,7 +1,7 @@
 from plone.folder.ordered import OrderedBTreeFolderBase
-from plone.folder.unordered import UnorderedOrdering
-from plone.folder.tests.utils import DummyObject
 from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
+from plone.folder.tests.utils import DummyObject
+from plone.folder.unordered import UnorderedOrdering
 
 import unittest
 
