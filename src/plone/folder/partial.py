@@ -38,7 +38,7 @@ class PartialOrdering:
 
     def notifyAdded(self, id):
         """see interfaces.py"""
-        assert not id in self.order
+        assert id not in self.order
         context = aq_base(self.context)
         obj = context._getOb(id)
         if IOrderable.providedBy(obj):

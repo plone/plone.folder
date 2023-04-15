@@ -4,7 +4,6 @@ from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
 from zope.publisher.browser import TestRequest
 
-import pkg_resources
 import unittest
 
 
