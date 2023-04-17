@@ -293,7 +293,7 @@ Fixes:
   dict-like API.
   [optilude]
 
-- Fix issue with removing non-orderable content for partial ordering suppport.
+- Fix issue with removing non-orderable content for partial ordering support.
   [witsch]
 
 - Fix ``getObjectPosition`` to return a value representing "no position" for

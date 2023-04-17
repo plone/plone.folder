@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from App.special_dtml import DTMLFile
 from inspect import currentframe
@@ -10,6 +9,7 @@ from Products.PluginIndexes.interfaces import ISortIndex
 from zope.component import getUtility
 from zope.interface import implementer
 
+
 logger = getLogger(__name__)
 
 
@@ -20,7 +20,7 @@ def traverse(base, path):
     returns: content at the end or None
     """
     current = base
-    for cid in path.split('/'):
+    for cid in path.split("/"):
         if not cid:
             continue
         try:
@@ -32,7 +32,7 @@ def traverse(base, path):
 
 @implementer(IPluggableIndex)
 class StubIndex(SimpleItem):
-    """ stub catalog index doing nothing """
+    """stub catalog index doing nothing"""
 
     def __init__(self, id, *args, **kw):
         self.id = id
@@ -64,15 +64,15 @@ class StubIndex(SimpleItem):
 
 @implementer(ISortIndex)
 class GopipIndex(StubIndex):
-    """ fake index for sorting against `getObjPositionInParent` """
+    """fake index for sorting against `getObjPositionInParent`"""
 
-    meta_type = 'GopipIndex'
-    manage_options = dict(label='Settings', action='manage_main'),
+    meta_type = "GopipIndex"
+    manage_options = (dict(label="Settings", action="manage_main"),)
 
     keyForDocument = 42
 
     def __init__(self, id, extra=None, caller=None):
-        super(GopipIndex, self).__init__(id)
+        super().__init__(id)
         self.catalog = aq_base(caller._catalog)
 
     def __len__(self):
@@ -87,7 +87,7 @@ class GopipIndex(StubIndex):
         # results themselves.  luckily this is only ever called from
         # `sortResults`, so we can get it form there.  oh, and lurker
         # says this won't work in jython, though! :)
-        rs = currentframe().f_back.f_locals['rs']
+        rs = currentframe().f_back.f_locals["rs"]
         rids = {}
         items = []
         containers = {}
@@ -95,17 +95,17 @@ class GopipIndex(StubIndex):
         root = getUtility(ISiteRoot).getPhysicalRoot()
         for rid in rs:
             path = getpath(rid)
-            parent, id = path.rsplit('/', 1)
+            parent, id = path.rsplit("/", 1)
             container = containers.get(parent)
             if container is None:
                 containers[parent] = container = traverse(root, parent)
-            rids[id] = rid              # remember in case of single folder
+            rids[id] = rid  # remember in case of single folder
             items.append((rid, container, id))  # or else for deferred lookup
         pos = {}
         if len(containers) == 1:
             # the usual "all from one folder" case can be optimized
             folder = list(containers.values())[0]
-            if getattr(aq_base(folder), 'getOrdering', None):
+            if getattr(aq_base(folder), "getOrdering", None):
                 ids = folder.getOrdering().idsInOrder()
             else:
                 # site root or old folders
@@ -117,7 +117,7 @@ class GopipIndex(StubIndex):
             return pos
         # otherwise the entire map needs to be constructed...
         for rid, container, id in items:
-            if getattr(aq_base(container), 'getObjectPosition', None):
+            if getattr(aq_base(container), "getObjectPosition", None):
                 pos[rid] = container.getObjectPosition(id)
             else:
                 # fallback for unordered folders
@@ -125,21 +125,11 @@ class GopipIndex(StubIndex):
         return pos
 
 
-manage_addGopipForm = DTMLFile('dtml/addGopipIndex', globals())
+manage_addGopipForm = DTMLFile("dtml/addGopipIndex", globals())
 
 
-def manage_addGopipIndex(
-    self,
-    identifier,
-    REQUEST=None,
-    RESPONSE=None,
-    URL3=None
-):
-    """ add a fake gopip index """
+def manage_addGopipIndex(self, identifier, REQUEST=None, RESPONSE=None, URL3=None):
+    """add a fake gopip index"""
     return self.manage_addIndex(
-        identifier,
-        'GopipIndex',
-        REQUEST=REQUEST,
-        RESPONSE=RESPONSE,
-        URL1=URL3
+        identifier, "GopipIndex", REQUEST=REQUEST, RESPONSE=RESPONSE, URL1=URL3
     )
