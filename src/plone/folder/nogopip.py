@@ -87,11 +87,13 @@ class GopipIndex(StubIndex):
         # results themselves.  luckily this is only ever called from
         # `sortResults`, so we can get it form there.  oh, and lurker
         # says this won't work in jython, though! :)
-        rs = currentframe().f_back.f_locals["rs"]
+        caller_locals = currentframe().f_back.f_locals
+        catalog = caller_locals["self"].aq_parent
+        rs = caller_locals["rs"]
         rids = {}
         items = []
         containers = {}
-        getpath = self.catalog.paths.get
+        getpath = catalog.getpath
         root = getUtility(ISiteRoot).getPhysicalRoot()
         for rid in rs:
             path = getpath(rid)
