@@ -67,7 +67,11 @@ class PartialOrderingTests(unittest.TestCase):
             container, ordering = self.create()
             ids = set(container.objectIds())
             method = getattr(ordering, action)
-            if isinstance(rval, Exception):
+            if isinstance(rval, type):
+                # This means the return value is an Exception class.
+                # It is NOT an *instance* of an Exception class,
+                # so the following would not work:
+                # isinstance(rval, Exception)
                 self.assertRaises(rval, method, *args)
             else:
                 self.assertEqual(method(*args), rval)
