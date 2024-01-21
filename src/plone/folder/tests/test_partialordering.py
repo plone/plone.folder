@@ -67,7 +67,7 @@ class PartialOrderingTests(unittest.TestCase):
             container, ordering = self.create()
             ids = set(container.objectIds())
             method = getattr(ordering, action)
-            if isinstance(rval, Exception):
+            if isinstance(rval, type) and issubclass(rval, Exception):
                 self.assertRaises(rval, method, *args)
             else:
                 self.assertEqual(method(*args), rval)
