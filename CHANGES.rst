@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+4.0.1 (2024-01-22)
+------------------
+
+Bug fixes:
+
+
+- Fix partial ordering tests.
+  [maurits] (#23)
+
+
+Internal:
+
+
+- Update configuration files.
+  [plone devs] (55bda5c9, 6e36bcc4)
+
+
 4.0.0 (2023-04-19)
 ------------------
 
