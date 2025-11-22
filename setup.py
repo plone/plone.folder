@@ -1,9 +1,8 @@
 from pathlib import Path
-from setuptools import find_packages
 from setuptools import setup
 
 
-version = "4.0.2.dev0"
+version = "5.0.0.dev0"
 
 long_description = (
     f"{Path('README.rst').read_text()}\n{Path('CHANGES.rst').read_text()}"
@@ -21,7 +20,7 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.2",
         "Framework :: Plone :: Core",
         "Framework :: Zope2",
         "Framework :: Zope :: 4",
@@ -31,8 +30,6 @@ setup(
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
@@ -41,15 +38,11 @@ setup(
     author_email="plone-developers@lists.sourceforge.net",
     url="https://pypi.org/project/plone.folder",
     license="GPL version 2",
-    packages=find_packages("src"),
-    package_dir={"": "src"},
-    namespace_packages=["plone"],
     include_package_data=True,
     platforms="Any",
     zip_safe=False,
-    python_requires=">=3.8",
+    python_requires=">=3.10",
     install_requires=[
-        "setuptools",
         "Products.CMFCore",
         "Products.ZCatalog",
         "Zope",
