@@ -6,7 +6,6 @@ from zope.component import adapts
 from zope.container.contained import notifyContainerModified
 from zope.interface import implementer
 
-
 ORDER_ATTR = "_objectordering"
 
 
