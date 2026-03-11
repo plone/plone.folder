@@ -6,7 +6,6 @@ from zope.publisher.browser import TestRequest
 
 import unittest
 
-
 HAS_WEBDAV = True
 try:
     from webdav.NullResource import NullResource
