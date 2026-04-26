@@ -132,9 +132,7 @@ class DefaultOrdering:
                     return attr()
                 return attr
 
-            # order.sort(cmd=None, key=keyfn, reverse=bool(reverse))
-            order = sorted(order, key=keyfn, reverse=bool(reverse))
-            self._set_order(order)
+            order.sort(key=keyfn, reverse=bool(reverse))
         for n, obj_id in enumerate(order):
             pos[obj_id] = n
         return -1
@@ -164,13 +162,6 @@ class DefaultOrdering:
         if create:
             return annotations.setdefault(self.ORDER_KEY, PersistentList())
         return annotations.get(self.ORDER_KEY, [])
-
-    def _set_order(self, value):
-        # We added a setter because in py2 _order is modified inplace
-        # with .sort() while in py3 we sort with sorted and thus need to set it
-        # explicitly
-        annotations = IAnnotations(self.context)
-        annotations[self.ORDER_KEY] = value
 
     def _pos(self, create=False):
         annotations = IAnnotations(self.context)
