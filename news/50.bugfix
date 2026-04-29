@@ -1,0 +1,1 @@
+Fix `AttributeError` in `orderObjects` after deleting an object and restarting Zope. @wesleybl
