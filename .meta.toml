@@ -9,3 +9,4 @@ commit-id = "2.3.3.dev0"
 dependencies_mappings = [
     "'Products.ZCatalog' = ['Products.PluginIndexes']",
     ]
+dependencies_ignores = "['setuptools']"
