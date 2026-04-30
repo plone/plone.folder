@@ -6,7 +6,7 @@ template = "default"
 commit-id = "2.8.1.dev0"
 
 [github]
-# No 'circular' as it fails on 6.1 for plone.api and Products.CMFPlone.
+# No 'circular' as it fails on 6.0 for plone.api and Products.CMFPlone.
 jobs = [
    "qa",
    "coverage",
@@ -21,4 +21,4 @@ dependencies_mappings = [
 dependencies_ignores = "['setuptools']"
 
 [tox]
-test_matrix = {"6.0" = ["*"], "6.1" = ["*"]}
+test_matrix = {"6.0" = ["3.9", "3.10", "3.11", "3.12", "3.13"], "6.1" = ["*"]}
