@@ -7,6 +7,8 @@ from zope.component import adapter
 from zope.container.contained import notifyContainerModified
 from zope.interface import implementer
 
+import warnings
+
 
 @implementer(IExplicitOrdering)
 @adapter(IOrderableFolder)
@@ -162,6 +164,24 @@ class DefaultOrdering:
         if create:
             return annotations.setdefault(self.ORDER_KEY, PersistentList())
         return annotations.get(self.ORDER_KEY, [])
+
+    def _set_order(self, value):
+        warnings.warn(
+            "_set_order is deprecated and no longer used internally. "
+            "Order is now modified in-place. This method will be removed in a future version.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
+        annotations = IAnnotations(self.context)
+
+        if value is not None and not isinstance(value, PersistentList):
+            try:
+                value = PersistentList(value)
+            except TypeError:
+                pass
+
+        annotations[self.ORDER_KEY] = value
 
     def _pos(self, create=False):
         annotations = IAnnotations(self.context)
