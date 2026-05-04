@@ -1,11 +1,24 @@
 # Generated from:
-# https://github.com/plone/meta/tree/main/src/plone/meta/default
+# https://github.com/plone/meta/tree/2.x/src/plone/meta/default
 # See the inline comments on how to expand/tweak this configuration file
 [meta]
 template = "default"
-commit-id = "ab485d6f"
+commit-id = "2.8.1.dev0"
+
+[github]
+# No 'circular' as it fails on 6.0 for plone.api and Products.CMFPlone.
+jobs = [
+   "qa",
+   "coverage",
+   "dependencies",
+   "release_ready",
+   ]
 
 [pyproject]
 dependencies_mappings = [
     "'Products.ZCatalog' = ['Products.PluginIndexes']",
     ]
+dependencies_ignores = "['setuptools']"
+
+[tox]
+test_matrix = {"6.0" = ["3.9", "3.10", "3.11", "3.12", "3.13"], "6.1" = ["*"]}
