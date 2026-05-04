@@ -1,9 +1,11 @@
 from OFS.Traversable import Traversable
 from plone.folder.interfaces import IOrdering
 from plone.folder.ordered import OrderedBTreeFolderBase
+from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
 from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
 
+import transaction
 import unittest
 
 
@@ -12,6 +14,14 @@ class TestFolder(OrderedBTreeFolderBase, Traversable):
 
     def getId(self):
         return self.id
+
+    def __of__(self, parent):
+        # Allows you to do:
+        # portal._setObject("f1", TestFolder("f1"))
+        return self
+
+    def manage_fixupOwnershipAfterAdd(self):
+        return None
 
 
 class OFSOrderSupportTests(unittest.TestCase):
@@ -353,3 +363,34 @@ class PloneOrderSupportTests(unittest.TestCase):
         # normal
         ordering.notifyRemoved("foo")
         self.assertEqual(ordering.idsInOrder(), ["bar", "baz"])
+
+
+class OrderSupportFunctionalTests(unittest.TestCase):
+    """Functional tests for order support"""
+
+    layer = PLONEFOLDER_FUNCTIONAL_TESTING
+
+    def test_order_objects_stale_after_delete_and_restart(self):
+        portal = self.layer["portal"]
+
+        portal._setObject("f1", TestFolder("f1"))
+        folder = portal["f1"]
+        folder["foo"] = DummyObject("foo", "mt1")
+        folder["bar"] = DummyObject("bar", "mt1")
+        folder["baz"] = DummyObject("baz", "mt1")
+        conn = portal._p_jar
+
+        folder.orderObjects("id")
+        transaction.commit()
+
+        del folder["bar"]
+        transaction.commit()
+
+        # Simulate a Zope server restart by ghosting all cached persistent
+        # objects so they are reloaded from the database on next access.
+        conn.cacheMinimize()
+
+        folder = portal["f1"]
+        folder.orderObjects("id")
+        ordering = folder.getOrdering()
+        self.assertEqual(ordering.idsInOrder(), ["baz", "foo"])

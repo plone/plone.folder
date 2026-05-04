@@ -7,6 +7,8 @@ from zope.component import adapter
 from zope.container.contained import notifyContainerModified
 from zope.interface import implementer
 
+import warnings
+
 
 @implementer(IExplicitOrdering)
 @adapter(IOrderableFolder)
@@ -132,9 +134,7 @@ class DefaultOrdering:
                     return attr()
                 return attr
 
-            # order.sort(cmd=None, key=keyfn, reverse=bool(reverse))
-            order = sorted(order, key=keyfn, reverse=bool(reverse))
-            self._set_order(order)
+            order.sort(key=keyfn, reverse=bool(reverse))
         for n, obj_id in enumerate(order):
             pos[obj_id] = n
         return -1
@@ -166,10 +166,21 @@ class DefaultOrdering:
         return annotations.get(self.ORDER_KEY, [])
 
     def _set_order(self, value):
-        # We added a setter because in py2 _order is modified inplace
-        # with .sort() while in py3 we sort with sorted and thus need to set it
-        # explicitly
+        warnings.warn(
+            "_set_order is deprecated and no longer used internally. "
+            "Order is now modified in-place. This method will be removed in a future version.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+
         annotations = IAnnotations(self.context)
+
+        if value is not None and not isinstance(value, PersistentList):
+            try:
+                value = PersistentList(value)
+            except TypeError:
+                pass
+
         annotations[self.ORDER_KEY] = value
 
     def _pos(self, create=False):
