@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+5.0.0 (2026-05-07)
+------------------
+
+Bug fixes:
+
+
+- Fix `AttributeError` in `orderObjects` after deleting an object and restarting Zope. @wesleybl (#50)
+
+
+Internal:
+
+
+- Update configuration files.
+  [plone devs]
+
+
 5.0.0a1 (2025-11-26)
 --------------------
 
