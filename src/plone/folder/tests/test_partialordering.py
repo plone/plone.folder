@@ -7,9 +7,29 @@ from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import Chaoticle
 from plone.folder.tests.utils import Orderable
 from transaction import savepoint
+from zope.container.interfaces import IContainerModifiedEvent
 from zope.interface import implementer
 
 import unittest
+import zope.event
+
+
+class _collect_container_modified:
+    """Collect IContainerModifiedEvent notifications raised inside the block."""
+
+    def __init__(self):
+        self.events = []
+
+    def _handle(self, event):
+        if IContainerModifiedEvent.providedBy(event):
+            self.events.append(event)
+
+    def __enter__(self):
+        zope.event.subscribers.append(self._handle)
+        return self
+
+    def __exit__(self, *exc):
+        zope.event.subscribers.remove(self._handle)
 
 
 class PartialOrderingTests(unittest.TestCase):
@@ -187,6 +207,25 @@ class PartialOrderingTests(unittest.TestCase):
                 (("n2", 2), ["o1", "o2", "o3", "o4"], ValueError),
             ),
         )
+
+    def testOrderObjectsNotifiesContainerModified(self):
+        container, ordering = self.create()
+        with _collect_container_modified() as collected:
+            ordering.orderObjects("id")
+        self.assertEqual(len(collected.events), 1)
+        self.assertIs(collected.events[0].object, container)
+
+    def testOrderObjectsOnlyReverseNotifiesContainerModified(self):
+        container, ordering = self.create()
+        with _collect_container_modified() as collected:
+            ordering.orderObjects(reverse=True)
+        self.assertEqual(len(collected.events), 1)
+
+    def testOrderObjectsWithoutWorkDoesNotNotify(self):
+        container, ordering = self.create()
+        with _collect_container_modified() as collected:
+            self.assertEqual(ordering.orderObjects(), -1)
+        self.assertEqual(collected.events, [])
 
     def testOrderObjects(self):
         self.runTableTests(

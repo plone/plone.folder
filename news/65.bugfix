@@ -1,0 +1,1 @@
+Fire ``IContainerModifiedEvent`` from ``orderObjects`` in both ``DefaultOrdering`` and ``PartialOrdering``. Every other ordering mutation goes through ``moveObjectsByDelta``, which notifies, so ``orderObjects`` was the only reordering that subscribers could not observe. @kunalKumar-13
