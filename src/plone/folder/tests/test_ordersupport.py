@@ -4,9 +4,33 @@ from plone.folder.ordered import OrderedBTreeFolderBase
 from plone.folder.testing import PLONEFOLDER_FUNCTIONAL_TESTING
 from plone.folder.testing import PLONEFOLDER_INTEGRATION_TESTING
 from plone.folder.tests.utils import DummyObject
+from zope.container.interfaces import IContainerModifiedEvent
 
 import transaction
 import unittest
+import zope.event
+
+
+class _collect_container_modified:
+    """Collect IContainerModifiedEvent notifications raised inside the block.
+
+    Subscribes at the `zope.event` level so the test does not depend on
+    anything being registered in the component registry.
+    """
+
+    def __init__(self):
+        self.events = []
+
+    def _handle(self, event):
+        if IContainerModifiedEvent.providedBy(event):
+            self.events.append(event)
+
+    def __enter__(self):
+        zope.event.subscribers.append(self._handle)
+        return self
+
+    def __exit__(self, *exc):
+        zope.event.subscribers.remove(self._handle)
 
 
 class TestFolder(OrderedBTreeFolderBase, Traversable):
@@ -332,6 +356,26 @@ class PloneOrderSupportTests(unittest.TestCase):
         self.assertEqual(self.folder.getObjectPosition("baz"), 0)
         self.assertEqual(self.folder.getObjectPosition("bar"), 1)
         self.assertEqual(self.folder.getObjectPosition("foo"), 2)
+
+    def testOrderObjectsNotifiesContainerModified(self):
+        # Every other ordering mutation goes through moveObjectsByDelta, which
+        # notifies. orderObjects must not be the one that stays silent.
+        with _collect_container_modified() as collected:
+            self.folder.orderObjects("id")
+        self.assertEqual(len(collected.events), 1)
+        self.assertIs(collected.events[0].object, self.folder)
+
+    def testOrderObjectsOnlyReverseNotifiesContainerModified(self):
+        with _collect_container_modified() as collected:
+            self.folder.orderObjects(reverse=True)
+        self.assertEqual(len(collected.events), 1)
+
+    def testOrderObjectsWithoutWorkDoesNotNotify(self):
+        # No key and no reverse is a no-op that returns early; nothing was
+        # reordered, so nothing should be announced.
+        with _collect_container_modified() as collected:
+            self.assertEqual(self.folder.orderObjects(), -1)
+        self.assertEqual(collected.events, [])
 
     def testSubsetIds(self):
         self.folder.moveObjectsByDelta(["baz"], -1, ["foo", "bar", "baz"])

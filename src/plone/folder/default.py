@@ -135,6 +135,11 @@ class DefaultOrdering:
             order.sort(key=keyfn, reverse=bool(reverse))
         for n, obj_id in enumerate(order):
             pos[obj_id] = n
+        # The order annotation was mutated, so subscribers have to hear about
+        # it -- every other ordering mutation goes through moveObjectsByDelta,
+        # which notifies. Without this, orderObjects is the one way to reorder
+        # a folder that nothing outside can observe.
+        notifyContainerModified(self.context)
         return -1
 
     def getObjectPosition(self, obj_id):

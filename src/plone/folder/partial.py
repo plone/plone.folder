@@ -152,6 +152,7 @@ class PartialOrdering:
 
             self.order = sorted(self.order, key=keyfn, reverse=bool(reverse))
         self.context._p_changed = True  # the order was changed
+        notifyContainerModified(self.context)
         return -1
 
     def getObjectPosition(self, id):
