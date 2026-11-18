@@ -63,15 +63,15 @@ class OFSOrderSupportTests(unittest.TestCase):
 
     def test_iterkeys(self):
         folder = self.create()
-        self.assertEqual(["o1", "o2", "o3", "o4"], [x for x in folder.keys()])
+        self.assertEqual(["o1", "o2", "o3", "o4"], [*folder.keys()])
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEqual(["o2", "o1", "o3", "o4"], [x for x in folder.keys()])
+        self.assertEqual(["o2", "o1", "o3", "o4"], [*folder.keys()])
 
     def test_iter(self):
         folder = self.create()
-        self.assertEqual(["o1", "o2", "o3", "o4"], [x for x in folder])
+        self.assertEqual(["o1", "o2", "o3", "o4"], [*folder])
         folder.moveObjectsUp(("o2",), 1)
-        self.assertEqual(["o2", "o1", "o3", "o4"], [x for x in folder])
+        self.assertEqual(["o2", "o1", "o3", "o4"], [*folder])
 
     def test_getitem(self):
         ordering = IOrdering(self.create())
